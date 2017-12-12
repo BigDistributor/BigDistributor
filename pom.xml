@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>17.1.1</version>
+	</parent>
+	<groupId>net.imglib2.practice</groupId>
+	<artifactId>imagej-clustering</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<name>imagej-clustering</name>
+	<properties><enforcer.skip>true</enforcer.skip></properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-ij</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-realtransform</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-algorithm</artifactId>
+		</dependency>
+		 <dependency>
+    <groupId>io.scif</groupId>
+    <artifactId>scifio</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.scif</groupId>
+    <artifactId>scifio-bf-compat</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+  <!-- The formats-bsd component adds support for open formats. -->
+  <dependency>
+    <groupId>ome</groupId>
+    <artifactId>formats-bsd</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+  <!-- The formats-gpl component adds support for proprietary formats. -->
+  <dependency>
+    <groupId>ome</groupId>
+    <artifactId>formats-gpl</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+	</dependencies>
+
+	<repositories>
+		<!-- NB: for project parent -->
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+</project>
