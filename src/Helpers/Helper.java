@@ -47,15 +47,6 @@ public class Helper {
 				RandomAccessibleInterval<FloatType> view = Views.interval(input,
 						new long[] { j * width - Helper.sigma, i * height - Helper.sigma },
 						new long[] { (j + 1) * width + Helper.sigma, (i + 1) * height + Helper.sigma });
-				//TODO fix it
-				ImgSaver saver = new ImgSaver();
-				String imgName = i+"tiffTest.tif";
-				try {
-//					ij.IJ.save(view, imgName);
-				}
-				catch (Exception exc) {
-					exc.printStackTrace();
-				}
 				Rectangle shape = new Rectangle(new Point((int) (j * width), (int) (i * height)),
 						new Dimension((int) (width), (int) (height)));
 				portions.add(new Portion(view, shape));

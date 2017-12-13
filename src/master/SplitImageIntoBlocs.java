@@ -7,6 +7,7 @@ import Helpers.Portion;
 import ij.ImageJ;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
+import io.scif.img.ImgSaver;
 import net.imglib2.FinalInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -25,6 +26,7 @@ public class SplitImageIntoBlocs {
 		Helper.sigma = 0;
 		FinalInterval interval = Helper.getFinalInterval(image);
 		ArrayList<Portion> portions = Helper.splitImageEnBlocs(image,interval, columns, rows);
+		saveImages(portions);
 		for(Portion portion:portions)
 			ImageJFunctions.show(portion.getView());
 
@@ -33,6 +35,21 @@ public class SplitImageIntoBlocs {
 	}
 
 	
+	private void saveImages(ArrayList<Portion> portions) {
+		for (int k = 0; k < portions.size(); k++) {
+			ImgSaver saver = new ImgSaver();
+			String imgName = k + "-part.tif";
+			try {
+				ij.IJ.save(ImageJFunctions.wrap(portions.get(k).getView(), ""), imgName);
+			}
+			catch (Exception exc) {
+				System.out.println("error "+k);
+				exc.printStackTrace();
+			}
+		}
+	}
+
+
 	public static void main(String[] args) throws ImgIOException {
 		new ImageJ();
 		new SplitImageIntoBlocs();
