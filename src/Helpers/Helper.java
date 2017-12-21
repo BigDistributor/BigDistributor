@@ -1,6 +1,5 @@
 package Helpers;
 
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -14,6 +13,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
@@ -25,35 +25,6 @@ public class Helper {
 
 	public static Boolean log;
 	public static int count, sigma;
-
-	public static ArrayList<Portion> splitImageEnBlocs(RandomAccessible<FloatType> input, FinalInterval interval,
-			int columns, int rows) {
-
-		// TODO make it dynamic with 3d
-		// input.numDimensions();
-		long totalWidth = interval.dimension(0) - (Helper.sigma * 2);
-		long totalHeight = interval.dimension(1) - (Helper.sigma * 2);
-
-		// TODO get the rest / make dynamic
-		long width = totalWidth / columns - 1;
-		long height = totalHeight / rows - 1;
-
-		long lostWidth = totalWidth % columns;
-		long lostHeight = totalHeight % rows;
-
-		ArrayList<Portion> portions = new ArrayList<Portion>();
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				RandomAccessibleInterval<FloatType> view = Views.interval(input,
-						new long[] { j * width - Helper.sigma, i * height - Helper.sigma },
-						new long[] { (j + 1) * width + Helper.sigma, (i + 1) * height + Helper.sigma });
-				Rectangle shape = new Rectangle(new Point((int) (j * width), (int) (i * height)),
-						new Dimension((int) (width), (int) (height)));
-				portions.add(new Portion(view, shape));
-			}
-		}
-		return portions;
-	}
 
 	public static float computeMiLocation(final Img<FloatType> input, int startPoint, int arrivePoint) {
 		final Cursor<FloatType> cursor = input.cursor();
@@ -99,7 +70,7 @@ public class Helper {
 					new long[] { Helper.sigma, Helper.sigma },
 					new long[] { portion.getView().dimension(0) - Helper.sigma,
 							portion.getView().dimension(0) - Helper.sigma });
-			newPortions.add(new Portion(view, portion.getShape()));
+			newPortions.add(new Portion(view, portion.getPosition(),portion.getSize()));
 		}
 		return newPortions;
 	}
@@ -130,15 +101,15 @@ public class Helper {
 			int slice) {
 		if (input.numDimensions() > 2) {
 			for (int j = 0; j < input.dimension(input.numDimensions() - 1); j++) {
-				splitImage(Views.hyperSlice(input, input.numDimensions() - 1, j), result, input.numDimensions() - 1,j);
+				splitImage(Views.hyperSlice(input, input.numDimensions() - 1, j), result, input.numDimensions() - 1, j);
 			}
 		} else {
-			result.add(new Portion(input, new Rectangle(), dim, slice));
+			result.add(new Portion(input, dim, slice));
 		}
 	}
-	
-	
-	public static ArrayList<myTask> createThreadTasks(ArrayList<Portion> portions, Img<FloatType> resultImage, Task type) {
+
+	public static ArrayList<myTask> createThreadTasks(ArrayList<Portion> portions, Img<FloatType> resultImage,
+			Task type) {
 
 		ArrayList<myTask> taskList = new ArrayList<myTask>();
 		switch (type) {
@@ -154,5 +125,6 @@ public class Helper {
 		}
 		return taskList;
 	}
+
 
 }

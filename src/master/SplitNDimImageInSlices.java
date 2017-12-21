@@ -15,14 +15,14 @@ import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 
-public class SplitNDimImage {
+public class SplitNDimImageInSlices {
 
-	public SplitNDimImage() throws ImgIOException, InterruptedException, IncompatibleTypeException {
+	public SplitNDimImageInSlices() throws ImgIOException, InterruptedException, IncompatibleTypeException {
 		Helper.count = 0;
 		Helper.sigma = 8;
 		Helper.log = false;
 
-		String string = "src/main/resources/mri-stack.tif";
+		String string = "img/mri-stack.tif";
 //		String string = "src/main/resources/DrosophilaWing.tif";
 		Img<FloatType> image = new ImgOpener().openImg(string, new FloatType());
 	
@@ -46,6 +46,6 @@ public class SplitNDimImage {
 	public static void main(String[] args) throws ImgIOException, InterruptedException, IncompatibleTypeException {
 
 		new ImageJ();
-		new SplitNDimImage();
+		new SplitNDimImageInSlices();
 	}
 }
