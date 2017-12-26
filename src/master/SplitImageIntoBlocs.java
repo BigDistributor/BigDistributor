@@ -1,5 +1,6 @@
 package master;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,6 +9,8 @@ import Helpers.Portion;
 import ij.ImageJ;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
+import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.gauss3.Gauss3;
@@ -36,15 +39,49 @@ public class SplitImageIntoBlocs {
 		Arrays.fill(blocks, numberBlocs);
 
 		ArrayList<Portion> portions = SplitImageEnBlocs(image,blocks);
-//		saveImages(portions);
-		processBlocs(portions,resultImage);
-		
+		final String processFolder = "processImages";
+		saveImages(portions,processFolder);
+//		Helper.showImagesInFolder(processFolder);
+		ArrayList<Img<FloatType>> images = Helper.getImagesFromFolder(processFolder);
+
+//		processBlocs(portions,resultImage);
+		combineBlocs(resultImage,portions,images);
 		ImageJFunctions.show(resultImage).setTitle("Result Image");
 
 
 	}
 
 	
+	private void combineBlocs(Img<FloatType> resultImage, ArrayList<Portion> portions,
+			ArrayList<Img<FloatType>> images) {
+		System.out.println("here");
+		RandomAccessible<FloatType> infiniteResult = Views.extendMirrorSingle(resultImage);
+		ImageJFunctions.show(Views.interval(infiniteResult, resultImage));
+		for (int i = 0; i < portions.size(); i++) {
+			
+//			RandomAccess<FloatType> view = Views.offsetInterval(infiniteResult,portions.get(i).getPosition(), portions.get(i).getSize()).randomAccess();
+			Cursor<FloatType> blocItirator = images.get(i).localizingCursor();
+//			resultImage.cursor();
+			
+			RandomAccess<FloatType> view = infiniteResult.randomAccess();
+			while (blocItirator.hasNext()) {
+
+				view.setPosition(blocItirator);
+				
+				view.get().set(200);
+//				blocItirator.get()
+			}
+			
+		}
+
+		
+	}
+
+
+	public static void main(String[] args) throws ImgIOException {
+		new ImageJ();
+		new SplitImageIntoBlocs();
+	}
 
 
 
@@ -71,10 +108,7 @@ public class SplitImageIntoBlocs {
 
 
 
-	public static void main(String[] args) throws ImgIOException {
-		new ImageJ();
-		new SplitImageIntoBlocs();
-	}
+	
 	
 	public static ArrayList<Portion> SplitImageEnBlocs(RandomAccessibleInterval<FloatType> input,
 			 int[] blocs) {
@@ -106,9 +140,28 @@ public class SplitImageIntoBlocs {
 		return portions;
 	}
 	
-	private void saveImages(ArrayList<Portion> portions) {
+	private void saveImages(ArrayList<Portion> portions, String processFolder) {
+		File theDir = new File(processFolder);
+
+		// if the directory does not exist, create it
+		if (!theDir.exists()) {
+		    System.out.println("creating directory: " + theDir.getName());
+		    boolean result = false;
+
+		    try{
+		        theDir.mkdir();
+		        result = true;
+		    } 
+		    catch(SecurityException se){
+		        //handle it
+		    }        
+		    if(result) {    
+		        System.out.println("DIR created");  
+		    }
+		}
+		
 		for (int k = 0; k < portions.size(); k++) {
-			String imgName = k + "-part.tif";
+			String imgName = processFolder +"/"+k + "-part.tif";
 			try {
 				ij.IJ.save(ImageJFunctions.wrap(portions.get(k).getView(), ""), imgName);
 			}

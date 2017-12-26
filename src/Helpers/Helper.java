@@ -3,8 +3,11 @@ package Helpers;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
 import java.util.ArrayList;
 
+import io.scif.img.ImgIOException;
+import io.scif.img.ImgOpener;
 import io.scif.img.ImgSaver;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
@@ -124,6 +127,53 @@ public class Helper {
 			break;
 		}
 		return taskList;
+	}
+
+	public static void showImagesInFolder(String processFolder) {
+		final File folder = new File(processFolder);
+		  for (final File fileEntry : folder.listFiles()) {
+		        if (fileEntry.isDirectory()) {
+		        	showImagesInFolder(processFolder);
+		        } else {
+		            System.out.println(fileEntry.getPath());
+	
+		    		Img<FloatType> image;
+					try {
+						image = new ImgOpener().openImg(fileEntry.getPath(), new FloatType());
+						ImageJFunctions.show(image);
+					} catch (ImgIOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    		
+		        }
+		    }
+		
+	}
+	
+	public static ArrayList<Img<FloatType>> getImagesFromFolder(String processFolder) {
+		ArrayList<Img<FloatType>> images = new ArrayList<Img<FloatType>>();
+		final File folder = new File(processFolder);
+		int i =0;
+		  for (final File fileEntry : folder.listFiles()) {
+		        if (fileEntry.isDirectory()) {
+//		        	showImagesInFolder(processFolder);
+		        } else {
+//		            System.out.println(fileEntry.getPath());
+	
+		    		
+					try {
+						Img<FloatType> image = new ImgOpener().openImg(fileEntry.getPath(), new FloatType());
+						images.add(image);
+//						ImageJFunctions.show(image);
+					} catch (ImgIOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		    		
+		        }
+		    }
+		return images;
 	}
 
 
