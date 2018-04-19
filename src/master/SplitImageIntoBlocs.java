@@ -10,13 +10,13 @@ import ij.ImageJ;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.gauss3.Gauss3;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
@@ -27,24 +27,30 @@ public class SplitImageIntoBlocs {
 
 	public SplitImageIntoBlocs() throws ImgIOException {
 		Helper.sigma = 6;
-		String string = "img/mri-stack.tif";
-//		String string = "img/DrosophilaWing.tif";
+//		String string = "img/mri-stack.tif";
+		String string = "img/DrosophilaWing.tif";
 		Img<FloatType> image = new ImgOpener().openImg(string, new FloatType());
 		ImageJFunctions.show(image);
-		final ImgFactory< FloatType > imgFactory = new CellImgFactory< FloatType > (5);
-		final Img<FloatType> resultImage  = imgFactory.create(Helper.getDimensions(image), new FloatType());
-		ImageJFunctions.show(resultImage);
+
+		final Img<FloatType> resultImage  = new CellImgFactory< FloatType >( 64 ).create(Helper.getDimensions(image), new FloatType());
+//		ImageJFunctions.show(resultImage);
+
 		final int numberBlocs = 2;
 		int[] blocks = new int[image.numDimensions()];
 		Arrays.fill(blocks, numberBlocs);
 
-		ArrayList<Portion> portions = SplitImageEnBlocs(image,blocks);
+		ArrayList<Portion> portions = splitImageEnBlocs(image,blocks);
 		final String processFolder = "processImages";
 		saveImages(portions,processFolder);
 //		Helper.showImagesInFolder(processFolder);
 		ArrayList<Img<FloatType>> images = Helper.getImagesFromFolder(processFolder);
+		
+		for (Img<FloatType> im :images) {
+			ImageJFunctions.show(im);
+		}
 
-//		processBlocs(portions,resultImage);
+		processImages(images);
+		processBlocs(portions,resultImage);
 		combineBlocs(resultImage,portions,images);
 		ImageJFunctions.show(resultImage).setTitle("Result Image");
 
@@ -52,40 +58,60 @@ public class SplitImageIntoBlocs {
 	}
 
 	
+	private void processImages(ArrayList<Img<FloatType>> images) {
+		for(Img<FloatType> image:images) {
+			RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
+			RandomAccessibleInterval<FloatType> view = Views.interval(infiniteImg,image);
+			
+		try {
+			Gauss3.gauss(Helper.sigma, view,
+					image);
+		} catch (IncompatibleTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	}
+
+
 	private void combineBlocs(Img<FloatType> resultImage, ArrayList<Portion> portions,
 			ArrayList<Img<FloatType>> images) {
-		System.out.println("here");
-		RandomAccessible<FloatType> infiniteResult = Views.extendMirrorSingle(resultImage);
-		ImageJFunctions.show(Views.interval(infiniteResult, resultImage));
-		for (int i = 0; i < portions.size(); i++) {
-			
-//			RandomAccess<FloatType> view = Views.offsetInterval(infiniteResult,portions.get(i).getPosition(), portions.get(i).getSize()).randomAccess();
-			Cursor<FloatType> blocItirator = images.get(i).localizingCursor();
-//			resultImage.cursor();
-			
-			RandomAccess<FloatType> view = infiniteResult.randomAccess();
-			while (blocItirator.hasNext()) {
 
-				view.setPosition(blocItirator);
-				
-				view.get().set(200);
-//				blocItirator.get()
-			}
+		
+        
+		RandomAccessible<FloatType> infiniteResult = Views.extendMirrorSingle(resultImage);
+//		ImageJFunctions.show(Views.interval(infiniteResult, resultImage));
+		for (int i = 0; i < portions.size(); i++) {
+//	ImageJFunctions.show(images.get(i)).setTitle("part result: "+i);
+			IterableInterval<FloatType> currentFinalInput = Views.offsetInterval(images.get(i), Helper.add(portions.get(i).getPosition(),Helper.sigma),portions.get(i).getSize());
+			
+			
+	        IterableInterval<FloatType> currentFinalView = Views.offsetInterval(infiniteResult, portions.get(i).getPosition(),portions.get(i).getSize());
+System.out.println(portions.get(i));
+	        Cursor< FloatType > cursorInput = currentFinalInput.cursor();
+	        Cursor< FloatType > cursorOutput = currentFinalView.cursor();
+	        while ( cursorInput.hasNext())
+	        {
+	            cursorInput.fwd();
+	            cursorOutput.fwd();
+	            FloatType x = cursorInput.get();
+	            FloatType y = cursorOutput.get();
+	            y.set(x );
+	        }
+	
+
+	        ImageJFunctions.show(resultImage).setTitle("result"+i);
 			
 		}
 
 		
 	}
 
-
 	public static void main(String[] args) throws ImgIOException {
 		new ImageJ();
 		new SplitImageIntoBlocs();
 	}
-
-
-
-
 
 	private void processBlocs(ArrayList<Portion> portions, Img<FloatType> resultImage) {
 		for(Portion portion:portions) {
@@ -101,16 +127,8 @@ public class SplitImageIntoBlocs {
 		
 		
 	}
-
-
-
-
-
-
-
 	
-	
-	public static ArrayList<Portion> SplitImageEnBlocs(RandomAccessibleInterval<FloatType> input,
+	public static ArrayList<Portion> splitImageEnBlocs(RandomAccessibleInterval<FloatType> input,
 			 int[] blocs) {
 
 		RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(input);
@@ -125,16 +143,17 @@ public class SplitImageIntoBlocs {
 			iterator.fwd();
 			System.out.println(iterator.toString());
 			long[] currentPosition = new long[3];
+			long[] maxPosition = new long[3];
 			for (int d = 0; d < blocs.length; d++) {
 				System.out.print(d+" ");
-				currentPosition[d] = blocSize[d] * iterator.getIntPosition(d);
+				currentPosition[d] = blocSize[d] * iterator.getIntPosition(d)-Helper.sigma ;
+				maxPosition[d] = blocSize[d] * (1+iterator.getIntPosition(d)) +Helper.sigma;
 			}
 			System.out.println();
 
-		
-		RandomAccessibleInterval<FloatType> view = Views.offsetInterval(infiniteImg,currentPosition, blocSize);
+		RandomAccessibleInterval<FloatType> view = Views.interval(infiniteImg,currentPosition, maxPosition);
 	
-				portions.add(new Portion(view, currentPosition,blocSize));
+				portions.add(new Portion(view, currentPosition,maxPosition,blocSize));
 			}
 		
 		return portions;

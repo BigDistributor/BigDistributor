@@ -8,6 +8,7 @@ public class Portion extends Object {
 	private RandomAccessibleInterval<FloatType> view;
 	private long[] position;
 	private long[] size;
+	private long[] max;
 	public int getSlice() {
 		return slice;
 	}
@@ -27,18 +28,17 @@ public class Portion extends Object {
 	private int dimenssion;
 	
 
-	public Portion(RandomAccessibleInterval<FloatType> view, long[] position, long[] size) {
+	public Portion(RandomAccessibleInterval<FloatType> view, long[] position,long[] max, long[] size) {
 		this.view = view;
 		this.position = position;
 		this.size = size;
-		// TODO Auto-generated constructor stub
+		this.max = max;
 	}
 	
 	public Portion(RandomAccessibleInterval<FloatType> view, int dim, int slice) {
 		this.view = view;
 		this.dimenssion = dim;
 		this.slice = slice; 
-		// TODO Auto-generated constructor stub
 	}
 
 	public long[] getPosition() {
@@ -53,6 +53,14 @@ public class Portion extends Object {
 		return size;
 	}
 
+	public long[] getMax() {
+		return max;
+	}
+
+	public void setMax(long[] max) {
+		this.max = max;
+	}
+
 	public void setSize(long[] size) {
 		this.size = size;
 	}
@@ -62,6 +70,20 @@ public class Portion extends Object {
 	}
 	public void setView(RandomAccessibleInterval<FloatType> view) {
 		this.view = view;
+	}
+	@Override
+	public String toString() {
+		String positionString ="";
+		String maxString ="";
+		String sizeString ="";
+		
+		for (int i = 0; i < max.length; i++) {
+			positionString+= position[i]+"|";
+			maxString+=  max[i]+"|";
+			sizeString+=  size[i]+"|";
+			
+		}
+		return "from:"+positionString+" to: "+maxString+ " size:"+sizeString;
 	}
 }
 

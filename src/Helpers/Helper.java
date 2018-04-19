@@ -1,22 +1,21 @@
 package Helpers;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import org.apache.commons.io.comparator.NameFileComparator;
 
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
-import io.scif.img.ImgSaver;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 
@@ -73,7 +72,7 @@ public class Helper {
 					new long[] { Helper.sigma, Helper.sigma },
 					new long[] { portion.getView().dimension(0) - Helper.sigma,
 							portion.getView().dimension(0) - Helper.sigma });
-			newPortions.add(new Portion(view, portion.getPosition(),portion.getSize()));
+			newPortions.add(new Portion(view, portion.getPosition(),portion.getMax(),portion.getSize()));
 		}
 		return newPortions;
 	}
@@ -154,9 +153,14 @@ public class Helper {
 	public static ArrayList<Img<FloatType>> getImagesFromFolder(String processFolder) {
 		ArrayList<Img<FloatType>> images = new ArrayList<Img<FloatType>>();
 		final File folder = new File(processFolder);
-		int i =0;
-		  for (final File fileEntry : folder.listFiles()) {
+File[] files = folder.listFiles();
+Arrays.sort(files, NameFileComparator.NAME_COMPARATOR);
+for (final File fileEntry : files) {
+	  System.out.println(fileEntry.getPath());};
+		  for (final File fileEntry : files) {
+			  System.out.println(fileEntry.getPath());
 		        if (fileEntry.isDirectory()) {
+		        	
 //		        	showImagesInFolder(processFolder);
 		        } else {
 //		            System.out.println(fileEntry.getPath());
@@ -174,6 +178,23 @@ public class Helper {
 		        }
 		    }
 		return images;
+	}
+	
+	
+	public static long[] minus(long[] array, int x) {
+		long[] result= new long[array.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i]= array[i]-x;
+		}
+		return result;
+	}
+
+	public static long[] add(long[] array, int x) {
+		long[] result= new long[array.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i]= array[i]+x;
+		}
+		return result;
 	}
 
 
