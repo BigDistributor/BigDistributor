@@ -5,10 +5,15 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.io.FileUtils;
+
+import blockmanager.Block;
 import ij.ImagePlus;
 import ij.VirtualStack;
 import ij.io.FileInfo;
@@ -24,11 +29,13 @@ import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImg;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.img.imageplus.ImagePlusImg;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Util;
 
 public class IOFunctions {
 
@@ -223,4 +230,26 @@ public class IOFunctions {
 
 		return img;
 	}
+	
+	public static void cleanFolder(String folderName)  {
+    		File file = new File(folderName);
+    		file.mkdir();
+    		try {
+				FileUtils.cleanDirectory(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+
+//	public static void saveBlocks(List<Block> blocks) {
+//		for (final Block block: blocks) {
+//			final long blockSize = 50;
+//			final long[] blockSizeDim = Util.getArrayFromValue( blockSize, block.numDimensions() );
+//			final Img< FloatType > tmp = ArrayImgs.floats( blockSizeDim );
+//			block.pasteBlock(tmp, block);
+//			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance( tmp ), "");
+//		}
+//		
+//	}
 }

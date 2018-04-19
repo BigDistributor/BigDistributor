@@ -36,7 +36,7 @@ public class BlockExample
 	public static void main( String[] args ) 
 	{
 		new ImageJ();
-
+		IOFunctions.cleanFolder("input");
 		Helper.sigma = 5;
 //		String string = "img/mri-stack.tif";
 		String string = "img/DrosophilaWing.tif";
@@ -84,11 +84,17 @@ public class BlockExample
 
 			// copy block (multithreaded)
 			block.copyBlock( infiniteImg, tmp );
+			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), "input/part_"+i+".tif" );
 
+
+			//save blocks into inputFolder
+//			IOFunctions.saveBlocks(blocks);
+			
 			// process
 			//for ( final FloatType f : tmp )
 			//	f.set( i );
-			try { Gauss3.gauss( sigmas, Views.extendZero( tmp ), tmp, service ); } catch (IncompatibleTypeException e) {}
+			
+//			try { Gauss3.gauss( sigmas, Views.extendZero( tmp ), tmp, service ); } catch (IncompatibleTypeException e) {}
 			
 			// copy (/fast/AG_Preibisch?)
 			// https://stackoverflow.com/questions/14617/how-to-retrieve-a-file-from-a-server-via-sftp
