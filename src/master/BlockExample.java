@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import Helpers.Helper;
 import blockmanager.Block;
 import blockmanager.BlockGenerator;
 import blockmanager.BlockGeneratorFixedSizePrecise;
 import clustering.SCP;
+import gui.MainFrame_;
 import ij.ImageJ;
 import ij.ImagePlus;
 import io.scif.img.ImgIOException;
@@ -28,6 +28,7 @@ import net.imglib2.multithreading.SimpleMultiThreading;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
+import tools.Helper;
 import tools.IOFunctions;
 
 public class BlockExample
@@ -68,7 +69,7 @@ public class BlockExample
 		}
 		
 //		SCP.run(new String[] {"/Users/Marwan/myimage.jpg","/Users/Marwan/Desktop/myimage.jpg"});
-		new SCP().send();
+//		new SCP().send();
 		
 		final List< Block > blocks = generator.divideIntoBlocks( imgSize, kernelSize );
 		final Img< FloatType > tmp = ArrayImgs.floats( blockSizeDim );

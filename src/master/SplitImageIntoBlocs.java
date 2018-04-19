@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Helpers.Helper;
 import Helpers.Portion;
 import ij.ImageJ;
 import io.scif.img.ImgIOException;
@@ -22,6 +21,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
+import tools.Helper;
 
 public class SplitImageIntoBlocs {
 

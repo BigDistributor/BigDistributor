@@ -20,6 +20,7 @@ public class ScriptGenerator {
 		    out.println("export OPENBLAS_NUM_THREADS=4");
 		    out.println("# export NUM_THREADS=8");
 		    out.println("java -jar GaussianTask.jar image.jpg");
+		    
 
 		}
 	}

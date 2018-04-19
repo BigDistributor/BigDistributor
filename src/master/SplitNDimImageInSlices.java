@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import ij.ImageJ;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
-import Helpers.Helper;
-import Helpers.Helper.Task;
 import Helpers.Portion;
 import Helpers.myTask;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -14,6 +12,8 @@ import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
+import tools.Helper;
+import tools.Helper.Task;
 
 public class SplitNDimImageInSlices {
 

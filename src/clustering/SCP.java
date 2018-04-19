@@ -8,17 +8,6 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 public class SCP{
-	
-	String userName = "";
-	String password = "";
-	String host = "localhost";
-	int port = 22;
-	String path = "";
-	
-	public void send() {
-		send(userName, password, host, port, path);
-	}
-	
 	public void send(String userName, String password, String host, int port, String path) {
 
         Session session = null;

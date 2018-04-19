@@ -1,4 +1,4 @@
-package Helpers;
+package tools;
 
 import java.awt.Rectangle;
 import java.io.File;
@@ -8,6 +8,8 @@ import java.util.Comparator;
 
 import org.apache.commons.io.comparator.NameFileComparator;
 
+import Helpers.Portion;
+import Helpers.myTask;
 import io.scif.img.ImgIOException;
 import io.scif.img.ImgOpener;
 import net.imglib2.Cursor;

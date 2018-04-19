@@ -1,13 +1,14 @@
 package Helpers;
 
 
-import Helpers.Helper.Task;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.gauss3.Gauss3;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
+import tools.Helper;
+import tools.Helper.Task;
 public class myTask extends Thread {
 
 	private Portion currentPortion;
