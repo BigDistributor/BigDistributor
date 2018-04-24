@@ -1,12 +1,17 @@
 package clustering;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class ScriptGenerator {
 
-	public ScriptGenerator() throws FileNotFoundException {
-		try (PrintWriter out = new PrintWriter("run.sh")) {
+	public static String generateScript(String jar, String[] input) throws FileNotFoundException {
+		File file = new File("input");
+		file.mkdir();
+		String filePath = file.getAbsolutePath()+"/run.sh";
+
+		try (PrintWriter out = new PrintWriter(filePath)) {
 		    out.println("#!/bin/sh");
 		    out.println("# This is my job script with qsub-options ");
 		    out.println("##$ -pe smp 8");
@@ -19,12 +24,15 @@ public class ScriptGenerator {
 		    out.println("# neccessary to prevent python error ");
 		    out.println("export OPENBLAS_NUM_THREADS=4");
 		    out.println("# export NUM_THREADS=8");
-		    out.println("java -jar GaussianTask.jar image.jpg");
-		    
-
+		    out.println("java -jar "+jar+" "+String.join(" ", input));
+		    return filePath;  
 		}
 	}
+	
 	public static void main(String[] args) throws FileNotFoundException {
-		new ScriptGenerator();
+		
+		System.out.println(System.getProperty("user.home"));
+		generateScript("jar.jar", new String[] {"hello.tif"});
+		
 	}
 }

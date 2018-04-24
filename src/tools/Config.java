@@ -8,7 +8,34 @@ public enum Config {
 	private static int port = 22;
 	private static String path = "";
 	private static Boolean configured = false;
-	
+	private static String pathScript = "";
+	private static String[] localInputs;
+	private static String[] clusterInputs;
+
+	public static String getLocalInputString() {
+		return String.join(" ", localInputs);
+	}
+	public static String getClusterInputString() {
+		return String.join(" ", clusterInputs);
+	}
+	public static String[] getLocalInputs() {
+		return localInputs;
+	}
+	public static void setLocalInputs(String[] localInputs) {
+		Config.localInputs = localInputs;
+	}
+	public static String[] getClusterInputs() {
+		return clusterInputs;
+	}
+	public static void setClusterInputs(String[] clusterInputs) {
+		Config.clusterInputs = clusterInputs;
+	}
+	public static String getPathScript() {
+		return pathScript;
+	}
+	public static void setPathScript(String pathScript) {
+		Config.pathScript = pathScript;
+	}
 	public static String getPseudo() {
 		return pseudo;
 	}

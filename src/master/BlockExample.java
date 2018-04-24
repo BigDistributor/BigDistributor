@@ -7,12 +7,8 @@ import java.util.concurrent.ExecutorService;
 import blockmanager.Block;
 import blockmanager.BlockGenerator;
 import blockmanager.BlockGeneratorFixedSizePrecise;
-import clustering.SCP;
 import gui.MainFrame_;
 import ij.ImageJ;
-import ij.ImagePlus;
-import io.scif.img.ImgIOException;
-import io.scif.img.ImgOpener;
 import multithreading.Threads;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
@@ -24,7 +20,6 @@ import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.multithreading.SimpleMultiThreading;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
@@ -35,11 +30,14 @@ public class BlockExample
 {
 	public static void main( String[] args ) 
 	{
+		
 		new ImageJ();
+		
 		IOFunctions.cleanFolder("input");
 		Helper.sigma = 5;
 //		String string = "img/mri-stack.tif";
 		String string = "img/DrosophilaWing.tif";
+	
 		Img<FloatType> image = IOFunctions.openAs32Bit( new File( string) );
 		ImageJFunctions.show(image);
 
@@ -68,7 +66,9 @@ public class BlockExample
 			imgSize[ d ] = image.dimension( d );
 		}
 		
-//		SCP.run(new String[] {"/Users/Marwan/myimage.jpg","/Users/Marwan/Desktop/myimage.jpg"});
+		
+//		SCP.send("Marwan", "sayeb3ad", "localhost", 22 ,"/Users/Marwan/Desktop/myimage.jpg","/Users/Marwan/got.jpg");
+//		SCP.send("mzouink", "iss@t2015IGC3", "maxlogin2.mdc-berlin.net", 22 ,"/Users/Marwan/Desktop/myimage.jpg",	"/scratch/AG_Preibisch/Marwan/gotImage.jpg");
 //		new SCP().send();
 		
 		final List< Block > blocks = generator.divideIntoBlocks( imgSize, kernelSize );
