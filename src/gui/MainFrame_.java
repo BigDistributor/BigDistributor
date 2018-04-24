@@ -59,7 +59,7 @@ public class MainFrame_ implements PlugIn {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send Jar clicked");
-				String clusterJar = "/scratch/AG_Preibisch/Marwan/clustering/"
+				String clusterJar = Config.getClusterPath()
 						+ jar.split("/")[jar.split("/").length - 1];
 				System.out.println(clusterJar);
 				SCP.send(Config.getPseudo(), Config.getHost(), 22, jar, clusterJar);
@@ -70,10 +70,10 @@ public class MainFrame_ implements PlugIn {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send input files clicked");
-				String clusterInput = "/scratch/AG_Preibisch/Marwan/clustering/"
+				String clusterInput = Config.getClusterPath()
 						+ dir.split("/")[dir.split("/").length - 1];
-				Config.setLocalInputs(new String[] {dir});
-				Config.setClusterInputs(new String[] {clusterInput});
+				Config.setLocalInputs(new String[] { dir });
+				Config.setClusterInputs(new String[] { clusterInput });
 				System.out.println(clusterInput);
 				SCP.send(Config.getPseudo(), Config.getHost(), 22, dir, clusterInput);
 			}
@@ -88,11 +88,10 @@ public class MainFrame_ implements PlugIn {
 							new String[] { dir.split("/")[dir.split("/").length - 1] });
 					System.out.println("Script generated: " + scriptPath);
 					System.out.println("Sending Script..");
-					String clusterScript = "/scratch/AG_Preibisch/Marwan/clustering/"
-							+ scriptPath.split("/")[scriptPath.split("/").length - 1];
+					String clusterScript = scriptPath.split("/")[scriptPath.split("/").length - 1];
 					System.out.println(clusterScript);
-					Config.setPathScript(clusterScript);
-					Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getLocalInputString()) );
+					Config.setScriptFile(clusterScript);
+					Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
 					ImageJFunctions.show(image).setTitle("Original");
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath, clusterScript);
 				} catch (FileNotFoundException e1) {
@@ -105,7 +104,7 @@ public class MainFrame_ implements PlugIn {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("run config.sh clicked");
-				SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getPathScript());
+				SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(),Config.getsSriptFile());
 			}
 		});
 		workflowView.addButton("get status", new ActionListener() {
@@ -121,8 +120,9 @@ public class MainFrame_ implements PlugIn {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("get data clicked");
-				SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInputString(), Config.getLocalInputString());
-				Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getLocalInputString()) );
+				SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInputString(),
+						Config.getLocalInputString());
+				Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
 				ImageJFunctions.show(image).setTitle("Result");
 			}
 		});

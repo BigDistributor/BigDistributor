@@ -19,60 +19,67 @@ import javax.swing.JTextField;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
+import tools.Config;
+
 public class SCP {
 
-	public static void run(String user, String host, int port, String scriptPath) {
-		try {
-			FileOutputStream fos = null;
-			JSch jsch = new JSch();
-			Session session;
-			session = jsch.getSession(user, host, 22);
-			// username and password will be given via UserInfo interface.
-			UserInfo ui = new MyUserInfo();
-			session.setUserInfo(ui);
-			session.connect();
+	public static void connect(String user, String host) throws JSchException {
+		JSch jsch = new JSch();
+		 Config.setSession(jsch.getSession(user, host, 22));
 
+		// username and password will be given via UserInfo interface.
+		UserInfo ui = new MyUserInfo();
+		Config.getSession().setUserInfo(ui);
+		Config.getSession().connect();
+	}
+	
+	public static void disconnect() {
+		Config.getSession().disconnect();
+	}
+
+	public static void run( String user, String host, int port, String scriptPath, String scriptFile) {
+		
+		try {
+			if(Config.getSession() == null) {
+				connect(user, host);
+			}
 			// exec 'scp -f rfile' remotely
-			String command = "qsub " + scriptPath;
-			Channel channel = session.openChannel("exec");
+			String command = "cd "+scriptPath+ " && qsub " + scriptFile;
+			Channel channel = Config.getSession().openChannel("exec");
+			System.out.println(command);
+			
 			((ChannelExec) channel).setCommand(command);
-			session.disconnect();
+			channel.connect();
 
 			System.out.println("script run with success !");
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
-	public static void get(String user, String host, int port, String remoteFile, String localFile) {
-
+	public static void get( String user, String host, int port, String remoteFile, String localFile) {
 		FileOutputStream fos = null;
 		try {
-
+			if(Config.getSession() == null) {
+				connect(user, host);
+			}
 			String prefix = null;
 			if (new File(localFile).isDirectory()) {
 				prefix = localFile + File.separator;
 			}
 
-			JSch jsch = new JSch();
-			Session session = jsch.getSession(user, host, 22);
-
-			// username and password will be given via UserInfo interface.
-			UserInfo ui = new MyUserInfo();
-			session.setUserInfo(ui);
-			session.connect();
-
 			// exec 'scp -f rfile' remotely
 			String command = "scp -f " + remoteFile;
-			Channel channel = session.openChannel("exec");
+			Channel channel = Config.getSession().openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
 
 			// get I/O streams for remote scp
@@ -155,8 +162,6 @@ public class SCP {
 				out.flush();
 			}
 
-			session.disconnect();
-
 			// System.exit(0);
 			System.out.println("File got with success !");
 		} catch (Exception e) {
@@ -170,23 +175,16 @@ public class SCP {
 	}
 
 	public static void send(String user, String host, int port, String localFile, String remoteFile) {
-
 		FileInputStream fis = null;
 		try {
-
-			JSch jsch = new JSch();
-			Session session = jsch.getSession(user, host, 22);
-
-			// username and password will be given via UserInfo interface.
-			UserInfo ui = new MyUserInfo();
-			session.setUserInfo(ui);
-			session.connect();
-
+			if(Config.getSession() == null) {
+				connect(user, host);
+			}
 			boolean ptimestamp = true;
 
 			// exec 'scp -t rfile' remotely
 			String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + remoteFile;
-			Channel channel = session.openChannel("exec");
+			Channel channel = Config.getSession().openChannel("exec");
 			((ChannelExec) channel).setCommand(command);
 
 			// get I/O streams for remote scp
@@ -249,7 +247,6 @@ public class SCP {
 			out.close();
 
 			channel.disconnect();
-			session.disconnect();
 
 			// System.exit(0);
 			System.out.println("File sent with success !");

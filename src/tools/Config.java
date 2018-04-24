@@ -1,17 +1,33 @@
 package tools;
 
+import com.jcraft.jsch.Session;
+
 public enum Config {
 	INSTANCE;
-	private static String pseudo = "";
+	private static String pseudo = "mzouink";
 	private static String pw = "";
-	private static String host = "localhost";
+	private static String host = "maxlogin2.mdc-berlin.net";
 	private static int port = 22;
 	private static String path = "";
 	private static Boolean configured = false;
-	private static String pathScript = "";
+	private static String scriptFile = "";
+	private static String clusterPath = "/scratch/AG_Preibisch/Marwan/clustering/";
 	private static String[] localInputs;
 	private static String[] clusterInputs;
-
+	private static Session session;
+	
+	public static String getClusterPath() {
+		return clusterPath;
+	}
+	public static void setClusterPath(String clusterPath) {
+		Config.clusterPath = clusterPath;
+	}
+	public static Session getSession() {
+		return session;
+	}
+	public static void setSession(Session session) {
+		Config.session = session;
+	}
 	public static String getLocalInputString() {
 		return String.join(" ", localInputs);
 	}
@@ -30,11 +46,11 @@ public enum Config {
 	public static void setClusterInputs(String[] clusterInputs) {
 		Config.clusterInputs = clusterInputs;
 	}
-	public static String getPathScript() {
-		return pathScript;
+	public static String getsSriptFile() {
+		return scriptFile;
 	}
-	public static void setPathScript(String pathScript) {
-		Config.pathScript = pathScript;
+	public static void setScriptFile(String pathScript) {
+		Config.scriptFile = pathScript;
 	}
 	public static String getPseudo() {
 		return pseudo;
