@@ -43,10 +43,6 @@ public class MainFrame_ implements PlugIn {
 		});
 
 		gd.showDialog();
-		// if (gd.wasCanceled()) {
-		// IJ.error("PlugIn canceled!");
-		// return;
-		// }
 
 		String jar = defaultfilename = gd.getNextString();
 		String dir = defaultPath = gd.getNextString();
@@ -89,18 +85,18 @@ public class MainFrame_ implements PlugIn {
 					System.out.println("Script generated: " + scriptPath);
 					System.out.println("Sending Script..");
 					String clusterScript = scriptPath.split("/")[scriptPath.split("/").length - 1];
-					System.out.println(clusterScript);
+					System.out.println("local Script: "+ scriptPath);
+					System.out.println("Cluster Script: "+ clusterScript);
 					Config.setScriptFile(clusterScript);
 					Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
 					ImageJFunctions.show(image).setTitle("Original");
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath, clusterScript);
+					SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath, Config.getClusterPath()+Config.getsSriptFile());
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		workflowView.addButton("run config.sh", new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("run config.sh clicked");
@@ -108,7 +104,6 @@ public class MainFrame_ implements PlugIn {
 			}
 		});
 		workflowView.addButton("get status", new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("get status clicked");
@@ -116,7 +111,6 @@ public class MainFrame_ implements PlugIn {
 		});
 
 		workflowView.addButton("get data", new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("get data clicked");
@@ -126,7 +120,7 @@ public class MainFrame_ implements PlugIn {
 				ImageJFunctions.show(image).setTitle("Result");
 			}
 		});
-
+		
 		workflowView.showDialog();
 	}
 

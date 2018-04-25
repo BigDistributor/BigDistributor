@@ -15,7 +15,19 @@ public enum Config {
 	private static String[] localInputs;
 	private static String[] clusterInputs;
 	private static Session session;
+	private static int sigma = 5; 
 	
+	
+	
+	public static int getSigma() {
+		return sigma;
+	}
+	public static void setSigma(int sigma) {
+		Config.sigma = sigma;
+	}
+	public static String getScriptFile() {
+		return scriptFile;
+	}
 	public static String getClusterPath() {
 		return clusterPath;
 	}

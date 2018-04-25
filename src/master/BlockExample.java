@@ -1,6 +1,7 @@
 package master;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -23,6 +24,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
+import tools.Config;
 import tools.Helper;
 import tools.IOFunctions;
 
@@ -34,14 +36,11 @@ public class BlockExample
 		new ImageJ();
 		
 		IOFunctions.cleanFolder("input");
-		Helper.sigma = 5;
-//		String string = "img/mri-stack.tif";
 		String string = "img/DrosophilaWing.tif";
 	
 		Img<FloatType> image = IOFunctions.openAs32Bit( new File( string) );
 		ImageJFunctions.show(image);
 
-		//final Img<FloatType> resultImage = ArrayImgs.floats(Helper.getDimensions(image));
 		final Img<FloatType> resultImage = new CellImgFactory< FloatType >( 64 ).create(Helper.getDimensions(image), new FloatType());
 
 		final ExecutorService service = Threads.createExService( 1 );
@@ -50,7 +49,7 @@ public class BlockExample
 		
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise( service, blockSizeDim );
 
-		final double[] sigmas = Util.getArrayFromValue( (double)Helper.sigma, image.numDimensions() );
+		final double[] sigmas = Util.getArrayFromValue( (double)Config.getSigma(), image.numDimensions() );
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes( sigmas );
 
 		//System.out.println( Util.printCoordinates( halfKernelSizes ));
@@ -66,11 +65,6 @@ public class BlockExample
 			imgSize[ d ] = image.dimension( d );
 		}
 		
-		
-//		SCP.send("Marwan", "sayeb3ad", "localhost", 22 ,"/Users/Marwan/Desktop/myimage.jpg","/Users/Marwan/got.jpg");
-//		SCP.send("mzouink", "iss@t2015IGC3", "maxlogin2.mdc-berlin.net", 22 ,"/Users/Marwan/Desktop/myimage.jpg",	"/scratch/AG_Preibisch/Marwan/gotImage.jpg");
-//		new SCP().send();
-		
 		final List< Block > blocks = generator.divideIntoBlocks( imgSize, kernelSize );
 		final Img< FloatType > tmp = ArrayImgs.floats( blockSizeDim );
 
@@ -78,13 +72,17 @@ public class BlockExample
 
 		int i = 0;
 
+		final HashMap< Integer, Block > blockMap = new HashMap<>();
+
 		for ( final Block block : blocks )
 		{
 			++i;
 
 			// copy block (multithreaded)
 			block.copyBlock( infiniteImg, tmp );
-			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), "input/part_"+i+".tif" );
+
+			blockMap.put( i, block );
+			//IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), "input/part_"+i+".tif" );
 
 
 			//save blocks into inputFolder
@@ -107,17 +105,21 @@ public class BlockExample
 
 			// receive (/fast/AG_Preibisch?)
 			// https://stackoverflow.com/questions/14617/how-to-retrieve-a-file-from-a-server-via-sftp
+		}
 
+
+		for ( final Integer key : blockMap.keySet() )
+		{
 			// copy back
-			block.pasteBlock( resultImage, tmp );			
+			blockMap.get( key ).pasteBlock( resultImage, tmp );			
 		}
 
 		ImageJFunctions.show(resultImage);		
 
-		IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( resultImage ), "img/DrosophilaWing_gauss.tif" );
+		//IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( resultImage ), "img/DrosophilaWing_gauss.tif" );
 
 		final Img<FloatType> resultImage2 = image.copy();
-		try { Gauss3.gauss( Helper.sigma, Views.extendMirrorSingle( resultImage2 ), resultImage2 ); } catch (IncompatibleTypeException e) {}
+		try { Gauss3.gauss( Config.getSigma(), Views.extendMirrorSingle( resultImage2 ), resultImage2 ); } catch (IncompatibleTypeException e) {}
 		ImageJFunctions.show(resultImage2);
 
 		System.out.println( imageDifference( resultImage, resultImage2 ) );
