@@ -1,15 +1,12 @@
 package gui;
 
-import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Scrollbar;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
 import gui.items.BlockParamsPanel;
-import gui.items.GraphicTools;
 import gui.items.MyFrame;
 import gui.items.ProgressBlocksPanel;
 import ij.plugin.PlugIn;
