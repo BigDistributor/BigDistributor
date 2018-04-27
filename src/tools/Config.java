@@ -14,11 +14,38 @@ public enum Config {
 	private static String clusterPath = "/scratch/AG_Preibisch/Marwan/clustering/";
 	private static String[] localInputs;
 	private static String[] clusterInputs;
+	private static String localJar;
+	private static String clusterJar;
+	private static String localInput;
+	private static String clusterInput;
 	private static Session session;
 	private static int sigma = 5; 
 	
 	
-	
+	public static String getClusterJar() {
+		return clusterJar;
+	}
+	public static void setClusterJar(String clusterJar) {
+		Config.clusterJar = clusterJar;
+	}
+	public static String getClusterInput() {
+		return clusterInput;
+	}
+	public static void setClusterInput(String clusterInput) {
+		Config.clusterInput = clusterInput;
+	}
+	public static String getLocalJar() {
+		return localJar;
+	}
+	public static void setLocalJar(String localJar) {
+		Config.localJar = localJar;
+	}
+	public static String getLocalInput() {
+		return localInput;
+	}
+	public static void setLocalInput(String localInput) {
+		Config.localInput = localInput;
+	}
 	public static int getSigma() {
 		return sigma;
 	}

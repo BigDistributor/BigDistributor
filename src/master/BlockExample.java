@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.google.common.io.Files;
+
 import blockmanager.Block;
 import blockmanager.BlockGenerator;
 import blockmanager.BlockGeneratorFixedSizePrecise;
@@ -73,16 +75,19 @@ public class BlockExample
 		int i = 0;
 
 		final HashMap< Integer, Block > blockMap = new HashMap<>();
-
+		File tempDir = Files.createTempDir();
 		for ( final Block block : blocks )
 		{
 			++i;
 
+			
 			// copy block (multithreaded)
 			block.copyBlock( infiniteImg, tmp );
 
 			blockMap.put( i, block );
-			//IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), "input/part_"+i+".tif" );
+			System.out.println(tempDir.getAbsolutePath()+"/part_"+i+".tif");
+			
+			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), tempDir.getAbsolutePath()+"/part_"+i+".tif" );
 
 
 			//save blocks into inputFolder
@@ -103,8 +108,7 @@ public class BlockExample
 			
 			// check when jobs are ready ... Timer?
 
-			// receive (/fast/AG_Preibisch?)
-			// https://stackoverflow.com/questions/14617/how-to-retrieve-a-file-from-a-server-via-sftp
+
 		}
 
 

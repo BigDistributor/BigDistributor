@@ -1,57 +1,70 @@
 package gui;
 
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import gui.items.BlockParamsPanel;
-import gui.items.MyFrame;
+import gui.items.Frame;
 import gui.items.ProgressBlocksPanel;
-import ij.plugin.PlugIn;
 
-public class ProgressGUI implements PlugIn {
-
-	private MyFrame mainFrame;
+public class ProgressGUI extends Frame {
+	private static final long serialVersionUID = -667700225183799945L;
 	private ProgressBlocksPanel previewPanel;
 
-	@Override
-	public void run(String arg) {
+	public ProgressGUI(String arg0) {
+		super(arg0);
 		prepareGUI();
 	}
 
 	public static void main(String[] args) {
-		ProgressGUI progressGUI = new ProgressGUI();
-		progressGUI.run("");
+		ProgressGUI progressGUI = new ProgressGUI("Progress..");
+		progressGUI.setVisible(true);
 	}
 
 	private void prepareGUI() {
-		mainFrame = new MyFrame("Progress View");
-		mainFrame.setSize(800, 800);
-		mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH); 
-		mainFrame.setLayout(new GridBagLayout());
-
-		previewPanel = new ProgressBlocksPanel(8);
-		
-		BlockParamsPanel blockParamsPanel = new BlockParamsPanel();
-		blockParamsPanel.slider.addAdjustmentListener(new AdjustmentListener() {
-			@Override
-			public void adjustmentValueChanged(AdjustmentEvent e) {
-				System.out.println(e.getValue());;
-				previewPanel.manageBlocksPanel(e.getValue(), e.getValue());
-			}	
-		});
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 3;
-		c.weighty = 1;
-		c.gridx = 0;
-		c.gridy = 0;
-		mainFrame.add(previewPanel,c);
-		c.weightx = 1;
-		c.gridx = 1;
-		mainFrame.add(blockParamsPanel,c);
-		mainFrame.setVisible(true);
+		int sigma = 8;
+		setSize(800, 800);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setLayout(new GridBagLayout());
+		JPanel progressPreviewPanel = new JPanel();
+		progressPreviewPanel.setLayout(null);
+		String string = "img/image.jpg";
+		Image image;
+		try {
+			image = ImageIO.read(new File(string));
+			previewPanel = new ProgressBlocksPanel(sigma, image);
+			previewPanel.setSize(image.getWidth(null) + 2 * sigma, image.getHeight(null) + 2 * sigma);
+			BlockParamsPanel blockParamsPanel = new BlockParamsPanel();
+			blockParamsPanel.sliderX.addAdjustmentListener(new AdjustmentListener() {
+				@Override
+				public void adjustmentValueChanged(AdjustmentEvent e) {
+					System.out.println(e.getValue());
+					previewPanel.manageBlocksPanel(e.getValue(), e.getValue());
+				}
+			});
+			GridBagConstraints c = new GridBagConstraints();
+			c.fill = GridBagConstraints.BOTH;
+			c.weightx = 3;
+			c.weighty = 1;
+			c.gridx = 0;
+			c.gridy = 0;
+			add(progressPreviewPanel, c);
+			progressPreviewPanel.add(previewPanel);
+			c.weightx = 1;
+			c.gridx = 1;
+			add(blockParamsPanel, c);
+			setVisible(true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }

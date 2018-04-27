@@ -3,28 +3,25 @@ package gui.items;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.util.Random;
 
 import javax.swing.JPanel;
 
 public class ProgressBlocksPanel extends JPanel {
 	private static final long serialVersionUID = 4015834098705314055L;
-	
 	private int sigma;
-	public ProgressBlocksPanel(int sigma) {
+	private Image image;
+	public ProgressBlocksPanel(int sigma, Image image) {
 		super();
 		this.setLayout(new GridLayout());
-		// this.setBackground(GraphicTools.randomColor());
 		this.manageBlocksPanel(3, 3);
 		this.sigma = sigma;
+		this.image = image;
 	}
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		String string = "img/image.jpg";
-		Image image = Toolkit.getDefaultToolkit().getImage(string);
-		g.drawImage(image, 10, 10, this);
+		g.drawImage(image, sigma, sigma, this);
 	}
 
 	public void manageBlocksPanel(int x, int y) {
