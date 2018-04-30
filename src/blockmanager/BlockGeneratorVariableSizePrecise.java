@@ -23,6 +23,7 @@
 package blockmanager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
@@ -111,5 +112,11 @@ public class BlockGeneratorVariableSizePrecise implements BlockGenerator< Block 
 	public static void main( String[] args )
 	{
 		new BlockGeneratorVariableSizePrecise( new long[]{ 3, 2, 1 } ).divideIntoBlocks( new long[] { 1025, 1024, 117 }, new long[]{ 17, 17, 5 } );
+	}
+
+	@Override
+	public HashMap<Integer, Block> divideIntoHashMapBlocks(long[] imgSize, long[] kernelSize) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

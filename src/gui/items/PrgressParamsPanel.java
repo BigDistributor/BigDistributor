@@ -6,20 +6,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import blockmanager.Block;
 import clustering.ScriptGenerator;
 import clustering.jsch.SCP;
-import fiji.util.gui.GenericDialogPlus;
+import master.BlocksManager;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import tools.Config;
 import tools.IOFunctions;
 
-public class BlockParamsPanel extends JPanel {
+public class PrgressParamsPanel extends JPanel {
 	private static final long serialVersionUID = -5489935889866505715L;
 	public Scrollbar sliderX;
 	public Scrollbar sliderY;
@@ -31,8 +33,10 @@ public class BlockParamsPanel extends JPanel {
 	public Button runScriptButton;
 	public Button getDataButton;
 	public Button combinData;
+	public List< Block > blocks;
+	public HashMap< Integer, Block > blockMap;
 
-	public BlockParamsPanel() {
+	public PrgressParamsPanel() {
 		setLayout(new GridLayout(10, 1, 20, 20));
 		sliderX = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 1, 21);
 		sliderY = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 1, 21);
@@ -64,18 +68,21 @@ public class BlockParamsPanel extends JPanel {
 				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalJar(), Config.getClusterJar());
 			}
 		});
-		// TODO generate blocks input
+		
+		generateInputButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				blocks = BlocksManager.generateBlocks(Config.getLocalInput(), 100, 8);
+				blockMap = BlocksManager.saveBlocks(Config.getLocalInput(), blocks);
+			}
+		});
 
 		sendInputButton.addActionListener(new ActionListener() {
-			// TODO send from temp forder
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send input files clicked");
-				Config.setClusterInput(Config.getClusterPath() + Config.getLocalInput().split("/")[Config.getLocalInput().split("/").length - 1]);
-				Config.setLocalInputs(new String[] { Config.getLocalInput() });
-				Config.setClusterInputs(new String[] { Config.getClusterInput() });
-				System.out.println(Config.getClusterInput());
-				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalInput(), Config.getClusterInput());
+				SCP.sendFolder(Config.getPseudo(), Config.getHost(), 22, Config.getInputTempDir(), Config.getClusterInput());
+				
 			}
 		});
 		generateScriptButton.addActionListener(new ActionListener() {
@@ -83,16 +90,17 @@ public class BlockParamsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("generate config.sh clicked");
 				try {
+					String[] localBlocksfiles = new File(Config.getInputTempDir()).list();
 					String scriptPath = ScriptGenerator.generateScript(Config.getLocalJar().split("/")[Config.getLocalJar().split("/").length - 1],
-							new String[] { Config.getLocalInput().split("/")[Config.getLocalInput().split("/").length - 1] });
+							localBlocksfiles);
 					System.out.println("Script generated: " + scriptPath);
 					System.out.println("Sending Script..");
 					String clusterScript = scriptPath.split("/")[scriptPath.split("/").length - 1];
 					System.out.println("local Script: " + scriptPath);
 					System.out.println("Cluster Script: " + clusterScript);
 					Config.setScriptFile(clusterScript);
-					Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
-					ImageJFunctions.show(image).setTitle("Original");
+//					Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
+//					ImageJFunctions.show(image).setTitle("Original");
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath,
 							Config.getClusterPath() + Config.getsSriptFile());
 				} catch (FileNotFoundException e1) {
@@ -112,17 +120,16 @@ public class BlockParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("get data clicked");
-				SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInputString(),
-						Config.getLocalInputString());
-				Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getLocalInputString()));
-				ImageJFunctions.show(image).setTitle("Result");
+				SCP.getFolder(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput(),
+						Config.getInputTempDir());
 			}
 		});
 
 		combinData.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("get status clicked");
+				BlocksManager.generateResult(blockMap, Config.getInputTempDir());
+					
 			}
 		});
 	}

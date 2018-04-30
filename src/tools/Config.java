@@ -12,16 +12,38 @@ public enum Config {
 	private static Boolean configured = false;
 	private static String scriptFile = "";
 	private static String clusterPath = "/scratch/AG_Preibisch/Marwan/clustering/";
-	private static String[] localInputs;
-	private static String[] clusterInputs;
 	private static String localJar;
 	private static String clusterJar;
 	private static String localInput;
-	private static String clusterInput;
+	private static String clusterInput = "/fast/AG_Preibisch/Marwan/clustering";
 	private static Session session;
-	private static int sigma = 5; 
+	private static int[] numberBlocks = {3,5};
+ 	private static int sigma = 5; 
+ 	private static long blockSize = 50;
+ 	private static String inputTempDir;
+ 	
+ 	
 	
 	
+ 	
+	public static String getInputTempDir() {
+		return inputTempDir;
+	}
+	public static void setInputTempDir(String inputTempDir) {
+		Config.inputTempDir = inputTempDir;
+	}
+	public static long getBlockSize() {
+		return blockSize;
+	}
+	public static void setBlockSize(long blockSize) {
+		Config.blockSize = blockSize;
+	}
+	public static int[] getNumberBlocks() {
+		return numberBlocks;
+	}
+	public static void setNumberBlocks(int[] numberBlocks) {
+		Config.numberBlocks = numberBlocks;
+	}
 	public static String getClusterJar() {
 		return clusterJar;
 	}
@@ -66,24 +88,6 @@ public enum Config {
 	}
 	public static void setSession(Session session) {
 		Config.session = session;
-	}
-	public static String getLocalInputString() {
-		return String.join(" ", localInputs);
-	}
-	public static String getClusterInputString() {
-		return String.join(" ", clusterInputs);
-	}
-	public static String[] getLocalInputs() {
-		return localInputs;
-	}
-	public static void setLocalInputs(String[] localInputs) {
-		Config.localInputs = localInputs;
-	}
-	public static String[] getClusterInputs() {
-		return clusterInputs;
-	}
-	public static void setClusterInputs(String[] clusterInputs) {
-		Config.clusterInputs = clusterInputs;
 	}
 	public static String getsSriptFile() {
 		return scriptFile;

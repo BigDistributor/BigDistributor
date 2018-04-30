@@ -12,9 +12,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import gui.items.BlockParamsPanel;
+import gui.items.PrgressParamsPanel;
 import gui.items.Frame;
 import gui.items.ProgressBlocksPanel;
+import tools.Config;
 
 public class ProgressGUI extends Frame {
 	private static final long serialVersionUID = -667700225183799945L;
@@ -43,12 +44,21 @@ public class ProgressGUI extends Frame {
 			image = ImageIO.read(new File(string));
 			previewPanel = new ProgressBlocksPanel(sigma, image);
 			previewPanel.setSize(image.getWidth(null) + 2 * sigma, image.getHeight(null) + 2 * sigma);
-			BlockParamsPanel blockParamsPanel = new BlockParamsPanel();
+			PrgressParamsPanel blockParamsPanel = new PrgressParamsPanel();
 			blockParamsPanel.sliderX.addAdjustmentListener(new AdjustmentListener() {
 				@Override
 				public void adjustmentValueChanged(AdjustmentEvent e) {
 					System.out.println(e.getValue());
-					previewPanel.manageBlocksPanel(e.getValue(), e.getValue());
+					Config.getNumberBlocks()[0] = e.getValue();
+					previewPanel.manageBlocksPanel(Config.getNumberBlocks());
+				}
+			});
+			blockParamsPanel.sliderY.addAdjustmentListener(new AdjustmentListener() {
+				
+				@Override
+				public void adjustmentValueChanged(AdjustmentEvent e) {
+					Config.getNumberBlocks()[1] = e.getValue();
+					previewPanel.manageBlocksPanel(Config.getNumberBlocks());
 				}
 			});
 			GridBagConstraints c = new GridBagConstraints();

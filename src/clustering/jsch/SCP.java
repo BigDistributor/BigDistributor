@@ -448,4 +448,26 @@ public class SCP {
 			return null; // cancel
 		}
 	}
+
+	public static void sendFolder(String pseudo, String host, int port, String local, String cluster) {
+		File folder = new File(local);
+		String[] files = folder.list();
+		for (String file: files) {
+			if(file.endsWith(".tif")) {
+				System.out.println("\""+local+"/"+file+ " - " +cluster+"/"+file);
+				send(pseudo, host, port, local+"//"+file, cluster+"//"+file);
+			}
+		}
+	}
+
+	public static void getFolder(String pseudo, String host, int port, String clusterInput, String inputTempDir) {
+		File folder = new File(inputTempDir);
+		String[] files = folder.list();
+		for (String file: files) {
+			if(file.endsWith(".tif")) {
+				System.out.println("\""+inputTempDir+"/"+file+ " - " +clusterInput+"/"+file);
+				get(pseudo, host, port, clusterInput+"//"+file, inputTempDir+"//"+file);
+			}
+		}
+	}
 }
