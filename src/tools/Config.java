@@ -21,11 +21,18 @@ public enum Config {
  	private static int sigma = 5; 
  	private static long blockSize = 50;
  	private static String inputTempDir;
+ 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
  	
  	
 	
 	
  	
+	public static String getDefaultInputPath() {
+		return defaultInputPath;
+	}
+	public static void setDefaultInputPath(String defaultInputPath) {
+		Config.defaultInputPath = defaultInputPath;
+	}
 	public static String getInputTempDir() {
 		return inputTempDir;
 	}

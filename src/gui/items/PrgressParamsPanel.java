@@ -12,14 +12,10 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import blockmanager.Block;
+import blockmanager.BlocksManager;
 import clustering.ScriptGenerator;
 import clustering.jsch.SCP;
-import master.BlocksManager;
-import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.real.FloatType;
 import tools.Config;
-import tools.IOFunctions;
 
 public class PrgressParamsPanel extends JPanel {
 	private static final long serialVersionUID = -5489935889866505715L;
@@ -38,8 +34,8 @@ public class PrgressParamsPanel extends JPanel {
 
 	public PrgressParamsPanel() {
 		setLayout(new GridLayout(10, 1, 20, 20));
-		sliderX = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 1, 21);
-		sliderY = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 1, 21);
+		sliderX = new Scrollbar(Scrollbar.HORIZONTAL, 100, 1, 100, 1000);
+		sliderY = new Scrollbar(Scrollbar.HORIZONTAL, 8, 1, 1, 21);
 		sendJarButton = new Button("Send Jar");
 		generateInputButton = new Button("Generate Input");
 		sendInputButton = new Button("Send Input");
