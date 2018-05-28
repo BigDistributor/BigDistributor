@@ -1,27 +1,28 @@
 package gui.items;
 
+import java.awt.Color;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import blockmanager.BlocksManager;
+import tools.Config;
 
 public class ProgressPanel extends JPanel {
 	private static final long serialVersionUID = -5153593379781883390L;
 	public BlocksCanvas canvas;
 	private int[] numBlocks;
-	private ArrayList<BlockView> blocks;
 	private long[] sizes;
 
 	public ProgressPanel(int blockSize, int extra, long[] sizes) {
 		super();
+//		setBackground(Color.black);
 		this.sizes = sizes;
 		setLayout(new GridLayout());
 		numBlocks = new int[]{ (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
 				(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
-		blocks = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
-		canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, blocks, extra);
+		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
+		canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, extra);
 		add(canvas);
 	
 	}
@@ -29,8 +30,8 @@ public class ProgressPanel extends JPanel {
 	public void updateCanvas(int blockSize, int extra) {
 		numBlocks = new int[]{ (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
 				(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
-		blocks = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
-		canvas.update(blocks, blockSize, extra);
+		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
+		canvas.update(Config.blocksView, blockSize, extra);
 	}
 
 	public int[] getNumBlocks() {
@@ -39,14 +40,6 @@ public class ProgressPanel extends JPanel {
 
 	public void setNumBlocks(int[] numBlocks) {
 		this.numBlocks = numBlocks;
-	}
-
-	public ArrayList<BlockView> getBlocks() {
-		return blocks;
-	}
-
-	public void setBlocks(ArrayList<BlockView> blocks) {
-		this.blocks = blocks;
 	}
 
 	public long[] getSizes() {

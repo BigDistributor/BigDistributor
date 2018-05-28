@@ -135,7 +135,7 @@ public class IOFunctions {
 			file.write(out);
 			out.close();
 		} catch (IOException e) {
-			System.out.println(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + path + "':" + e);
+			Helper.log(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + path + "':" + e);
 			return false;
 		} finally {
 			if (out != null)

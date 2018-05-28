@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import tools.Config;
+
 public class BlocksCanvas extends JComponent {
 	final static float dash1[] = { 10.0f };
 	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1,
@@ -20,13 +22,12 @@ public class BlocksCanvas extends JComponent {
 	private Image image;
 	private long[] sizes;
 	private long blockSize;
-	private List<BlockView> blocks;
+//	private List<BlockView> blocks;
 	private int[] numBlock;
 
-	public BlocksCanvas(Image image, long[] sizes, int[] numBlocks, long blockSize, List<BlockView> blocks, int extra) {
+	public BlocksCanvas(Image image, long[] sizes, int[] numBlocks,long blockSize,  int extra) {
 		this.image = image;
 		this.extra = extra;
-		this.blocks = blocks;
 		this.sizes = sizes;
 		this.blockSize = blockSize;
 		this.numBlock = numBlocks;
@@ -36,13 +37,13 @@ public class BlocksCanvas extends JComponent {
 
 		// draw image
 		g.drawImage(image, extra, extra, this);
-		for (BlockView block : blocks) {
+		for (BlockView block : Config.blocksView) {
 			// fill rect used status
-			System.out.println("Block: " + block.getMainArrea().toString());
+//			System.out.println("Block: " + block.getMainArrea().toString());
 			g.setColor(Colors.Color(block.getStatus()));
 			g.fillRect((int) block.getMainArrea().getX(), (int) block.getMainArrea().getY(),
 					(int) block.getMainArrea().getWidth(), (int) block.getMainArrea().getHeight());
-
+			
 			// draw extra dotted rect
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -64,7 +65,7 @@ public class BlocksCanvas extends JComponent {
 	}
 
 	public void update(ArrayList<BlockView> blocks, int blockSize, int extra) {
-		this.blocks = blocks;
+		Config.blocksView = blocks;
 		this.blockSize = blockSize;
 		this.extra = extra;
 		this.repaint();

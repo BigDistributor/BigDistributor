@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import tools.Config;
+
 public class ScriptGenerator {
 
-	public static String generateScript(String jar, String[] input) throws FileNotFoundException {
-		File file = new File("input");
+	public static String generateScript(String jar, String[] input, int key) throws FileNotFoundException {
+		
+		File file = new File(Config.getInputTempDir());
 		file.mkdir();
-		String filePath = file.getAbsolutePath()+"/run.sh";
+		String filePath = file.getAbsolutePath()+"/run"+key+".sh";
 
 		try (PrintWriter out = new PrintWriter(filePath)) {
 		    out.println("#!/bin/sh");
@@ -27,12 +30,5 @@ public class ScriptGenerator {
 		    out.println("java -jar "+jar+" "+String.join(" ", input));
 		    return filePath;  
 		}
-	}
-	
-	public static void main(String[] args) throws FileNotFoundException {
-		
-		System.out.println(System.getProperty("user.home"));
-		generateScript("jar.jar", new String[] {"hello.tif"});
-		
 	}
 }

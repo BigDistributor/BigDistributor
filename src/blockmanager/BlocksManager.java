@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import com.google.common.io.Files;
 
 import gui.items.BlockView;
+import gui.items.Colors;
 import ij.ImageJ;
 import multithreading.Threads;
 import net.imglib2.Cursor;
@@ -87,12 +88,13 @@ public class BlocksManager
 		final HashMap< Integer, Block > blockMap = new HashMap<>();
 		File tempDir = Files.createTempDir();
 		Config.setInputTempDir(tempDir.getAbsolutePath());
+		Helper.log("Temp Dir: "+tempDir.getAbsolutePath());
 		for ( final Block block : blocks )
 		{
 			++i;
 			block.copyBlock( infiniteImg, tmp );
 			blockMap.put( i, block );
-			System.out.println("Temp Dir: "+tempDir.getAbsolutePath());
+//			System.out.println("Temp Dir: "+tempDir.getAbsolutePath());
 			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), tempDir.getAbsolutePath()+"/"+i+".tif" );
 		}
 		return blockMap;
@@ -145,13 +147,13 @@ public class BlocksManager
 								new Rectangle(j * blockSize, i * blockSize, blockSize + 2 * sigma,
 										blockSize + 2 * sigma),
 								new Rectangle(sigma + j * blockSize, sigma + i * blockSize, blockSize, blockSize),
-								(j * i) % 6));
+								Colors.START));
 					} else {
 						blocks.add(new BlockView(
 								new Rectangle(j * blockSize, i * blockSize, lastBlockXSize + 2 * sigma,
 										blockSize + 2 * sigma),
 								new Rectangle(sigma + j * blockSize, sigma + i * blockSize, lastBlockXSize, blockSize),
-								(j * i) % 6));
+								Colors.START));
 					}
 				} else {
 					if (j < numBlocks[0]-1) {
@@ -159,14 +161,14 @@ public class BlocksManager
 								new Rectangle(j * blockSize, i * blockSize, blockSize + 2 * sigma,
 										lastBlockYSize + 2 * sigma),
 								new Rectangle(sigma + j * blockSize, sigma + i * blockSize, blockSize, lastBlockYSize),
-								(j * i) % 6));
+								Colors.START));
 					} else {
 						blocks.add(new BlockView(
 								new Rectangle(j * blockSize, i * blockSize, lastBlockXSize + 2 * sigma,
 										lastBlockYSize + 2 * sigma),
 								new Rectangle(sigma + j * blockSize, sigma + i * blockSize, lastBlockXSize,
 										lastBlockYSize),
-								(j * i) % 6));
+								Colors.START));
 					}
 				}
 			}

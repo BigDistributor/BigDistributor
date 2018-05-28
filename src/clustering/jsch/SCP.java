@@ -19,57 +19,55 @@ import javax.swing.JTextField;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
 import tools.Config;
+import tools.Helper;
 
 public class SCP {
 
 	public static void connect(String user, String host) throws JSchException {
 		JSch jsch = new JSch();
-		 Config.setSession(jsch.getSession(user, host, 22));
+		Config.setSession(jsch.getSession(user, host, 22));
 
 		// username and password will be given via UserInfo interface.
 		UserInfo ui = new MyUserInfo();
 		Config.getSession().setUserInfo(ui);
 		Config.getSession().connect();
 	}
-	
+
 	public static void disconnect() {
 		Config.getSession().disconnect();
 	}
 
-	public static void run( String user, String host, int port, String scriptPath, String scriptFile) {
-		
+	public static void run(String user, String host, int port, String scriptPath, String scriptFile) {
+
 		try {
-			if(Config.getSession() == null) {
+			if (Config.getSession() == null) {
 				connect(user, host);
 			}
 			// exec 'scp -f rfile' remotely
-			String command = "cd "+scriptPath+ " && qsub " + scriptFile;
+			String command = "cd " + scriptPath + " && qsub " + scriptFile;
 			Channel channel = Config.getSession().openChannel("exec");
-			System.out.println(command);
-			
+			Helper.log(command);
+
 			((ChannelExec) channel).setCommand(command);
 			channel.connect();
 
-			System.out.println("script run with success !");
+			Helper.log("script run with success !");
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public static void get( String user, String host, int port, String remoteFile, String localFile) {
+	public static void get(String user, String host, int port, String remoteFile, String localFile, int id) {
 		FileOutputStream fos = null;
 		try {
-			if(Config.getSession() == null) {
+			if (Config.getSession() == null) {
 				connect(user, host);
 			}
 			String prefix = null;
@@ -163,7 +161,10 @@ public class SCP {
 			}
 
 			// System.exit(0);
-			System.out.println("File got with success !");
+			Helper.log("File got with success !");
+			if (id != -1) {
+				Config.blocksView.get(id).setStatus(5);
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 			try {
@@ -174,10 +175,10 @@ public class SCP {
 		}
 	}
 
-	public static void send(String user, String host, int port, String localFile, String remoteFile) {
+	public static void send(String user, String host, int port, String localFile, String remoteFile, int id) {
 		FileInputStream fis = null;
 		try {
-			if(Config.getSession() == null) {
+			if (Config.getSession() == null) {
 				connect(user, host);
 			}
 			boolean ptimestamp = true;
@@ -249,9 +250,12 @@ public class SCP {
 			channel.disconnect();
 
 			// System.exit(0);
-			System.out.println("File sent with success !");
+			Helper.log(id + "-File sent with success !");
+			if (id != -1) {
+				Config.blocksView.get(id).setStatus(2);
+			}
 		} catch (Exception e) {
-			System.out.println(e);
+			Helper.log(e.toString());
 			try {
 				if (fis != null)
 					fis.close();
@@ -366,10 +370,10 @@ public class SCP {
 				sb.append((char) c);
 			} while (c != '\n');
 			if (b == 1) { // error
-				System.out.print(sb.toString());
+				Helper.log(sb.toString());
 			}
 			if (b == 2) { // fatal error
-				System.out.print(sb.toString());
+				Helper.log(sb.toString());
 			}
 		}
 		return b;
@@ -452,22 +456,38 @@ public class SCP {
 	public static void sendFolder(String pseudo, String host, int port, String local, String cluster) {
 		File folder = new File(local);
 		String[] files = folder.list();
-		for (String file: files) {
-			if(file.endsWith(".tif")) {
-				System.out.println("\""+local+"/"+file+ " - " +cluster+"/"+file);
-				send(pseudo, host, port, local+"//"+file, cluster+"//"+file);
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int key = 0;
+				for (String file : files) {
+					send(pseudo, host, port, local + "//" + file, cluster + "//" +file, key);
+					key++;
+				}
 			}
-		}
+		});
+		thread.start();
+
+		// }
+
 	}
 
 	public static void getFolder(String pseudo, String host, int port, String clusterInput, String inputTempDir) {
 		File folder = new File(inputTempDir);
 		String[] files = folder.list();
-		for (String file: files) {
-			if(file.endsWith(".tif")) {
-				System.out.println("\""+inputTempDir+"/"+file+ " - " +clusterInput+"/"+file);
-				get(pseudo, host, port, clusterInput+"//"+file, inputTempDir+"//"+file);
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				int key = 0;
+				for (String file : files) {
+					if (file.endsWith(".tif")) {
+						Helper.log("\"" + inputTempDir + "/" + file + " - " + clusterInput + "/" + file);
+						get(pseudo, host, port, clusterInput + "//" + file, inputTempDir + "//" + file, key);
+						key++;
+					}
+				}
 			}
-		}
+		});
+		thread.start();
 	}
 }

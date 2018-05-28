@@ -44,6 +44,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
+import tools.Helper;
 
 public class Block extends AbstractInterval
 {
@@ -198,7 +199,8 @@ public class Block extends AbstractInterval
 		}
 		catch ( final InterruptedException e )
 		{
-			System.out.println( "Failed to copy block: " + e );
+			Helper.log( "Failed to copy block: " + e);
+			
 			e.printStackTrace();
 			return;
 		}
@@ -240,7 +242,7 @@ public class Block extends AbstractInterval
 		}
 		catch ( final InterruptedException e )
 		{
-			System.out.println( "Failed to paste block: " + e );
+			Helper.log( "Failed to paste block: " + e );
 			e.printStackTrace();
 			return;
 		}

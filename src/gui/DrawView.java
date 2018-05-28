@@ -4,15 +4,14 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import blockmanager.BlocksManager;
-import gui.items.BlockView;
 import gui.items.BlocksCanvas;
 import gui.items.Frame;
+import tools.Config;
 
 public class DrawView extends Frame {
 	private static final long serialVersionUID = -1607170881678219251L;
@@ -36,8 +35,8 @@ public class DrawView extends Frame {
 			long[] sizes = { image.getWidth(null), image.getHeight(null) };
 			int[] numBlocks = { (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
 					(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
-			final ArrayList<BlockView> blocks = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
-			BlocksCanvas canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, blocks, extra);
+			Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
+			BlocksCanvas canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize,extra);
 			panel.add(canvas);
 			drawView.add(panel);
 //			drawView.getContentPane().add(canvas);

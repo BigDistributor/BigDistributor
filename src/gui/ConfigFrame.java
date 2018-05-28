@@ -18,6 +18,7 @@ public class ConfigFrame extends Frame {
 	TextField hostField;
 	TextField portField;
 	TextField pseudoField;
+	TextField clusterDirField;
 	JButton saveButton;
 	JButton resetButton;
 
@@ -26,18 +27,21 @@ public class ConfigFrame extends Frame {
 		this.setSize(450, 300);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(30, 20, 30, 20));
-		panel.setLayout(new GridLayout(4, 2, 10, 25));
+		panel.setLayout(new GridLayout(5, 2, 10, 25));
 		hostField = new TextField("maxlogin2.mdc-berlin.net");
 		portField = new TextField("22");
 		pseudoField = new TextField("mzouink");
 		saveButton = new JButton("Save");
 		resetButton = new JButton("Reset");
+		clusterDirField = new TextField("/fast/AG_Preibisch/Marwan/clustering/");
 		panel.add(new Label("Host:"));
 		panel.add(hostField);
 		panel.add(new Label("Port:"));
 		panel.add(portField);
 		panel.add(new Label("Pseudo:"));
 		panel.add(pseudoField);
+		panel.add(new Label("Cluster Path:"));
+		panel.add(clusterDirField);
 		panel.add(saveButton);
 		panel.add(resetButton);
 		saveButton.addActionListener(new ActionListener() {
@@ -54,6 +58,7 @@ public class ConfigFrame extends Frame {
 				Config.setPseudo(pseudoField.getText() );
 				System.out.println(portField.getText()+"-"+
 				Config.getHost()+" - "+Config.getPort()+" - "+Config.getPseudo());
+				Config.setClusterPath(clusterDirField.getText());
 				setVisible(false); 
 				dispose();
 			}
