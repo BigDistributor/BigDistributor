@@ -23,6 +23,7 @@ public enum Config {
 	private static Session session;
 	private static int[] numberBlocks = {3,5};
 	private static int[] blocksStatus;
+	public static int progressValue = 0;
 	public static ArrayList<String> log;
  	private static int sigma = 5; 
  	private static long blockSize = 50;

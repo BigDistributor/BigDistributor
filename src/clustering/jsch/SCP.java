@@ -255,7 +255,7 @@ public class SCP {
 				Config.blocksView.get(id).setStatus(2);
 			}
 		} catch (Exception e) {
-			Helper.log(e.toString());
+			System.out.println(e.toString());
 			try {
 				if (fis != null)
 					fis.close();
@@ -463,6 +463,7 @@ public class SCP {
 				for (String file : files) {
 					send(pseudo, host, port, local + "//" + file, cluster + "//" +file, key);
 					key++;
+					Config.progressValue = (key*100) / files.length;
 				}
 			}
 		});
@@ -485,6 +486,7 @@ public class SCP {
 						get(pseudo, host, port, clusterInput + "//" + file, inputTempDir + "//" + file, key);
 						key++;
 					}
+					Config.progressValue = (key*100) / files.length;
 				}
 			}
 		});

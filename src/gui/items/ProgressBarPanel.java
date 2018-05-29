@@ -10,17 +10,24 @@ public class ProgressBarPanel extends JPanel {
 
 	JProgressBar pbar;
 
-	  static final int MY_MINIMUM = 0;
+	static final int MY_MINIMUM = 0;
 
-	  static final int MY_MAXIMUM = 100;
+	static final int MY_MAXIMUM = 100;
 
-	  public ProgressBarPanel() {
-	    // initialize Progress Bar
-	    pbar = new JProgressBar();
-	    pbar.setMinimum(MY_MINIMUM);
-	    pbar.setMaximum(MY_MAXIMUM);
-	    // add to JPanel
-	    add(pbar);
+	public ProgressBarPanel() {
+		// initialize Progress Bar
+		pbar = new JProgressBar();
+		pbar.setMinimum(MY_MINIMUM);
+		pbar.setMaximum(MY_MAXIMUM);
+		// add to JPanel
+		add(pbar);
+	}
+
+	public ProgressBarPanel(int min, int max) {
+		pbar = new JProgressBar();
+		pbar.setMinimum(min);
+		pbar.setMaximum(max);
+		add(pbar);
 	  }
 
 	  public void updateBar(int newValue) {

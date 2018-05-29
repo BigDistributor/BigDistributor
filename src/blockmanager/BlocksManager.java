@@ -96,6 +96,7 @@ public class BlocksManager
 			blockMap.put( i, block );
 //			System.out.println("Temp Dir: "+tempDir.getAbsolutePath());
 			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), tempDir.getAbsolutePath()+"/"+i+".tif" );
+			Config.progressValue = (i*100) / blocks.size();
 		}
 		return blockMap;
 	}

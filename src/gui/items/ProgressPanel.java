@@ -1,6 +1,5 @@
 package gui.items;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;

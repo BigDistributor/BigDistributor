@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -31,14 +33,23 @@ public class PrgressParamsPanel extends JPanel {
 	public Button runScriptButton;
 	public Button getDataButton;
 	public Button combinData;
+	public ProgressBarPanel progressBarPanel;
 	public List<Block> blocks;
 	public JTextField jobsField;
 	public static HashMap<Integer, Block> blockMap;
 
 	public PrgressParamsPanel() {
-		setLayout(new GridLayout(10, 1, 20, 20));
+		setLayout(new GridLayout(11, 1, 20, 20));
 		sliderX = new Scrollbar(Scrollbar.HORIZONTAL, 100, 1, 100, 1000);
 		sliderY = new Scrollbar(Scrollbar.HORIZONTAL, 8, 1, 1, 21);
+		progressBarPanel = new ProgressBarPanel(0, 100);
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {	
+			@Override
+			public void run() {
+				progressBarPanel.updateBar(Config.progressValue);
+			}
+		}, 0, 1000);
 		sendJarButton = new Button("Send Jar");
 		generateInputButton = new Button("Generate Input");
 		sendInputButton = new Button("Send Input");
@@ -54,6 +65,7 @@ public class PrgressParamsPanel extends JPanel {
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
 
+		this.add(progressBarPanel);
 		this.add(sliderX);
 		this.add(sliderY);
 		this.add(sendJarButton);
@@ -69,16 +81,19 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send Jar clicked");
+				Config.progressValue = 0;
 				Config.setClusterJar(Config.getClusterPath()
 						+ Config.getLocalJar().split("/")[Config.getLocalJar().split("/").length - 1]);
 				System.out.println(Config.getClusterJar());
 				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalJar(), Config.getClusterJar(), -1);
+				Config.progressValue = 100;
 			}
 		});
 
 		generateInputButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Config.progressValue = 0;
 				blocks = BlocksManager.generateBlocks(Config.getLocalInput(), 100, 8);
 				blockMap = BlocksManager.saveBlocks(Config.getLocalInput(), blocks);
 				Config.setBlocks(blockMap.size());
@@ -89,6 +104,7 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send input files clicked");
+				Config.progressValue = 0;
 				SCP.sendFolder(Config.getPseudo(), Config.getHost(), 22, Config.getInputTempDir(),
 						Config.getClusterInput());
 			}
@@ -97,6 +113,7 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int jobs = 10;
+				Config.progressValue = 0;
 				System.out.println("generate config.sh clicked");
 				try {
 					jobs = Integer.parseInt(jobsField.getText());
@@ -106,6 +123,7 @@ public class PrgressParamsPanel extends JPanel {
 					String[] localBlocksfiles = new File(Config.getInputTempDir()).list();
 					List<String[]> blocksPerjob = Helper.generateBlocksPerJob(localBlocksfiles, jobs);
 					for (int i = 0; i < blocksPerjob.size(); i++) {
+						Config.progressValue = (i*100) / blocksPerjob.size();
 						final int key = i;
 						Thread task = new Thread(new Runnable() {
 							@Override
@@ -132,7 +150,6 @@ public class PrgressParamsPanel extends JPanel {
 					}
 				}
 			}
-
 		});
 		runScriptButton.addActionListener(new ActionListener() {
 			@Override
@@ -148,6 +165,7 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("get data clicked");
+				Config.progressValue = 0;
 				SCP.getFolder(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput(),
 						Config.getInputTempDir());
 			}
