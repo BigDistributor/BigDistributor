@@ -36,15 +36,12 @@ public class DrawView extends Frame {
 			int[] numBlocks = { (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
 					(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
 			Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
-			BlocksCanvas canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize,extra);
+			BlocksCanvas canvas = new BlocksCanvas();
 			panel.add(canvas);
 			drawView.add(panel);
-//			drawView.getContentPane().add(canvas);
 			drawView.setVisible(true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	
 }

@@ -47,7 +47,7 @@ public class ProgressPanel extends JPanel {
 		System.out.println(numBlocks[0]+"-"+numBlocks[1]);
 		int BlockSizeInView = Integer.max(5,(int)(600/numBlocks[1]));
 		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, BlockSizeInView, extra);
-		canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, extra);
+		canvas = new BlocksCanvas();
 	}
 
 }

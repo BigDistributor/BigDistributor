@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.jcraft.jsch.Session;
 
 import gui.items.BlockView;
-import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 

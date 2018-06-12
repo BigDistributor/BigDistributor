@@ -2,7 +2,6 @@ package gui.items;
 
 import java.awt.GridLayout;
 import java.awt.Label;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -24,8 +23,8 @@ import tools.Helper;
 
 public class PrgressParamsPanel extends JPanel {
 	private static final long serialVersionUID = -5489935889866505715L;
-	public Scrollbar sliderX;
-	public Scrollbar sliderY;
+	public SliderPanel sliderBoxSizePanel;
+	public SliderPanel sliderOverlapPanel;
 	public Button sendJarButton;
 	public Button generateInputButton;
 	public Button sendInputButton;
@@ -40,8 +39,8 @@ public class PrgressParamsPanel extends JPanel {
 
 	public PrgressParamsPanel() {
 		setLayout(new GridLayout(11, 1, 20, 20));
-		sliderX = new Scrollbar(Scrollbar.HORIZONTAL, 100, 1, 100, 1000);
-		sliderY = new Scrollbar(Scrollbar.HORIZONTAL, 8, 1, 1, 21);
+		sliderBoxSizePanel = new SliderPanel("Box Size:", 100, 2000, 200);
+		sliderOverlapPanel = new SliderPanel("Overlap:", 0, 200, 10);
 		progressBarPanel = new ProgressBarPanel(0, 100);
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {	
@@ -64,10 +63,9 @@ public class PrgressParamsPanel extends JPanel {
 		jobLabel.setAlignment(Label.RIGHT);
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
-
 		this.add(progressBarPanel);
-		this.add(sliderX);
-		this.add(sliderY);
+		this.add(sliderBoxSizePanel);
+		this.add(sliderOverlapPanel);
 		this.add(sendJarButton);
 		this.add(generateInputButton);
 		this.add(sendInputButton);
@@ -76,7 +74,6 @@ public class PrgressParamsPanel extends JPanel {
 		this.add(runScriptButton);
 		this.add(getDataButton);
 		this.add(combinData);
-
 		sendJarButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -89,7 +86,6 @@ public class PrgressParamsPanel extends JPanel {
 				Config.progressValue = 100;
 			}
 		});
-
 		generateInputButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -99,7 +95,6 @@ public class PrgressParamsPanel extends JPanel {
 				Config.setBlocks(blockMap.size());
 			}
 		});
-
 		sendInputButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -132,7 +127,6 @@ public class PrgressParamsPanel extends JPanel {
 							@Override
 							public void run() {
 								try {
-									
 									String scriptPath = ScriptGenerator.generateScript(
 											Config.getLocalJar().split("/")[Config.getLocalJar().split("/").length - 1],
 											blocksPerjob.get(key), key);
@@ -163,7 +157,6 @@ public class PrgressParamsPanel extends JPanel {
 				}
 			}
 		});
-
 		getDataButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -173,7 +166,6 @@ public class PrgressParamsPanel extends JPanel {
 						Config.getInputTempDir());
 			}
 		});
-
 		combinData.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

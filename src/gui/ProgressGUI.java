@@ -1,7 +1,5 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -11,15 +9,13 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 import gui.items.Frame;
+import gui.items.LogPanel;
 import gui.items.PrgressParamsPanel;
 import gui.items.ProgressPanel;
 import tools.Config;
@@ -48,35 +44,34 @@ public class ProgressGUI extends Frame {
 
 	private void prepareGUI() {
 
-		setSize(1300, 800);
+		setSize(1500, 1000);
 		// setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLayout(new GridBagLayout());
 		JPanel progressPreviewPanel = new JPanel();
 		progressPreviewPanel.setLayout(new GridLayout(2, 1));
 		blockSize = 100;
 		extra = 8;
-
 		graphicSizes = Helper.get2DDimensions(Config.getInputFile());
 		previewPanel = new ProgressPanel(blockSize, extra, graphicSizes);
 		preparePreviewPanel(previewPanel);
-//		previewPanel.setSize(600, 400);
 		numBlocks = Config.blocksView.size();
 		pbar = new JProgressBar(0, numBlocks);
 		blockParamsPanel = new PrgressParamsPanel();
-		blockParamsPanel.sliderX.addAdjustmentListener(new AdjustmentListener() {
+		blockParamsPanel.sliderBoxSizePanel.slider.addAdjustmentListener(new AdjustmentListener() {
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent e) {
 				System.out.println(e.getValue());
 				Config.setBlockSize(e.getValue());
-				;
+				blockParamsPanel.sliderBoxSizePanel.updateValue(e.getValue());
 				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
 			}
 		});
-		blockParamsPanel.sliderY.addAdjustmentListener(new AdjustmentListener() {
+		blockParamsPanel.sliderOverlapPanel.slider.addAdjustmentListener(new AdjustmentListener() {
 
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent e) {
 				Config.setOverlap(e.getValue());
+				blockParamsPanel.sliderOverlapPanel.updateValue(e.getValue());
 				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
 			}
 		});
@@ -133,41 +128,18 @@ public class ProgressGUI extends Frame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getX() < graphicSizes[0] && e.getY() < graphicSizes[1]) {
-					int x = (int) ((e.getX() < ((previewPanel.getNumBlocks()[0] - 1) * blockSize))
-							? (e.getX() / blockSize)
-							: previewPanel.getNumBlocks()[0] - 1);
-					int y = (int) ((e.getY() < ((previewPanel.getNumBlocks()[1] - 1) * blockSize))
-							? (e.getY() / blockSize)
-							: previewPanel.getNumBlocks()[1] - 1);
-					int i = (int) (y * (previewPanel.getNumBlocks()[0]) + x);
-					System.out.println("block: " + i);
-					Config.blocksView.get(i).setStatus((Config.blocksView.get(i).getStatus() + 1) % 6);
-				}
+//				if (e.getX() < graphicSizes[0] && e.getY() < graphicSizes[1]) {
+//					int x = (int) ((e.getX() < ((previewPanel.getNumBlocks()[0] - 1) * blockSize))
+//							? (e.getX() / blockSize)
+//							: previewPanel.getNumBlocks()[0] - 1);
+//					int y = (int) ((e.getY() < ((previewPanel.getNumBlocks()[1] - 1) * blockSize))
+//							? (e.getY() / blockSize)
+//							: previewPanel.getNumBlocks()[1] - 1);
+//					int i = (int) (y * (previewPanel.getNumBlocks()[0]) + x);
+//					System.out.println("block: " + i);
+//					Config.blocksView.get(i).setStatus((Config.blocksView.get(i).getStatus() + 1) % 6);
+//				}
 			}
 		});
 	}
-
-	class LogPanel extends JPanel {
-		private static final long serialVersionUID = 1661293578856881139L;
-		private JTextArea txtarea;
-
-		public LogPanel() {
-			super();
-			setLayout(new BorderLayout());
-			txtarea = new JTextArea();
-			txtarea.setEditable(false);
-			txtarea.setPreferredSize(new Dimension(0, 300));
-			txtarea.setWrapStyleWord(true);
-			JScrollPane scroll = new JScrollPane(txtarea);
-			add(scroll, BorderLayout.PAGE_START);
-		}
-
-		public void AddText(ArrayList<String> log) {
-			txtarea.setText(String.join("\n", log));
-			log = new ArrayList<String>();
-
-		}
-	}
-
 }

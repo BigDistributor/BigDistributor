@@ -1,7 +1,8 @@
-package gui;
+package master;
 
 import java.util.ArrayList;
 
+import gui.InputFrame;
 import ij.plugin.PlugIn;
 import tools.Config;
 

@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 
@@ -17,16 +16,10 @@ public class BlocksCanvas extends JComponent {
 	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1,
 			0.0f);
 	private static final long serialVersionUID = 7920533803582858096L;
-	private int extra;
-	private long[] sizes;
-	private long blockSize;
-	private int[] numBlock;
 
-	public BlocksCanvas(Image image, long[] sizes, int[] numBlocks,long blockSize,  int extra) {
-		this.extra = extra;
-		this.sizes = sizes;
-		this.numBlock = numBlocks;
-		this.blockSize =  blockSize;
+
+	public BlocksCanvas() {
+		super();
 	}
 
 	public void paint(Graphics g) {
@@ -59,8 +52,6 @@ public class BlocksCanvas extends JComponent {
 
 	public void update(ArrayList<BlockView> blocks, int blockSize, int extra) {
 		Config.blocksView = blocks;
-		this.blockSize = blockSize;
-		this.extra = extra;
 		this.repaint();
 		
 	}
