@@ -94,8 +94,8 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Config.progressValue = 0;
-				blocks = BlocksManager.generateBlocks(Config.getLocalInput(), 100, 8);
-				blockMap = BlocksManager.saveBlocks(Config.getLocalInput(), blocks);
+				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlockSize(), Config.getOverlap());
+				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks);
 				Config.setBlocks(blockMap.size());
 			}
 		});
@@ -121,6 +121,9 @@ public class PrgressParamsPanel extends JPanel {
 					Helper.log("Invalide Jobs input");
 				} finally {
 					String[] localBlocksfiles = new File(Config.getInputTempDir()).list();
+					System.out.println();
+					for (int i = 0;i<localBlocksfiles.length;i++) System.out.print(localBlocksfiles[i]);
+					System.out.println();
 					List<String[]> blocksPerjob = Helper.generateBlocksPerJob(localBlocksfiles, jobs);
 					for (int i = 0; i < blocksPerjob.size(); i++) {
 						Config.progressValue = (i*100) / blocksPerjob.size();

@@ -15,21 +15,14 @@ public class ProgressPanel extends JPanel {
 
 	public ProgressPanel(int blockSize, int extra, long[] sizes) {
 		super();
-//		setBackground(Color.black);
 		this.sizes = sizes;
 		setLayout(new GridLayout());
-		numBlocks = new int[]{ (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
-				(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
-		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
-		canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, extra);
+		updateValues(blockSize, extra, sizes);
 		add(canvas);
 	
 	}
-
 	public void updateCanvas(int blockSize, int extra) {
-		numBlocks = new int[]{ (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
-				(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
-		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, blockSize, extra);
+		updateValues(blockSize, extra, sizes);
 		canvas.update(Config.blocksView, blockSize, extra);
 	}
 
@@ -48,9 +41,13 @@ public class ProgressPanel extends JPanel {
 	public void setSizes(long[] sizes) {
 		this.sizes = sizes;
 	}
-	
-	
-	
-	
-	
+	private void updateValues(int blockSize, int extra, long[] sizes) {
+		numBlocks = new int[]{ (int) sizes[0] / blockSize + ((sizes[0] % blockSize) > 0 ? 1 : 0),
+				(int) sizes[1] / blockSize + ((sizes[1] % blockSize) > 0 ? 1 : 0) };
+		System.out.println(numBlocks[0]+"-"+numBlocks[1]);
+		int BlockSizeInView = Integer.max(5,(int)(600/numBlocks[1]));
+		Config.blocksView = BlocksManager.getBlocks(sizes, numBlocks, BlockSizeInView, extra);
+		canvas = new BlocksCanvas(null, sizes, numBlocks, blockSize, extra);
+	}
+
 }

@@ -1,6 +1,7 @@
 package gui.items;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
@@ -16,18 +17,22 @@ public class ProgressBarPanel extends JPanel {
 
 	public ProgressBarPanel() {
 		// initialize Progress Bar
+		JLabel label = new JLabel("Progress:");
 		pbar = new JProgressBar();
 		pbar.setMinimum(MY_MINIMUM);
 		pbar.setMaximum(MY_MAXIMUM);
-		// add to JPanel
+		add(label);
 		add(pbar);
 	}
 
 	public ProgressBarPanel(int min, int max) {
+		JLabel label = new JLabel("Progress:");
 		pbar = new JProgressBar();
 		pbar.setMinimum(min);
 		pbar.setMaximum(max);
+		add(label);
 		add(pbar);
+		new ProgressBarPanel();
 	  }
 
 	  public void updateBar(int newValue) {

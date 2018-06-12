@@ -40,9 +40,10 @@ public class InputFrame extends Frame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Config.setLocalJar(jarPicker.getSelectedFilePath());	
-				Config.setLocalInput(inputPicker.getSelectedFilePath());
+				Config.setOriginalInputFilePath(inputPicker.getSelectedFilePath());
 				setVisible(false); 
 				dispose();
+				Config.openInput();
 				ProgressGUI progressGUI = new ProgressGUI("Progress..");
 				progressGUI.setVisible(true);
 			}

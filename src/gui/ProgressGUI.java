@@ -1,21 +1,18 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -26,13 +23,14 @@ import gui.items.Frame;
 import gui.items.PrgressParamsPanel;
 import gui.items.ProgressPanel;
 import tools.Config;
+import tools.Helper;
 
 public class ProgressGUI extends Frame {
 	private static final long serialVersionUID = -667700225183799945L;
 	private ProgressPanel previewPanel;
 	private PrgressParamsPanel blockParamsPanel;
 	JProgressBar pbar;
-	long[] sizes;
+	long[] graphicSizes;
 	private int blockSize;
 	private int extra;
 	private int numBlocks;
@@ -49,73 +47,69 @@ public class ProgressGUI extends Frame {
 	}
 
 	private void prepareGUI() {
-		
-		int sigma = 8;
-		setSize(800, 800);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+		setSize(1300, 800);
+		// setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLayout(new GridBagLayout());
 		JPanel progressPreviewPanel = new JPanel();
 		progressPreviewPanel.setLayout(new GridLayout(2, 1));
-		String string = "img/image.jpg";
-		Image image;
+		blockSize = 100;
+		extra = 8;
 
-		try {
-			image = ImageIO.read(new File(string));
-			blockSize = 100;
-			extra = 8;
-			sizes = new long[] { image.getWidth(null), image.getHeight(null) };
-			previewPanel = new ProgressPanel(blockSize, extra, sizes);
-			preparePreviewPanel(previewPanel);
-			previewPanel.setSize(image.getWidth(null) + 2 * sigma, image.getHeight(null) + 2 * sigma);
-			numBlocks = Config.blocksView.size();
-			pbar = new JProgressBar(0, numBlocks);
-			blockParamsPanel = new PrgressParamsPanel();
-			blockParamsPanel.sliderX.addAdjustmentListener(new AdjustmentListener() {
-				@Override
-				public void adjustmentValueChanged(AdjustmentEvent e) {
-					System.out.println(e.getValue());
-					Config.setBlockSize(e.getValue());
-					;
-					previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getSigma());
-				}
-			});
-			blockParamsPanel.sliderY.addAdjustmentListener(new AdjustmentListener() {
+		graphicSizes = Helper.get2DDimensions(Config.getInputFile());
+		previewPanel = new ProgressPanel(blockSize, extra, graphicSizes);
+		preparePreviewPanel(previewPanel);
+//		previewPanel.setSize(600, 400);
+		numBlocks = Config.blocksView.size();
+		pbar = new JProgressBar(0, numBlocks);
+		blockParamsPanel = new PrgressParamsPanel();
+		blockParamsPanel.sliderX.addAdjustmentListener(new AdjustmentListener() {
+			@Override
+			public void adjustmentValueChanged(AdjustmentEvent e) {
+				System.out.println(e.getValue());
+				Config.setBlockSize(e.getValue());
+				;
+				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
+			}
+		});
+		blockParamsPanel.sliderY.addAdjustmentListener(new AdjustmentListener() {
 
-				@Override
-				public void adjustmentValueChanged(AdjustmentEvent e) {
-					Config.setSigma(e.getValue());
-					previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getSigma());
-				}
-			});
-			GridBagConstraints c = new GridBagConstraints();
-			c.fill = GridBagConstraints.BOTH;
-			c.weightx = 3;
-			c.weighty = 1;
-			c.gridx = 0;
-			c.gridy = 0;
-			add(progressPreviewPanel, c);
-			progressPreviewPanel.add(previewPanel);
-			logPanel = new LogPanel();
-			progressPreviewPanel.add(logPanel);
-			c.weightx = 1;
-			c.gridx = 1;
-			add(blockParamsPanel, c);
-			setVisible(true);
-			Timer timer = new Timer(2000, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateView();
-				}
-			});
-			timer.start();
-		} catch (IOException e1) {e1.printStackTrace();}
+			@Override
+			public void adjustmentValueChanged(AdjustmentEvent e) {
+				Config.setOverlap(e.getValue());
+				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
+			}
+		});
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 3;
+		c.weighty = 1;
+		c.gridx = 0;
+		c.gridy = 0;
+		add(progressPreviewPanel, c);
+		progressPreviewPanel.add(previewPanel);
+		logPanel = new LogPanel();
+
+		progressPreviewPanel.add(logPanel);
+		c.weightx = 1;
+		c.gridx = 1;
+		add(blockParamsPanel, c);
+		setVisible(true);
+		Timer timer = new Timer(2000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateView();
+			}
+		});
+		timer.start();
+
 	}
 
 	private void updateView() {
 		previewPanel.canvas.repaint();
 		revalidate();
 		repaint();
-		
+
 		logPanel.AddText(Config.log);
 	}
 
@@ -139,7 +133,7 @@ public class ProgressGUI extends Frame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getX() < sizes[0] && e.getY() < sizes[1]) {
+				if (e.getX() < graphicSizes[0] && e.getY() < graphicSizes[1]) {
 					int x = (int) ((e.getX() < ((previewPanel.getNumBlocks()[0] - 1) * blockSize))
 							? (e.getX() / blockSize)
 							: previewPanel.getNumBlocks()[0] - 1);
@@ -160,20 +154,19 @@ public class ProgressGUI extends Frame {
 
 		public LogPanel() {
 			super();
-			setLayout(new GridLayout());
-//			GridBagConstraints c = new GridBagConstraints();
+			setLayout(new BorderLayout());
 			txtarea = new JTextArea();
+			txtarea.setEditable(false);
+			txtarea.setPreferredSize(new Dimension(0, 300));
 			txtarea.setWrapStyleWord(true);
 			JScrollPane scroll = new JScrollPane(txtarea);
-			add(scroll);
+			add(scroll, BorderLayout.PAGE_START);
 		}
 
 		public void AddText(ArrayList<String> log) {
-			
-			txtarea.setText(String.join("\n",log));
-//				txtarea.getDocument().insertString(0, String.join("\n",log), null);
+			txtarea.setText(String.join("\n", log));
 			log = new ArrayList<String>();
-			
+
 		}
 	}
 

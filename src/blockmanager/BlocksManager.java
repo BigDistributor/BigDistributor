@@ -39,36 +39,23 @@ public class BlocksManager
 		
 		IOFunctions.cleanFolder("input");
 		String string = "img/DrosophilaWing.tif";
-	
 		Img<FloatType> image = IOFunctions.openAs32Bit( new File( string) );
 		ImageJFunctions.show(image);
-
-	
-		
 		final long blockSize = 50;
-		
-		final List< Block > blocks = generateBlocks(string, blockSize, Config.getSigma());
-		final HashMap< Integer, Block > blockMap = saveBlocks(string,blocks);
-		
+		final List< Block > blocks = generateBlocks(image, blockSize, Config.getOverlap());
+		final HashMap< Integer, Block > blockMap = saveBlocks(image,blocks);
 		final Img<FloatType> resultImage = new CellImgFactory< FloatType >( 64 ).create(Helper.getDimensions(image), new FloatType());
-
 		generateResult(blockMap,Config.getInputTempDir());
-
-		
-
 		ImageJFunctions.show(resultImage);		
-
 		final Img<FloatType> resultImage2 = image.copy();
-		try { Gauss3.gauss( Config.getSigma(), Views.extendMirrorSingle( resultImage2 ), resultImage2 ); } catch (IncompatibleTypeException e) {}
+		try { Gauss3.gauss( Config.getOverlap(), Views.extendMirrorSingle( resultImage2 ), resultImage2 ); } catch (IncompatibleTypeException e) {}
 		ImageJFunctions.show(resultImage2);
 		System.out.println( imageDifference( resultImage, resultImage2 ) );
 	}
 
 	public static void generateResult( HashMap<Integer, Block> blockMap, String blocksDir) {
-		Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getLocalInput()) );
+		Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getOriginalInputFilePath()) );
 		final Img<FloatType> resultImage = new CellImgFactory< FloatType >( 64 ).create(Helper.getDimensions(image), new FloatType());
-
-		
 		for ( final Integer key : blockMap.keySet() )
 		{
 			String string =blocksDir+"/"+key+".tif";
@@ -79,8 +66,7 @@ public class BlocksManager
 		
 	}
 
-	public static HashMap<Integer, Block> saveBlocks(String inputPath, List<Block> blocks) {
-		Img<FloatType> image = IOFunctions.openAs32Bit( new File( inputPath) );
+	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, List<Block> blocks) {
 		final long[] blockSizeDim = Util.getArrayFromValue( Config.getBlockSize(), image.numDimensions() );
 		final Img< FloatType > tmp = ArrayImgs.floats( blockSizeDim );
 		final RandomAccessible< FloatType > infiniteImg = Views.extendMirrorSingle( image );
@@ -94,7 +80,6 @@ public class BlocksManager
 			++i;
 			block.copyBlock( infiniteImg, tmp );
 			blockMap.put( i, block );
-//			System.out.println("Temp Dir: "+tempDir.getAbsolutePath());
 			IOFunctions.saveTiffStack( IOFunctions.getImagePlusInstance( tmp ), tempDir.getAbsolutePath()+"/"+i+".tif" );
 			Config.progressValue = (i*100) / blocks.size();
 		}
@@ -110,26 +95,24 @@ public class BlocksManager
 		{
 			c1.fwd();
 			r2.setPosition( c1 );
-
 			sumChange += Math.abs( c1.get().get() - r2.get().get() );
 		}
 		return sumChange;
 	}
 	
-	public static List<Block> generateBlocks(String inputPath, long blockSize, int sigma) {
-		Img<FloatType> image = IOFunctions.openAs32Bit( new File( inputPath) );
+	public static <T> List<Block> generateBlocks(RandomAccessibleInterval<T> input, long blockSize, int sigma) {
 		Config.setBlockSize(blockSize);
 		final ExecutorService service = Threads.createExService( 1 );
-		final long[] blockSizeDim = Util.getArrayFromValue( blockSize, image.numDimensions() );
+		final long[] blockSizeDim = Util.getArrayFromValue( blockSize, input.numDimensions() );
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise( service, blockSizeDim );
-		final double[] sigmas = Util.getArrayFromValue( (double)Config.getSigma(), image.numDimensions() );
+		final double[] sigmas = Util.getArrayFromValue( (double)Config.getOverlap(), input.numDimensions() );
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes( sigmas );
-		final long[] kernelSize = new long[ image.numDimensions() ];
-		final long[] imgSize = new long[ image.numDimensions() ];
-		for ( int d = 0; d < image.numDimensions(); ++d )
+		final long[] kernelSize = new long[ input.numDimensions() ];
+		final long[] imgSize = new long[ input.numDimensions() ];
+		for ( int d = 0; d < input.numDimensions(); ++d )
 		{
 			kernelSize[ d ] = halfKernelSizes[ d ] * 2 - 1;
-			imgSize[ d ] = image.dimension( d );
+			imgSize[ d ] = input.dimension( d );
 		}
 		final List< Block > blocks = generator.divideIntoBlocks( imgSize, kernelSize );
 		return blocks;

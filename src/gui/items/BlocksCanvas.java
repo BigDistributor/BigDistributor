@@ -18,24 +18,18 @@ public class BlocksCanvas extends JComponent {
 			0.0f);
 	private static final long serialVersionUID = 7920533803582858096L;
 	private int extra;
-	private Image image;
 	private long[] sizes;
 	private long blockSize;
-//	private List<BlockView> blocks;
 	private int[] numBlock;
 
 	public BlocksCanvas(Image image, long[] sizes, int[] numBlocks,long blockSize,  int extra) {
-		this.image = image;
 		this.extra = extra;
 		this.sizes = sizes;
-		this.blockSize = blockSize;
 		this.numBlock = numBlocks;
+		this.blockSize =  blockSize;
 	}
 
 	public void paint(Graphics g) {
-
-		// draw image
-		g.drawImage(image, extra, extra, this);
 		for (BlockView block : Config.blocksView) {
 			// fill rect used status
 //			System.out.println("Block: " + block.getMainArrea().toString());

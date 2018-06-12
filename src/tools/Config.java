@@ -1,13 +1,19 @@
 package tools;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.jcraft.jsch.Session;
 
 import gui.items.BlockView;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.Img;
+import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
-	INSTANCE;
+	INSTANCE; 
+	
+	public static int bufferSize = 64*1024;
 	private static String pseudo = "mzouink";
 	private static String pw = "";
 	private static String host = "maxlogin2.mdc-berlin.net";
@@ -19,20 +25,18 @@ public enum Config {
 	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
 	private static String localJar;
 	private static String clusterJar;
-	private static String localInput;
+	private static String originalInputFilePath;
 	private static Session session;
 	private static int[] numberBlocks = {3,5};
 	private static int[] blocksStatus;
 	public static int progressValue = 0;
 	public static ArrayList<String> log;
- 	private static int sigma = 5; 
+ 	private static int overlap = 5; 
  	private static long blockSize = 50;
  	private static String inputTempDir;
  	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
+ 	private static Img<FloatType> inputFile;
 	public static ArrayList<BlockView> blocksView;
- 	
- 	
-	
 	
  	
 	public static int getBlocks() {
@@ -83,17 +87,17 @@ public enum Config {
 	public static void setLocalJar(String localJar) {
 		Config.localJar = localJar;
 	}
-	public static String getLocalInput() {
-		return localInput;
+	public static String getOriginalInputFilePath() {
+		return originalInputFilePath;
 	}
-	public static void setLocalInput(String localInput) {
-		Config.localInput = localInput;
+	public static void setOriginalInputFilePath(String localInput) {
+		Config.originalInputFilePath = localInput;
 	}
-	public static int getSigma() {
-		return sigma;
+	public static int getOverlap() {
+		return overlap;
 	}
-	public static void setSigma(int sigma) {
-		Config.sigma = sigma;
+	public static void setOverlap(int overlap) {
+		Config.overlap = overlap;
 	}
 	public static String getClusterPath() {
 		return clusterPath;
@@ -162,11 +166,22 @@ public enum Config {
 			scriptFiles = new ArrayList<String>();
 		}
 		scriptFiles.add(scriptFile);
-		
 	}
+	
 	public static String getClusterInput() {
-		// TODO Auto-generated method stub
 		return clusterPath;
 	}
+	public static void openInput() {
+		Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getOriginalInputFilePath()) );
+		setInputFile(image);	
+	}
+	public static Img<FloatType> getInputFile() {
+		return inputFile;
+	}
+	public static void setInputFile(Img<FloatType> inputFile) {
+		Config.inputFile = inputFile;
+	}
+	
+    
 	
 }

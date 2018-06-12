@@ -86,7 +86,7 @@ public class SCP {
 
 			channel.connect();
 
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[Config.bufferSize];
 
 			// send '\0'
 			buf[0] = 0;
@@ -122,9 +122,7 @@ public class SCP {
 					}
 				}
 
-				// System.out.println("filesize="+filesize+", file="+file);
 
-				// send '\0'
 				buf[0] = 0;
 				out.write(buf, 0, 1);
 				out.flush();
@@ -229,7 +227,7 @@ public class SCP {
 
 			// send a content of lfile
 			fis = new FileInputStream(localFile);
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[Config.bufferSize];
 			while (true) {
 				int len = fis.read(buf, 0, buf.length);
 				if (len <= 0)
@@ -250,7 +248,7 @@ public class SCP {
 			channel.disconnect();
 
 			// System.exit(0);
-			Helper.log(id + "-File sent with success !");
+			Helper.log("Sent "+id);
 			if (id != -1) {
 				Config.blocksView.get(id).setStatus(2);
 			}
@@ -468,9 +466,6 @@ public class SCP {
 			}
 		});
 		thread.start();
-
-		// }
-
 	}
 
 	public static void getFolder(String pseudo, String host, int port, String clusterInput, String inputTempDir) {
