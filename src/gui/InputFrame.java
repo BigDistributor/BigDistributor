@@ -13,6 +13,7 @@ import gui.ConfigFrame;
 import gui.items.FilePicker;
 import gui.items.Frame;
 import tools.Config;
+import tools.Helper;
 
 public class InputFrame extends Frame{
 	private static final long serialVersionUID = -6778326835751228740L;
@@ -39,7 +40,9 @@ public class InputFrame extends Frame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Config.setLocalJar(jarPicker.getSelectedFilePath());	
+				Config.setLocalTaskPath(jarPicker.getSelectedFilePath());	
+				Helper.log("Task:"+jarPicker.getSelectedFilePath());
+				Helper.log("Input:"+inputPicker.getSelectedFilePath());
 				Config.setOriginalInputFilePath(inputPicker.getSelectedFilePath());
 				setVisible(false); 
 				dispose();

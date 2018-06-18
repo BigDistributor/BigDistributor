@@ -79,10 +79,10 @@ public class PrgressParamsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send Jar clicked");
 				Config.progressValue = 0;
-				Config.setClusterJar(Config.getClusterPath()
-						+ Config.getLocalJar().split("/")[Config.getLocalJar().split("/").length - 1]);
-				System.out.println(Config.getClusterJar());
-				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalJar(), Config.getClusterJar(), -1);
+				Config.setClusterTaskPath(Config.getClusterPath()
+						+ Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1]);
+				System.out.println(Config.getClusterTaskPath());
+				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(), Config.getClusterTaskPath(), -1);
 				Config.progressValue = 100;
 			}
 		});
@@ -90,7 +90,7 @@ public class PrgressParamsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Config.progressValue = 0;
-				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlockSize(), Config.getOverlap());
+				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(), Config.getOverlap());
 				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks);
 				Config.setBlocks(blockMap.size());
 			}
@@ -100,7 +100,7 @@ public class PrgressParamsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Send input files clicked");
 				Config.progressValue = 0;
-				SCP.sendFolder(Config.getPseudo(), Config.getHost(), 22, Config.getInputTempDir(),
+				SCP.sendFolder(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath(),
 						Config.getClusterInput());
 			}
 		});
@@ -115,7 +115,7 @@ public class PrgressParamsPanel extends JPanel {
 				} catch (Exception exc) {
 					Helper.log("Invalide Jobs input");
 				} finally {
-					String[] localBlocksfiles = new File(Config.getInputTempDir()).list();
+					String[] localBlocksfiles = new File(Config.getTempFolderPath()).list();
 					System.out.println();
 					for (int i = 0;i<localBlocksfiles.length;i++) System.out.print(localBlocksfiles[i]);
 					System.out.println();
@@ -128,7 +128,7 @@ public class PrgressParamsPanel extends JPanel {
 							public void run() {
 								try {
 									String scriptPath = ScriptGenerator.generateScript(
-											Config.getLocalJar().split("/")[Config.getLocalJar().split("/").length - 1],
+											Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1],
 											blocksPerjob.get(key), key);
 									System.out.println("Script generated: " + scriptPath);
 									System.out.println("Sending Script..");
@@ -163,13 +163,13 @@ public class PrgressParamsPanel extends JPanel {
 				System.out.println("get data clicked");
 				Config.progressValue = 0;
 				SCP.getFolder(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput(),
-						Config.getInputTempDir());
+						Config.getTempFolderPath());
 			}
 		});
 		combinData.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BlocksManager.generateResult(blockMap, Config.getInputTempDir());
+				BlocksManager.generateResult(blockMap, Config.getTempFolderPath());
 
 			}
 		});

@@ -19,17 +19,13 @@ import gui.items.LogPanel;
 import gui.items.PrgressParamsPanel;
 import gui.items.ProgressPanel;
 import tools.Config;
-import tools.Helper;
 
 public class ProgressGUI extends Frame {
 	private static final long serialVersionUID = -667700225183799945L;
 	private ProgressPanel previewPanel;
 	private PrgressParamsPanel blockParamsPanel;
 	JProgressBar pbar;
-	long[] graphicSizes;
-	private int blockSize;
-	private int extra;
-	private int numBlocks;
+
 	private LogPanel logPanel;
 
 	public ProgressGUI(String arg0) {
@@ -38,32 +34,30 @@ public class ProgressGUI extends Frame {
 	}
 
 	public static void main(String[] args) {
+		Config.openInput();
+		
 		ProgressGUI progressGUI = new ProgressGUI("Progress..");
 		progressGUI.setVisible(true);
 	}
 
 	private void prepareGUI() {
-
 		setSize(1500, 1000);
 		// setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLayout(new GridBagLayout());
 		JPanel progressPreviewPanel = new JPanel();
 		progressPreviewPanel.setLayout(new GridLayout(2, 1));
-		blockSize = 100;
-		extra = 8;
-		graphicSizes = Helper.get2DDimensions(Config.getInputFile());
-		previewPanel = new ProgressPanel(blockSize, extra, graphicSizes);
+
+		previewPanel = new ProgressPanel();
 		preparePreviewPanel(previewPanel);
-		numBlocks = Config.blocksView.size();
-		pbar = new JProgressBar(0, numBlocks);
+		pbar = new JProgressBar(0, 100);
 		blockParamsPanel = new PrgressParamsPanel();
 		blockParamsPanel.sliderBoxSizePanel.slider.addAdjustmentListener(new AdjustmentListener() {
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent e) {
 				System.out.println(e.getValue());
-				Config.setBlockSize(e.getValue());
+				Config.setBlocksSize(e.getValue());
 				blockParamsPanel.sliderBoxSizePanel.updateValue(e.getValue());
-				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
+				previewPanel.updateCanvas();
 			}
 		});
 		blockParamsPanel.sliderOverlapPanel.slider.addAdjustmentListener(new AdjustmentListener() {
@@ -72,7 +66,7 @@ public class ProgressGUI extends Frame {
 			public void adjustmentValueChanged(AdjustmentEvent e) {
 				Config.setOverlap(e.getValue());
 				blockParamsPanel.sliderOverlapPanel.updateValue(e.getValue());
-				previewPanel.updateCanvas((int) Config.getBlockSize(), Config.getOverlap());
+				previewPanel.updateCanvas();
 			}
 		});
 		GridBagConstraints c = new GridBagConstraints();
@@ -90,10 +84,10 @@ public class ProgressGUI extends Frame {
 		c.gridx = 1;
 		add(blockParamsPanel, c);
 		setVisible(true);
-		Timer timer = new Timer(2000, new ActionListener() {
-			@Override
+		Timer timer = new Timer(10000, new ActionListener() {
+		@Override
 			public void actionPerformed(ActionEvent e) {
-				updateView();
+			updateView();
 			}
 		});
 		timer.start();

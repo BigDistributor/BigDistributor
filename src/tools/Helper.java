@@ -44,20 +44,7 @@ public class Helper {
 		return list;
 	}
 
-	public static long[] get2DDimensions(Img<FloatType> file) {
-		long[] dims = getDimensions(file);
-		String logString = logArray(dims);
-		log("Dims: "+logString);
-		for(int i=2; i<dims.length; i++) {
-			dims[i%2] = dims[i%2]*dims[i];
-		}
-		long[] result = new long[] {dims[0],dims[1]};
-		logString = logArray(result);
-		log("2D - Dims: "+logString);
-		return result;
-	}
-
-	private static String logArray(long[] dims) {
+	public static String logArray(long[] dims) {
 		String log = "";
 		for (long elm: dims)
 			log += elm + ",";

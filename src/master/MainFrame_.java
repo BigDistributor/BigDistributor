@@ -12,7 +12,6 @@ public class MainFrame_ implements PlugIn {
 	public static String defaultPath = "";
 
 	public void run(String arg) {
-		// create a dialog with two numeric input fields
 		InputFrame inputFrame = new InputFrame("Input");
 		Config.log = new ArrayList<String>();
 		inputFrame.setVisible(true);

@@ -13,27 +13,39 @@ public enum Config {
 	INSTANCE; 
 	
 	public static int bufferSize = 64*1024;
+	
 	private static String pseudo = "mzouink";
 	private static String pw = "";
 	private static String host = "maxlogin2.mdc-berlin.net";
 	private static int port = 22;
+	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
+	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
+	
 	private static int blocks;
 	private static String path = "";
-	private static Boolean configured = false;
+	
 	private static ArrayList<String> scriptFiles;
-	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
-	private static String localJar;
-	private static String clusterJar;
-	private static String originalInputFilePath;
-	private static Session session;
-	private static int[] numberBlocks = {3,5};
+	
+	private static String localTaskPath = "/Users/Marwan/Desktop/Task/GaussianTask.jar";
+	private static String clusterTaskPath;
+	
+	private static String originalInputFilePath = "/Users/Marwan/Desktop/Task/DrosophilaWing.tif";
+	
+	private static Session currentSession;
+	
+	private static int[] numberBlocks = {};
 	private static int[] blocksStatus;
+	private static long[] dimensions;
+	
 	public static int progressValue = 0;
+	
 	public static ArrayList<String> log;
+	
  	private static int overlap = 5; 
- 	private static long blockSize = 50;
- 	private static String inputTempDir;
- 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
+ 	private static long[] blocksSize;
+ 	
+ 	private static String tempFolderPath;
+ 	
  	private static Img<FloatType> inputFile;
 	public static ArrayList<BlockView> blocksView;
 	
@@ -56,17 +68,20 @@ public enum Config {
 	public static void setDefaultInputPath(String defaultInputPath) {
 		Config.defaultInputPath = defaultInputPath;
 	}
-	public static String getInputTempDir() {
-		return inputTempDir;
+	public static String getTempFolderPath() {
+		return tempFolderPath;
 	}
-	public static void setInputTempDir(String inputTempDir) {
-		Config.inputTempDir = inputTempDir;
+	public static void setTempFolderPath(String inputTempDir) {
+		Config.tempFolderPath = inputTempDir;
 	}
-	public static long getBlockSize() {
-		return blockSize;
+	public static long[] getBlocksSize() {
+		return blocksSize;
 	}
-	public static void setBlockSize(long blockSize) {
-		Config.blockSize = blockSize;
+	public static long getBlockSize(int i) {
+		return blocksSize[i];
+	}
+	public static void setBlocksSize(long[] blocksSize) {
+		Config.blocksSize = blocksSize;
 	}
 	public static int[] getNumberBlocks() {
 		return numberBlocks;
@@ -74,17 +89,17 @@ public enum Config {
 	public static void setNumberBlocks(int[] numberBlocks) {
 		Config.numberBlocks = numberBlocks;
 	}
-	public static String getClusterJar() {
-		return clusterJar;
+	public static String getClusterTaskPath() {
+		return clusterTaskPath;
 	}
-	public static void setClusterJar(String clusterJar) {
-		Config.clusterJar = clusterJar;
+	public static void setClusterTaskPath(String clusterTaskPath) {
+		Config.clusterTaskPath = clusterTaskPath;
 	}
-	public static String getLocalJar() {
-		return localJar;
+	public static String getLocalTaskPath() {
+		return localTaskPath;
 	}
-	public static void setLocalJar(String localJar) {
-		Config.localJar = localJar;
+	public static void setLocalTaskPath(String localTaskPath) {
+		Config.localTaskPath = localTaskPath;
 	}
 	public static String getOriginalInputFilePath() {
 		return originalInputFilePath;
@@ -105,10 +120,10 @@ public enum Config {
 		Config.clusterPath = clusterPath;
 	}
 	public static Session getSession() {
-		return session;
+		return currentSession;
 	}
 	public static void setSession(Session session) {
-		Config.session = session;
+		Config.currentSession = session;
 	}
 	public static ArrayList<String> getScriptFiles() {
 		return scriptFiles;
@@ -146,18 +161,23 @@ public enum Config {
 	public static void setPath(String path) {
 		Config.path = path;
 	}
-	public static Boolean getConfigured() {
-		return configured;
+	public static Img<FloatType> getInputFile() {
+		return inputFile;
 	}
-	public static void setConfigured(Boolean configured) {
-		Config.configured = configured;
+	public static void setInputFile(Img<FloatType> inputFile) {
+		Config.inputFile = inputFile;
 	}
-	public static void init(String host,int port,String pseudo,String pw) {
+	public static long[] getDimensions() {
+		return dimensions;
+	}
+	public static void setDimensions(long[] dimensions) {
+		Config.dimensions = dimensions;
+	}
+	public static void config(String host,int port,String pseudo,String pw) {
 		Config.host = host;
 		Config.port = port;
 		Config.pseudo = pseudo;
 		Config.pw = pw;
-		Config.setConfigured(true);
 		System.out.println("Got Config: " +Config.host );
 	}
 	public static void addScriptFile(String scriptFile) {
@@ -166,21 +186,24 @@ public enum Config {
 		}
 		scriptFiles.add(scriptFile);
 	}
-	
 	public static String getClusterInput() {
 		return clusterPath;
 	}
 	public static void openInput() {
+		log = new ArrayList<String>();
 		Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getOriginalInputFilePath()) );
 		setInputFile(image);	
+		setDimensions(Helper.getDimensions(image));
+		setBlocksSize(100);
 	}
-	public static Img<FloatType> getInputFile() {
-		return inputFile;
-	}
-	public static void setInputFile(Img<FloatType> inputFile) {
-		Config.inputFile = inputFile;
-	}
-	
-    
-	
+	public static void setBlocksSize(int value) {
+		blocksSize = new long[dimensions.length];
+		String log = "Blocks Sizes: ";
+		for(int i=0; i< blocksSize.length;i++) 
+		{
+			blocksSize[i] = value;
+			log+=blocksSize[i]+"-";
+		}
+		Helper.log(log);
+		}	
 }

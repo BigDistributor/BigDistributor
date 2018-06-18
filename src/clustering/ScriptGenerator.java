@@ -10,7 +10,7 @@ public class ScriptGenerator {
 
 	public static String generateScript(String jar, String[] input, int key) throws FileNotFoundException {
 		
-		File file = new File(Config.getInputTempDir());
+		File file = new File(Config.getTempFolderPath());
 		file.mkdir();
 		String filePath = file.getAbsolutePath()+"/run"+key+".sh";
 
