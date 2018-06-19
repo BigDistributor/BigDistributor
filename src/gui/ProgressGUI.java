@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
+import blockmanager.GraphicBlocksManager;
 import gui.items.Frame;
 import gui.items.LogPanel;
 import gui.items.PrgressParamsPanel;
@@ -54,10 +55,18 @@ public class ProgressGUI extends Frame {
 		blockParamsPanel.sliderBoxSizePanel.slider.addAdjustmentListener(new AdjustmentListener() {
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent e) {
-				System.out.println(e.getValue());
-				Config.setBlocksSize(e.getValue());
-				blockParamsPanel.sliderBoxSizePanel.updateValue(e.getValue());
-				previewPanel.updateCanvas();
+				Thread t = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						System.out.println(e.getValue());
+						Config.setBlocksSize(e.getValue());
+						GraphicBlocksManager.updateValues(Config.getDimensions());
+						blockParamsPanel.sliderBoxSizePanel.updateValue(e.getValue()+"/"+Config.totalBlocks);
+						previewPanel.updateCanvas();
+					}
+				});
+				t.start();
 			}
 		});
 		blockParamsPanel.sliderOverlapPanel.slider.addAdjustmentListener(new AdjustmentListener() {

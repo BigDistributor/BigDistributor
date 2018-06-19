@@ -39,4 +39,8 @@ public class SliderPanel extends JPanel {
 		    frame.pack();
 		    frame.setVisible(true);
 	}
+
+	public void updateValue(String string) {
+		valueLabel.setText(string);
+	}
 }

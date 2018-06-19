@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 
 import blockmanager.Block;
 import blockmanager.BlocksManager;
+import blockmanager.GraphicBlocksManager;
 import clustering.ScriptGenerator;
 import clustering.jsch.SCP;
 import tools.Config;
@@ -40,10 +41,19 @@ public class PrgressParamsPanel extends JPanel {
 	public PrgressParamsPanel() {
 		setLayout(new GridLayout(11, 1, 20, 20));
 		sliderBoxSizePanel = new SliderPanel("Box Size:", 100, 2000, 200);
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				GraphicBlocksManager.updateValues(Config.getDimensions());
+				sliderBoxSizePanel.updateValue(Config.getBlocksSize()[0]+"/"+Config.totalBlocks);
+			}
+		});
+		t.start();
 		sliderOverlapPanel = new SliderPanel("Overlap:", 0, 200, 10);
 		progressBarPanel = new ProgressBarPanel(0, 100);
 		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {	
+		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				progressBarPanel.updateBar(Config.progressValue);
@@ -77,20 +87,29 @@ public class PrgressParamsPanel extends JPanel {
 		sendJarButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Send Jar clicked");
-				Config.progressValue = 0;
-				Config.setClusterTaskPath(Config.getClusterPath()
-						+ Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1]);
-				System.out.println(Config.getClusterTaskPath());
-				SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(), Config.getClusterTaskPath(), -1);
-				Config.progressValue = 100;
+				Thread task = new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						System.out.println("Send Jar clicked");
+						Config.progressValue = 0;
+						Config.setClusterTaskPath(Config.getClusterPath()
+								+ Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1]);
+						System.out.println(Config.getClusterTaskPath());
+						SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(),
+								Config.getClusterTaskPath(), -1);
+						Config.progressValue = 100;
+					}
+				});
+				task.start();
 			}
 		});
 		generateInputButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Config.progressValue = 0;
-				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(), Config.getOverlap());
+				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(),
+						Config.getOverlap());
 				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks);
 				Config.setBlocks(blockMap.size());
 			}
@@ -107,54 +126,61 @@ public class PrgressParamsPanel extends JPanel {
 		generateScriptButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int jobs = 10;
-				Config.progressValue = 0;
-				System.out.println("generate config.sh clicked");
-				try {
-					jobs = Integer.parseInt(jobsField.getText());
-				} catch (Exception exc) {
-					Helper.log("Invalide Jobs input");
-				} finally {
-					String[] localBlocksfiles = new File(Config.getTempFolderPath()).list();
-					System.out.println();
-					for (int i = 0;i<localBlocksfiles.length;i++) System.out.print(localBlocksfiles[i]);
-					System.out.println();
-					List<String[]> blocksPerjob = Helper.generateBlocksPerJob(localBlocksfiles, jobs);
-					for (int i = 0; i < blocksPerjob.size(); i++) {
-						Config.progressValue = (i*100) / blocksPerjob.size();
-						final int key = i;
-						Thread task = new Thread(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									String scriptPath = ScriptGenerator.generateScript(
-											Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1],
-											blocksPerjob.get(key), key);
-									System.out.println("Script generated: " + scriptPath);
-									System.out.println("Sending Script..");
-									String clusterScript = scriptPath.split("/")[scriptPath.split("/").length - 1];
-									System.out.println("local Script: " + scriptPath);
-									System.out.println("Cluster Script: " + clusterScript);
-									Config.addScriptFile(clusterScript);
-									SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath,
-											Config.getClusterPath() + clusterScript, -1);
-								} catch (FileNotFoundException e1) {
-									e1.printStackTrace();
-								}
+
+				Thread task = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							int jobs = 10;
+							Config.progressValue = 0;
+							System.out.println("generate config.sh clicked");
+
+							jobs = Integer.parseInt(jobsField.getText());
+							String[] localBlocksfiles = new File(Config.getTempFolderPath()).list();
+							System.out.println();
+							for (int i = 0; i < localBlocksfiles.length; i++)
+								System.out.print(localBlocksfiles[i]);
+							System.out.println();
+							List<String[]> blocksPerjob = Helper.generateBlocksPerJob(localBlocksfiles, jobs);
+							for (int i = 0; i < blocksPerjob.size(); i++) {
+								Config.progressValue = (i * 100) / blocksPerjob.size();
+								final int key = i;
+								String scriptPath = ScriptGenerator
+										.generateScript(
+												Config.getLocalTaskPath()
+														.split("/")[Config.getLocalTaskPath().split("/").length - 1],
+												blocksPerjob.get(key), key);
+								System.out.println("Script generated: " + scriptPath);
+								System.out.println("Sending Script..");
+								String clusterScript = scriptPath.split("/")[scriptPath.split("/").length - 1];
+								System.out.println("local Script: " + scriptPath);
+								System.out.println("Cluster Script: " + clusterScript);
+								Config.addScriptFile(clusterScript);
+								SCP.send(Config.getPseudo(), Config.getHost(), 22, scriptPath,
+										Config.getClusterPath() + clusterScript, -1);
 							}
-						});
-						task.run();
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
 					}
-				}
+				});
+				task.run();
 			}
 		});
 		runScriptButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("run config.sh clicked");
-				for(String scriptFile:Config.getScriptFiles()) {
-				SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), scriptFile);
-				}
+				Thread task = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						System.out.println("run config.sh clicked");
+						for (String scriptFile : Config.getScriptFiles()) {
+							SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), scriptFile);
+						}
+					}
+				});
+				task.start();
 			}
 		});
 		getDataButton.addActionListener(new ActionListener() {
@@ -174,5 +200,4 @@ public class PrgressParamsPanel extends JPanel {
 			}
 		});
 	}
-
 }

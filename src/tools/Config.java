@@ -12,7 +12,10 @@ import net.imglib2.type.numeric.real.FloatType;
 public enum Config {
 	INSTANCE; 
 	
-	public static int bufferSize = 64*1024;
+	public static final int BUFFER_SIZE = 64*1024;
+	public static final long MINIMUM_BOX_SIZE = 50;
+	public static final long PREVIEW_PANEL_WIDTH = 800;
+	public static final long PREIVIEW_PANEL_HEIGHT = 500;
 	
 	private static String pseudo = "mzouink";
 	private static String pw = "";
@@ -48,6 +51,8 @@ public enum Config {
  	
  	private static Img<FloatType> inputFile;
 	public static ArrayList<BlockView> blocksView;
+
+	public static long totalBlocks = 0;
 	
  	
 	public static int getBlocks() {
@@ -194,7 +199,7 @@ public enum Config {
 		Img<FloatType> image = IOFunctions.openAs32Bit( new File( Config.getOriginalInputFilePath()) );
 		setInputFile(image);	
 		setDimensions(Helper.getDimensions(image));
-		setBlocksSize(100);
+		setBlocksSize(200);
 	}
 	public static void setBlocksSize(int value) {
 		blocksSize = new long[dimensions.length];

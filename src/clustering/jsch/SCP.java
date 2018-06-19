@@ -86,7 +86,7 @@ public class SCP {
 
 			channel.connect();
 
-			byte[] buf = new byte[Config.bufferSize];
+			byte[] buf = new byte[Config.BUFFER_SIZE];
 
 			// send '\0'
 			buf[0] = 0;
@@ -227,7 +227,7 @@ public class SCP {
 
 			// send a content of lfile
 			fis = new FileInputStream(localFile);
-			byte[] buf = new byte[Config.bufferSize];
+			byte[] buf = new byte[Config.BUFFER_SIZE];
 			while (true) {
 				int len = fis.read(buf, 0, buf.length);
 				if (len <= 0)
