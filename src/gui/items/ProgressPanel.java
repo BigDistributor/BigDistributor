@@ -1,8 +1,10 @@
 package gui.items;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import blockmanager.GraphicBlocksManager;
 import tools.Config;
@@ -12,26 +14,17 @@ public class ProgressPanel extends JPanel {
 
 	public BlocksCanvas canvas;
 
-
 	public ProgressPanel() {
-		
-		 
-//		  frame.setSize(new Dimension(900, 400)); 
-//		  JPanel test = new JPanel(); 
-//		  test.setPreferredSize(new Dimension( 2000,500)); 
-//		  JScrollPane scrollFrame = new JScrollPane(test);
-//		 test.setAutoscrolls(true); scrollFrame.setPreferredSize(new Dimension(800,300)); frame.add(scrollFrame);
-//		 frame.setContentPane(it); 
-//		 frame.pack(); frame.setVisible(true);
-		 
-
 		super();
+		setLayout(new GridLayout());
 		GraphicBlocksManager.updateValues(Config.getDimensions());
 		canvas = new BlocksCanvas();
-		setLayout(new GridLayout());
-		
-		add(canvas);
-
+		canvas.setSize(new Dimension(Config.PREVIEW_PANEL_WIDTH + 50, Config.PREIVIEW_PANEL_HEIGHT + 50));
+		canvas.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.previewPreferedHeight + 50));
+		JScrollPane scrollFrame = new JScrollPane(canvas);
+		canvas.setAutoscrolls(true);
+		scrollFrame.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.PREIVIEW_PANEL_HEIGHT));
+		add(scrollFrame);
 	}
 
 	public void updateCanvas() {
@@ -39,7 +32,4 @@ public class ProgressPanel extends JPanel {
 		canvas.update(Config.blocksView);
 	}
 
-
-
-	
 }

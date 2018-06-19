@@ -26,6 +26,7 @@ public class GraphicBlocksManager {
 			numberBlocks = computeGraphicBlocks(dimensions, Config.getBlocksSize());
 			Config.blocksView = BlocksManager.getBlocks(numberBlocks, computeSizePreviewBox(numberBlocks));
 		}
+		Config.previewPreferedHeight = (int) (numberBlocks[1]*Config.getBlockSize(1));
 	}
 	
 	public static double computeRationView(long[] numberBlocks, long[] blocksSize) {
