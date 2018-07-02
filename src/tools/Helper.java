@@ -29,24 +29,27 @@ public class Helper {
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		int part = localBlocksfiles.length / jobs;
 		int rest = localBlocksfiles.length % jobs;
-		for (int i = 0; i < jobs; i++) {
-			String[] temp = Arrays.copyOfRange(localBlocksfiles, i * part, (i + 1) * part);
-			log("Job " + (i + 1) + ":[" + (i * part) + "-" + ((i + 1) * part - 1) + "|" + temp.length+"/"+localBlocksfiles.length + "]:"
-					+ String.join("|", temp));
-			if (i < jobs - 1) {
+		int i=0;
+		if (part > 0) {
+			for (i = 0; i < jobs - 1; i++) {
+				String[] temp = Arrays.copyOfRange(localBlocksfiles, i * part, (i + 1) * part);
+				log("Job " + (i + 1) + ":[" + (i * part) + "-" + ((i + 1) * part - 1) + "|" + temp.length + "/"
+						+ localBlocksfiles.length + "]:" + String.join("|", temp));
 				list.add(temp);
-			} else {
-				String[] restArray = Arrays.copyOfRange(localBlocksfiles, jobs - 1, jobs - 1 + rest);
-				log("with Rest: "+ String.join("|", restArray));
-				list.add(ObjectArrays.concat(temp, restArray, String.class));
 			}
 		}
+		String[] restArray = Arrays.copyOfRange(localBlocksfiles, i * part, i * part + rest);
+		log("with Rest: " + String.join("|", restArray));
+		list.add(restArray);
+
+		// list.add(ObjectArrays.concat(temp, restArray, String.class));
 		return list;
+
 	}
 
 	public static String logArray(long[] dims) {
 		String log = "";
-		for (long elm: dims)
+		for (long elm : dims)
 			log += elm + ",";
 		return log;
 	}
