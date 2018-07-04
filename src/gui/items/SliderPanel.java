@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 public class SliderPanel extends JPanel {
 	private static final long serialVersionUID = 7244656178595333291L;
+	private int id;
 	private JLabel label;
 	private JLabel valueLabel;
 	public Scrollbar slider;
@@ -20,18 +21,19 @@ public class SliderPanel extends JPanel {
 		super();
 	}
 
-	public SliderPanel(String labelText, int min, int max, int def) {
+	public SliderPanel(int id,String labelText, int min, int max, int def) {
 		super();
 		label = new JLabel(labelText);
 		valueLabel = new JLabel(String.valueOf(def));
 		slider = new Scrollbar(Scrollbar.HORIZONTAL, def, 1, min, max);
+		this.id = id;
 		this.add(label);
 		this.add(slider);
 		this.add(valueLabel);
 	}
 	
 	public static void main(String[] args) {
-		 final SliderPanel it = new SliderPanel("test:",20,500,50);
+		 final SliderPanel it = new SliderPanel(-1,"test:",20,500,50);
 
 		    JFrame frame = new JFrame("slider Bar Example");
 		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +42,11 @@ public class SliderPanel extends JPanel {
 		    frame.setVisible(true);
 	}
 
-	public void updateValue(String string) {
-		valueLabel.setText(string);
+//	public void updateValue(String string) {
+//		valueLabel.setText(string);
+//	}
+	
+	public int getId() {
+		return id;
 	}
 }

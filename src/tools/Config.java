@@ -90,6 +90,9 @@ public enum Config {
 	public static void setBlocksSize(long[] blocksSize) {
 		Config.blocksSize = blocksSize;
 	}
+	public static void setBlocksSize(long size, int position) {
+		Config.blocksSize[position] = size;
+	}
 	public static int[] getNumberBlocks() {
 		return numberBlocks;
 	}

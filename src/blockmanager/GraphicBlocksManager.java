@@ -6,8 +6,6 @@ import tools.Config;
 import tools.Helper;
 
 public class GraphicBlocksManager {
-
-
 	public static void updateValues(long[] dimensions) {
 		Helper.log(dimensions.length+"D input");
 		long[] numberBlocks;

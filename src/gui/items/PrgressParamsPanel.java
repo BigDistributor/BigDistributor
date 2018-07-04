@@ -6,11 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -24,7 +26,8 @@ import tools.Helper;
 
 public class PrgressParamsPanel extends JPanel {
 	private static final long serialVersionUID = -5489935889866505715L;
-	public SliderPanel sliderBoxSizePanel;
+	public ArrayList<SliderPanel> sliderBoxSizePanel;
+	public JLabel numberBlocksLabel;
 	public SliderPanel sliderOverlapPanel;
 	public Button sendJarButton;
 	public Button generateInputButton;
@@ -39,18 +42,24 @@ public class PrgressParamsPanel extends JPanel {
 	public static HashMap<Integer, Block> blockMap;
 
 	public PrgressParamsPanel() {
-		setLayout(new GridLayout(11, 1, 20, 20));
-		sliderBoxSizePanel = new SliderPanel("Box Size:", 100, 2000, 200);
-		Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				GraphicBlocksManager.updateValues(Config.getDimensions());
-				sliderBoxSizePanel.updateValue(Config.getBlocksSize()[0]+"/"+Config.totalBlocks);
-			}
-		});
-		t.start();
-		sliderOverlapPanel = new SliderPanel("Overlap:", 0, 200, 10);
+		numberBlocksLabel = new JLabel("Total Blocks: 0",JLabel.CENTER);
+		int sizes = Config.getDimensions().length;
+		setLayout(new GridLayout(11+sizes, 1, 20, 20));
+		sliderBoxSizePanel = new  ArrayList<SliderPanel>();
+		for (int i = 0; i < sizes; i++) {
+			SliderPanel slider = new SliderPanel(i,"Box Size["+i+"]:", 100, 2000, 200);
+			sliderBoxSizePanel.add(slider);
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					GraphicBlocksManager.updateValues(Config.getDimensions());
+					slider.updateValue((int) Config.getBlocksSize()[0]);
+					numberBlocksLabel.setText("Total Blocks:"+Config.totalBlocks);
+				}
+			});
+			t.start();
+		}
+		sliderOverlapPanel = new SliderPanel(-1,"Overlap:", 0, 200, 10);
 		progressBarPanel = new ProgressBarPanel(0, 100);
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -74,7 +83,10 @@ public class PrgressParamsPanel extends JPanel {
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
 		this.add(progressBarPanel);
-		this.add(sliderBoxSizePanel);
+		this.add(numberBlocksLabel);
+		for(SliderPanel slider:sliderBoxSizePanel) {
+			this.add(slider);
+		}
 		this.add(sliderOverlapPanel);
 		this.add(sendJarButton);
 		this.add(generateInputButton);

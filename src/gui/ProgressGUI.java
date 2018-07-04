@@ -19,6 +19,7 @@ import gui.items.Frame;
 import gui.items.LogPanel;
 import gui.items.PrgressParamsPanel;
 import gui.items.ProgressPanel;
+import gui.items.SliderPanel;
 import tools.Config;
 
 public class ProgressGUI extends Frame {
@@ -52,7 +53,8 @@ public class ProgressGUI extends Frame {
 		preparePreviewPanel(previewPanel);
 		pbar = new JProgressBar(0, 100);
 		blockParamsPanel = new PrgressParamsPanel();
-		blockParamsPanel.sliderBoxSizePanel.slider.addAdjustmentListener(new AdjustmentListener() {
+		for(SliderPanel slider: blockParamsPanel.sliderBoxSizePanel) {
+		slider.slider.addAdjustmentListener(new AdjustmentListener() {
 			@Override
 			public void adjustmentValueChanged(AdjustmentEvent e) {
 				Thread t = new Thread(new Runnable() {
@@ -60,15 +62,17 @@ public class ProgressGUI extends Frame {
 					@Override
 					public void run() {
 						System.out.println(e.getValue());
-						Config.setBlocksSize(e.getValue());
+						Config.setBlocksSize(e.getValue(), slider.getId());
 						GraphicBlocksManager.updateValues(Config.getDimensions());
-						blockParamsPanel.sliderBoxSizePanel.updateValue(e.getValue()+"/"+Config.totalBlocks);
+						slider.updateValue(e.getValue());
+						blockParamsPanel.numberBlocksLabel.setText("Total Blocks:"+Config.totalBlocks);
 						previewPanel.updateCanvas();
 					}
 				});
 				t.start();
 			}
 		});
+		}
 		blockParamsPanel.sliderOverlapPanel.slider.addAdjustmentListener(new AdjustmentListener() {
 
 			@Override
