@@ -1,5 +1,6 @@
 package tools;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +53,16 @@ public class Helper {
 		for (long elm : dims)
 			log += elm + ",";
 		return log;
+	}
+	
+	public static ArrayList<String> getFiles(String path, String prefix) {
+		File folder = new File(path);
+		String[] files = folder.list();
+		ArrayList<String> result = new ArrayList<>();
+		for (String file: files) {
+			if (file.endsWith(prefix)) result.add(file);
+		}
+		return result;
 	}
 
 }

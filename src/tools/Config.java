@@ -55,6 +55,9 @@ public enum Config {
 	public static ArrayList<BlockView> blocksView;
 
 	public static long totalBlocks = 0;
+	private static ArrayList<String> blocksFilesNames;
+	private static String inputPrefix=".tif";
+	
 	
  	
 	public static int getBlocks() {
@@ -79,6 +82,8 @@ public enum Config {
 		return tempFolderPath;
 	}
 	public static void setTempFolderPath(String inputTempDir) {
+//		File file = new File(inputTempDir);
+//		file.mkdir();
 		Config.tempFolderPath = inputTempDir;
 	}
 	public static long[] getBlocksSize() {
@@ -215,5 +220,19 @@ public enum Config {
 			log+=blocksSize[i]+"-";
 		}
 		Helper.log(log);
-		}	
+		}
+	
+	
+	public static ArrayList<String> getBlocksFilesNames() {
+		return blocksFilesNames;
+	}
+	public static void setBlocksFilesNames(ArrayList<String> blocksFilesNames) {
+		Config.blocksFilesNames = blocksFilesNames;
+	}
+	public static String getInputPrefix() {
+		return inputPrefix;
+	}
+	public static void setInputPrefix(String inputPrefix) {
+		Config.inputPrefix = inputPrefix;
+	}	
 }

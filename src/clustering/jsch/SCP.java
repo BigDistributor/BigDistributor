@@ -43,9 +43,8 @@ public class SCP {
 		Config.getSession().disconnect();
 	}
 
-	public static void run(String user, String host, int port, String scriptPath, String scriptFile) {
+	public static void run(String user, String host, int port, String scriptPath, String scriptFile) throws JSchException {
 
-		try {
 			if (Config.getSession() == null) {
 				connect(user, host);
 			}
@@ -58,15 +57,12 @@ public class SCP {
 			channel.connect();
 
 			Helper.log("script run with success !");
-		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
-	public static void get(String user, String host, int port, String remoteFile, String localFile, int id) {
+	public static void get(String user, String host, int port, String remoteFile, String localFile, int id) throws IOException, JSchException {
 		FileOutputStream fos = null;
-		try {
+
 			if (Config.getSession() == null) {
 				connect(user, host);
 			}
@@ -163,19 +159,11 @@ public class SCP {
 			if (id != -1) {
 				Config.blocksView.get(id).setStatus(5);
 			}
-		} catch (Exception e) {
-			System.out.println(e);
-			try {
-				if (fos != null)
-					fos.close();
-			} catch (Exception ee) {
-			}
-		}
 	}
 
-	public static void send(String user, String host, int port, String localFile, String remoteFile, int id) {
+	public static void send(String user, String host, int port, String localFile, String remoteFile, int id) throws JSchException, IOException {
 		FileInputStream fis = null;
-		try {
+	
 			if (Config.getSession() == null) {
 				connect(user, host);
 			}
@@ -250,16 +238,13 @@ public class SCP {
 			// System.exit(0);
 			Helper.log("Sent "+id);
 			if (id != -1) {
+				try {
 				Config.blocksView.get(id).setStatus(2);
+				throw new Exception("Out of boxes");
+				}catch (Exception e) {
+					Helper.log("Out of size");
+				}
 			}
-		} catch (Exception e) {
-			System.out.println(e.toString());
-			try {
-				if (fis != null)
-					fis.close();
-			} catch (Exception ee) {
-			}
-		}
 	}
 
 	public static class MyUserInfo implements UserInfo, UIKeyboardInteractive {
@@ -449,42 +434,5 @@ public class SCP {
 		} else {
 			return null; // cancel
 		}
-	}
-
-	public static void sendFolder(String pseudo, String host, int port, String local, String cluster) {
-		File folder = new File(local);
-		String[] files = folder.list();
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int key = 0;
-				for (String file : files) {
-					send(pseudo, host, port, local + "//" + file, cluster + "//" +file, key);
-					key++;
-					Config.progressValue = (key*100) / files.length;
-				}
-			}
-		});
-		thread.start();
-	}
-
-	public static void getFolder(String pseudo, String host, int port, String clusterInput, String inputTempDir) {
-		File folder = new File(inputTempDir);
-		String[] files = folder.list();
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int key = 0;
-				for (String file : files) {
-					if (file.endsWith(".tif")) {
-						Helper.log("\"" + inputTempDir + "/" + file + " - " + clusterInput + "/" + file);
-						get(pseudo, host, port, clusterInput + "//" + file, inputTempDir + "//" + file, key);
-						key++;
-					}
-					Config.progressValue = (key*100) / files.length;
-				}
-			}
-		});
-		thread.start();
 	}
 }
