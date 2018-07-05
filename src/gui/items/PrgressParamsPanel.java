@@ -218,6 +218,7 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid = true;
 				Helper.log("Send Task..");
 				Config.progressValue = 0;
 				Config.setClusterTaskPath(Config.getClusterPath()
@@ -227,16 +228,18 @@ public class PrgressParamsPanel extends JPanel {
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(),
 							Config.getClusterTaskPath(), -1);
 				} catch (JSchException e) {
+					valid = false;
 					// TODO Fix Connection
 					e.printStackTrace();
 					callBack.onError(e.toString());
 				} catch (IOException e) {
 					// TODO retry
+					valid = false;
 					e.printStackTrace();
 					callBack.onError(e.toString());
 				}
 				Config.progressValue = 100;
-				callBack.onSuccess();
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.start();
@@ -247,13 +250,14 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid = true;
 				Helper.log("Generate input blocks..");
 				Config.progressValue = 0;
 				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(),
 						Config.getOverlap());
 				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks);
 				Config.setBlocks(blockMap.size());
-				callBack.onSuccess();
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -264,6 +268,7 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid = true;
 				Helper.log("Send input files..");
 				Config.progressValue = 0;
 				String local = Config.getTempFolderPath();
@@ -275,12 +280,13 @@ public class PrgressParamsPanel extends JPanel {
 						SCP.send(Config.getPseudo(), Config.getHost(), Config.getPort(), local + "//" + file,
 								Config.getClusterPath() + "//" + file, key);
 					} catch (JSchException | IOException e) {
+						valid = false;
 						callBack.onError(e.toString());
 					}
 					key++;
 					Config.progressValue = (key * 100) / files.size();
 				}
-				callBack.onSuccess();
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -291,6 +297,7 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				boolean valid = true;
 				Helper.log("Generate Script..");
 				Config.progressValue = 0;
 				int jobs;
@@ -299,7 +306,6 @@ public class PrgressParamsPanel extends JPanel {
 				} catch (Exception e) {
 					Helper.log("Invalide Task number! putted default 10 Jobs");
 					jobs = 10;
-
 				}
 				String[] localBlocksfiles = new File(Config.getTempFolderPath()).list();
 				System.out.println();
@@ -315,17 +321,17 @@ public class PrgressParamsPanel extends JPanel {
 						scriptPath = ScriptGenerator.generateScript(
 								Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1],
 								blocksPerjob.get(key), key);
-						Helper.log("Scripts generated");
-						Helper.log("Send Scripts..");
+						Helper.log("Script "+i+"  generated");
 						String scriptFileName = scriptPath.split("/")[scriptPath.split("/").length - 1];
 						Config.addScriptFile(scriptFileName);
-						callBack.onSuccess();
+						
 					} catch (FileNotFoundException e) {
 						callBack.onError(e.toString());
+						valid = false;
 					}
 
 				}
-
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -336,20 +342,28 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid  = true;
 				Helper.log("Send Script..");
 				for (String script : Config.getScriptFiles()) {
 					try {
 						SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath()+"//"+ script,
 								Config.getClusterPath()+ script, -1);
-						callBack.onSuccess();
 					} catch (JSchException e) {
+						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
+						try {
+							SCP.connect(Config.getPseudo(),Config.getHost());
+						} catch (JSchException e1) {
+							Helper.log("Invalide Host");
+							e1.printStackTrace();
+						}
 					} catch (IOException e) {
 						callBack.onError(e.toString());
 						e.printStackTrace();
 					}
 				}
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -361,17 +375,25 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid = true;
 				System.out.println("Run Script..");
 				for (String scriptFile : Config.getScriptFiles()) {
 					try {
 						SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), scriptFile);
 					} catch (JSchException e) {
+						try {
+							SCP.connect(Config.getPseudo(), Config.getHost());
+						} catch (JSchException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
 					}
 
 				}
-				callBack.onSuccess();
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -382,6 +404,7 @@ public class PrgressParamsPanel extends JPanel {
 
 			@Override
 			public void run() {
+				Boolean valid = true;
 				System.out.println("Get Data back..");
 				Config.progressValue = 0;
 				ArrayList<String> files = Config.getBlocksFilesNames();
@@ -390,18 +413,28 @@ public class PrgressParamsPanel extends JPanel {
 					try {
 						SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
 								Config.getTempFolderPath() + "//" + file, key);
+
+						Helper.log("block "+key+" got with success !");
 						key++;
 						Config.progressValue = (key * 100) / files.size();
 					} catch (IOException e) {
+						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
 					} catch (JSchException e) {
+						try {
+							SCP.connect(Config.getPseudo(), Config.getHost());
+						} catch (JSchException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
 					}
 					
 				}
-				callBack.onSuccess();
+				if(valid) callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -419,6 +452,36 @@ public class PrgressParamsPanel extends JPanel {
 		});
 		task.run();
 
+	}
+	
+	
+	private void getStatus(MyCallBack callBack) {
+		Thread task = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Boolean valid = true;
+				Helper.log("Get Status..");
+				for (String scriptFile : Config.getScriptFiles()) {
+					try {
+						SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), scriptFile);
+					} catch (JSchException e) {
+						try {
+							SCP.connect(Config.getPseudo(), Config.getHost());
+						} catch (JSchException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						valid = false;
+						callBack.onError(e.toString());
+						e.printStackTrace();
+					}
+
+				}
+				if(valid) callBack.onSuccess();
+			}
+		});
+		task.run();
 	}
 
 }

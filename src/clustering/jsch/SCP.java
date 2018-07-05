@@ -155,7 +155,6 @@ public class SCP {
 			}
 
 			// System.exit(0);
-			Helper.log("File got with success !");
 			if (id != -1) {
 				Config.blocksView.get(id).setStatus(5);
 			}
