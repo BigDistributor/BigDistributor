@@ -18,7 +18,7 @@ public class ScriptGenerator {
 		    out.println("# This is my job script with qsub-options ");
 		    out.println("#$ -pe smp 8");
 		    out.println("##$ -pe orte 32");
-		    out.println("#$ -V -N \"Java Task runner\"");
+		    out.println("#$ -V -N \"Task "+key+" runner\"");
 		    out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G -l h_stack=128M -cwd");
 		    out.println("#$ -o data/test_results-$JOB_ID.txt");
 		    out.println("#$ -e data/test_results-$JOB_ID.txt");

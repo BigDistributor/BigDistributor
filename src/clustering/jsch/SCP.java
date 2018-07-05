@@ -24,8 +24,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
+import clustering.MyCallBack;
 import tools.Config;
-import tools.Helper;
 
 public class SCP {
 
@@ -43,22 +43,27 @@ public class SCP {
 		Config.getSession().disconnect();
 	}
 
-	public static void run(String user, String host, int port, String scriptPath, String scriptFile) throws JSchException {
-
+	public static void run(String user, String host, int port, String scriptPath, String scriptFile, MyCallBack callBack) throws JSchException {
 			if (Config.getSession() == null) {
 				connect(user, host);
 			}
-			// exec 'scp -f rfile' remotely
 			String command = "cd " + scriptPath + " && qsub " + scriptFile;
 			Channel channel = Config.getSession().openChannel("exec");
-			Helper.log(command);
-
+			callBack.log(command);
 			((ChannelExec) channel).setCommand(command);
 			channel.connect();
-
-			Helper.log("script run with success !");
-		
 	}
+	
+	public static void generateLog(String user, String host, int port, String scriptPath, MyCallBack callBack) throws JSchException {
+		if (Config.getSession() == null) {
+			connect(user, host);
+		}
+		String command = "cd " + scriptPath + " && qstat > log.txt";
+		Channel channel = Config.getSession().openChannel("exec");
+		callBack.log(command);
+		((ChannelExec) channel).setCommand(command);
+		channel.connect();
+}
 
 	public static void get(String user, String host, int port, String remoteFile, String localFile, int id) throws IOException, JSchException {
 		FileOutputStream fos = null;
@@ -235,13 +240,12 @@ public class SCP {
 			channel.disconnect();
 
 			// System.exit(0);
-			Helper.log("Sent "+id);
 			if (id != -1) {
 				try {
 				Config.blocksView.get(id).setStatus(2);
 				throw new Exception("Out of boxes");
 				}catch (Exception e) {
-					Helper.log("Out of size");
+//					Helper.log("Out of size");
 				}
 			}
 	}
@@ -352,10 +356,10 @@ public class SCP {
 				sb.append((char) c);
 			} while (c != '\n');
 			if (b == 1) { // error
-				Helper.log(sb.toString());
+//				Helper.log(sb.toString());
 			}
 			if (b == 2) { // fatal error
-				Helper.log(sb.toString());
+//				Helper.log(sb.toString());
 			}
 		}
 		return b;

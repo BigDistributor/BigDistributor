@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.ObjectArrays;
-
+import clustering.MyCallBack;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class Helper {
+	
 
 	public static long[] getDimensions(Img<FloatType> image) {
 		long[] dimensions = new long[image.numDimensions()];
@@ -21,12 +21,7 @@ public class Helper {
 		return dimensions;
 	}
 
-	public static void log(String string) {
-		System.out.println(string);
-		Config.log.add(string);
-	}
-
-	public static List<String[]> generateBlocksPerJob(String[] localBlocksfiles, int jobs) {
+	public static List<String[]> generateBlocksPerJob(String[] localBlocksfiles, int jobs, MyCallBack callBack) {
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		int part = localBlocksfiles.length / jobs;
 		int rest = localBlocksfiles.length % jobs;
@@ -34,13 +29,13 @@ public class Helper {
 		if (part > 0) {
 			for (i = 0; i < jobs - 1; i++) {
 				String[] temp = Arrays.copyOfRange(localBlocksfiles, i * part, (i + 1) * part);
-				log("Job " + (i + 1) + ":[" + (i * part) + "-" + ((i + 1) * part - 1) + "|" + temp.length + "/"
+				callBack.log("Job " + (i + 1) + ":[" + (i * part) + "-" + ((i + 1) * part - 1) + "|" + temp.length + "/"
 						+ localBlocksfiles.length + "]:" + String.join("|", temp));
 				list.add(temp);
 			}
 		}
 		String[] restArray = Arrays.copyOfRange(localBlocksfiles, i * part, i * part + rest);
-		log("with Rest: " + String.join("|", restArray));
+		callBack.log("with Rest: " + String.join("|", restArray));
 		list.add(restArray);
 
 		// list.add(ObjectArrays.concat(temp, restArray, String.class));

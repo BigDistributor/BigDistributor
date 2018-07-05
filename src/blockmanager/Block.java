@@ -29,6 +29,7 @@ import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import clustering.MyCallBack;
 import multithreading.ImagePortion;
 import multithreading.Threads;
 import net.imglib2.AbstractInterval;
@@ -44,7 +45,6 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
-import tools.Helper;
 
 public class Block extends AbstractInterval
 {
@@ -164,7 +164,7 @@ public class Block extends AbstractInterval
 	 * @param source - needs to be extended with an OutOfBounds in case the block extends past the boundaries of the RandomAccessibleInterval
 	 * @param block - the Block to copy it to
 	 */
-	public void copyBlock( final RandomAccessible< FloatType > source, final RandomAccessibleInterval< FloatType > block )
+	public void copyBlock( final RandomAccessible< FloatType > source, final RandomAccessibleInterval< FloatType > block,MyCallBack callback )
 	{
 		// set up threads
 		final ArrayList< Callable< Boolean > > tasks = new ArrayList< Callable< Boolean > >();
@@ -199,14 +199,14 @@ public class Block extends AbstractInterval
 		}
 		catch ( final InterruptedException e )
 		{
-			Helper.log( "Failed to copy block: " + e);
+			callback.log( "Failed to copy block: " + e);
 			
 			e.printStackTrace();
 			return;
 		}
 	}
 
-	public void pasteBlock( final RandomAccessibleInterval< FloatType > target, final RandomAccessibleInterval< FloatType > block )
+	public void pasteBlock( final RandomAccessibleInterval< FloatType > target, final RandomAccessibleInterval< FloatType > block , MyCallBack callback)
 	{
 		// set up threads
 		final ArrayList< Callable< Boolean > > tasks = new ArrayList< Callable< Boolean > >();
@@ -242,7 +242,7 @@ public class Block extends AbstractInterval
 		}
 		catch ( final InterruptedException e )
 		{
-			Helper.log( "Failed to paste block: " + e );
+			callback.log( "Failed to paste block: " + e );
 			e.printStackTrace();
 			return;
 		}
@@ -443,14 +443,14 @@ public class Block extends AbstractInterval
 		final long[] kernelSize = new long[]{ 16, 32 };
 
 		final BlockGeneratorFixedSizePrecise blockGenerator = new BlockGeneratorFixedSizePrecise( Threads.createExService(), blockSize );
-		final List< Block > blocks = blockGenerator.divideIntoBlocks( imgSize, kernelSize );
+		final List< Block > blocks = blockGenerator.divideIntoBlocks( imgSize, kernelSize, null );
 
 		int i = 0;
 
 		for ( final Block b : blocks )
 		{
 			// copy data from the image to the block (including extra space for outofbounds/real image data depending on kernel size)
-			b.copyBlock( Views.extendMirrorDouble( image ), block );
+			b.copyBlock( Views.extendMirrorDouble( image ), block, null );
 
 			// do something with the block (e.g. also multithreaded, cluster, ...)
 			for ( final FloatType f : Views.iterable( block ) )
@@ -459,7 +459,7 @@ public class Block extends AbstractInterval
 			++i;
 
 			// write the block back (use a temporary image if multithreaded or in general not all are copied first)
-			b.pasteBlock( image, block );
+			b.pasteBlock( image, block, null );
 		}
 
 		ImageJFunctions.show( image );

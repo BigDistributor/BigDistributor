@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import blockmanager.GraphicBlocksManager;
+import clustering.MyCallBack;
 import tools.Config;
 
 public class ProgressPanel extends JPanel {
@@ -17,7 +18,26 @@ public class ProgressPanel extends JPanel {
 	public ProgressPanel() {
 		super();
 		setLayout(new GridLayout());
-		GraphicBlocksManager.updateValues(Config.getDimensions());
+		GraphicBlocksManager.updateValues(Config.getDimensions(), new MyCallBack() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onError(String error) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void log(String log) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		canvas = new BlocksCanvas();
 		canvas.setSize(new Dimension(Config.PREVIEW_PANEL_WIDTH + 50, Config.PREIVIEW_PANEL_HEIGHT + 50));
 		canvas.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.previewPreferedHeight + 50));
@@ -28,7 +48,26 @@ public class ProgressPanel extends JPanel {
 	}
 
 	public void updateCanvas() {
-		GraphicBlocksManager.updateValues(Config.getDimensions());
+		GraphicBlocksManager.updateValues(Config.getDimensions(), new MyCallBack() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onError(String error) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void log(String log) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		canvas.update(Config.blocksView);
 	}
 

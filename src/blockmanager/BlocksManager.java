@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.google.common.io.Files;
 
+import clustering.MyCallBack;
 import gui.items.BlockView;
 import gui.items.Colors;
 import multithreading.Threads;
@@ -29,19 +30,19 @@ import tools.Helper;
 import tools.IOFunctions;
 
 public class BlocksManager {
-	public static void generateResult(HashMap<Integer, Block> blockMap, String blocksDir) {
+	public static void generateResult(HashMap<Integer, Block> blockMap, String blocksDir,MyCallBack callback) {
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
 				new FloatType());
 		for (final Integer key : blockMap.keySet()) {
 			String string = blocksDir + "/" + key + ".tif";
 			Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
-			blockMap.get(key).pasteBlock(resultImage, tmp);
+			blockMap.get(key).pasteBlock(resultImage, tmp, callback);
 		}
 		ImageJFunctions.show(resultImage).setTitle("Result");
 	}
 
-	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, List<Block> blocks) {
+	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, List<Block> blocks,MyCallBack callBack) {
 		final long[] blockSizeDim = Config.getBlocksSize();
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
@@ -49,14 +50,15 @@ public class BlocksManager {
 		final HashMap<Integer, Block> blockMap = new HashMap<>();
 		File tempDir = Files.createTempDir();
 		Config.setTempFolderPath(tempDir.getAbsolutePath());
-		Helper.log("Temp Dir: " + tempDir.getAbsolutePath());
+		callBack.log("Temp Dir: " + tempDir.getAbsolutePath());
 		for (final Block block : blocks) {
 			++i;
-			block.copyBlock(infiniteImg, tmp);
+			block.copyBlock(infiniteImg, tmp, callBack);
 			blockMap.put(i, block);
 			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp),
-					tempDir.getAbsolutePath() + "/" + i + ".tif");
-			Config.progressValue = (i * 100) / blocks.size();
+					tempDir.getAbsolutePath() + "/" + i + ".tif", callBack);
+//			Todo
+//			Config.progressValue = (i * 100) / blocks.size();
 		}
 		return blockMap;
 	}
@@ -74,7 +76,7 @@ public class BlocksManager {
 		return sumChange;
 	}
 
-	public static <T> List<Block> generateBlocks(RandomAccessibleInterval<T> input, long[] blockSize, int sigma) {
+	public static <T> List<Block> generateBlocks(RandomAccessibleInterval<T> input, long[] blockSize, int sigma,MyCallBack callback) {
 		Config.setBlocksSize(blockSize);
 		final ExecutorService service = Threads.createExService(1);
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, blockSize);
@@ -86,7 +88,7 @@ public class BlocksManager {
 			kernelSize[d] = halfKernelSizes[d] * 2 - 1;
 			imgSize[d] = input.dimension(d);
 		}
-		final List<Block> blocks = generator.divideIntoBlocks(imgSize, kernelSize);
+		final List<Block> blocks = generator.divideIntoBlocks(imgSize, kernelSize, callback);
 		return blocks;
 	}
 

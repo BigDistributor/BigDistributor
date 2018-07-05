@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
+import clustering.MyCallBack;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
 
@@ -62,7 +63,7 @@ public class BlockGeneratorVariableSizePrecise implements BlockGenerator< Block 
 	 * @param kernelSize - the size of the kernel (has to be odd!)
 	 * @return array of blocks
 	 */
-	public ArrayList< Block > divideIntoBlocks( final long[] imgSize, final long[] kernelSize )
+	public ArrayList< Block > divideIntoBlocks( final long[] imgSize, final long[] kernelSize , MyCallBack callback)
 	{
 		final int numDimensions = imgSize.length;
 
@@ -111,7 +112,7 @@ public class BlockGeneratorVariableSizePrecise implements BlockGenerator< Block 
 
 	public static void main( String[] args )
 	{
-		new BlockGeneratorVariableSizePrecise( new long[]{ 3, 2, 1 } ).divideIntoBlocks( new long[] { 1025, 1024, 117 }, new long[]{ 17, 17, 5 } );
+		new BlockGeneratorVariableSizePrecise( new long[]{ 3, 2, 1 } ).divideIntoBlocks( new long[] { 1025, 1024, 117 }, new long[]{ 17, 17, 5 }, null );
 	}
 
 	@Override

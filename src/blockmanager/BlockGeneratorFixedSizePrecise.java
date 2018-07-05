@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
+import clustering.MyCallBack;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
-import tools.Helper;
 
 public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 {
@@ -50,7 +50,7 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 	 * @param kernelSize - the size of the kernel (has to be odd!)
 	 * @return array of blocks
 	 */
-	public ArrayList< Block > divideIntoBlocks( final long[] imgSize, final long[] kernelSize )
+	public ArrayList< Block > divideIntoBlocks( final long[] imgSize, final long[] kernelSize, MyCallBack callback )
 	{
 		final int numDimensions = imgSize.length;
 		
@@ -65,7 +65,7 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 			
 			if ( effectiveSizeGeneral[ d ] <= 0 )
 			{
-				Helper.log( "Blocksize in dimension " + d + " (" + blockSize[ d ] + ") is smaller than the kernel (" + kernelSize[ d ] + ") which results in an negative effective size: " + effectiveSizeGeneral[ d ] + ". Quitting." );
+				callback.log( "Blocksize in dimension " + d + " (" + blockSize[ d ] + ") is smaller than the kernel (" + kernelSize[ d ] + ") which results in an negative effective size: " + effectiveSizeGeneral[ d ] + ". Quitting." );
 				return null;
 			}
 			

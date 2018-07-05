@@ -7,16 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
 
 import blockmanager.GraphicBlocksManager;
+import clustering.MyCallBack;
 import gui.items.Frame;
-import gui.items.LogPanel;
 import gui.items.PrgressParamsPanel;
 import gui.items.ProgressPanel;
 import gui.items.SliderPanel;
@@ -28,7 +26,6 @@ public class ProgressGUI extends Frame {
 	private PrgressParamsPanel blockParamsPanel;
 	JProgressBar pbar;
 
-	private LogPanel logPanel;
 
 	public ProgressGUI(String arg0) {
 		super(arg0);
@@ -50,7 +47,6 @@ public class ProgressGUI extends Frame {
 		progressPreviewPanel.setLayout(new GridLayout(2, 1));
 
 		previewPanel = new ProgressPanel();
-		preparePreviewPanel(previewPanel);
 		pbar = new JProgressBar(0, 100);
 		blockParamsPanel = new PrgressParamsPanel();
 		for(SliderPanel slider: blockParamsPanel.sliderBoxSizePanel) {
@@ -63,7 +59,26 @@ public class ProgressGUI extends Frame {
 					public void run() {
 						System.out.println(e.getValue());
 						Config.setBlocksSize(e.getValue(), slider.getId());
-						GraphicBlocksManager.updateValues(Config.getDimensions());
+						GraphicBlocksManager.updateValues(Config.getDimensions(), new MyCallBack() {
+							
+							@Override
+							public void onSuccess() {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void onError(String error) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void log(String log) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
 						slider.updateValue(e.getValue());
 						blockParamsPanel.numberBlocksLabel.setText("Total Blocks:"+Config.totalBlocks);
 						previewPanel.updateCanvas();
@@ -90,9 +105,9 @@ public class ProgressGUI extends Frame {
 		c.gridy = 0;
 		add(progressPreviewPanel, c);
 		progressPreviewPanel.add(previewPanel);
-		logPanel = new LogPanel();
+	
 
-		progressPreviewPanel.add(logPanel);
+		progressPreviewPanel.add(blockParamsPanel.workflow.logPanel);
 		c.weightx = 1;
 		c.gridx = 1;
 		add(blockParamsPanel, c);
@@ -111,42 +126,5 @@ public class ProgressGUI extends Frame {
 		previewPanel.canvas.repaint();
 		revalidate();
 		repaint();
-
-		logPanel.AddText(Config.log);
-	}
-
-	private void preparePreviewPanel(ProgressPanel previewPanel2) {
-		previewPanel.canvas.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-//				if (e.getX() < graphicSizes[0] && e.getY() < graphicSizes[1]) {
-//					int x = (int) ((e.getX() < ((previewPanel.getNumBlocks()[0] - 1) * blockSize))
-//							? (e.getX() / blockSize)
-//							: previewPanel.getNumBlocks()[0] - 1);
-//					int y = (int) ((e.getY() < ((previewPanel.getNumBlocks()[1] - 1) * blockSize))
-//							? (e.getY() / blockSize)
-//							: previewPanel.getNumBlocks()[1] - 1);
-//					int i = (int) (y * (previewPanel.getNumBlocks()[0]) + x);
-//					System.out.println("block: " + i);
-//					Config.blocksView.get(i).setStatus((Config.blocksView.get(i).getStatus() + 1) % 6);
-//				}
-			}
-		});
 	}
 }

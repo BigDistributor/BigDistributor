@@ -11,6 +11,7 @@ import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 
+import clustering.MyCallBack;
 import ij.ImagePlus;
 import ij.VirtualStack;
 import ij.io.FileInfo;
@@ -121,7 +122,7 @@ public class IOFunctions {
 	 * the entire virtual stack once to collect some slice labels, which takes
 	 * forever in this case.
 	 */
-	public static boolean saveTiffStack(final ImagePlus imp, final String path) {
+	public static boolean saveTiffStack(final ImagePlus imp, final String path, MyCallBack callback) {
 		FileInfo fi = imp.getFileInfo();
 		boolean virtualStack = imp.getStack().isVirtual();
 		if (virtualStack)
@@ -135,7 +136,7 @@ public class IOFunctions {
 			file.write(out);
 			out.close();
 		} catch (IOException e) {
-			Helper.log(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + path + "':" + e);
+			callback.log(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + path + "':" + e);
 			return false;
 		} finally {
 			if (out != null)

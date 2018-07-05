@@ -26,9 +26,8 @@ public class LogPanel extends JPanel {
 		add(scroll, BorderLayout.PAGE_START);
 	}
 
-	public void AddText(ArrayList<String> log) {
-		txtarea.setText(String.join("\n", log));
-		log = new ArrayList<String>();
-
+	public void addText(String log) {
+		txtarea.setText(log+"\n"+txtarea.getText());
 	}
+
 }
