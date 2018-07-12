@@ -49,7 +49,7 @@ public enum Config {
 	private static int overlap = 5;
 	private static long[] blocksSize;
 
-	private static String tempFolderPath;
+	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
 	private static Img<FloatType> inputFile;
 	public static ArrayList<BlockView> blocksView;
@@ -86,10 +86,9 @@ public enum Config {
 		return tempFolderPath;
 	}
 
-	public static void setTempFolderPath(String inputTempDir) {
-		// File file = new File(inputTempDir);
-		// file.mkdir();
-		Config.tempFolderPath = inputTempDir;
+	public static void setTempFolderPath(String tempDir) {
+		System.out.println("Temp Dir: "+tempDir);
+		Config.tempFolderPath = tempDir;
 	}
 
 	public static long[] getBlocksSize() {

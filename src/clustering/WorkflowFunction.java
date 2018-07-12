@@ -1,11 +1,14 @@
 package clustering;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 import com.jcraft.jsch.JSchException;
 
@@ -296,6 +299,9 @@ public class WorkflowFunction {
 						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
+					}catch(IndexOutOfBoundsException e) {
+						e.printStackTrace();
+						callBack.onSuccess();
 					}
 					
 				}
@@ -394,6 +400,14 @@ public class WorkflowFunction {
 			}
 		});
 		task.run();
+	}
+	
+	public void showLog(MyCallBack callback) throws FileNotFoundException, IOException {
+		try(FileInputStream inputStream = new FileInputStream(Config.getTempFolderPath()+"//log.txt")) {     
+		    String everything = IOUtils.toString(inputStream);
+		    if (everything.length()<=10) logPanel.addText("0 Task running");
+		    else logPanel.addText(everything);   
+	}
 	}
 }
 	

@@ -55,6 +55,7 @@ public class SCP {
 	}
 	
 	public static void generateLog(String user, String host, int port, String scriptPath, MyCallBack callBack) throws JSchException {
+		
 		if (Config.getSession() == null) {
 			connect(user, host);
 		}
@@ -160,7 +161,7 @@ public class SCP {
 			}
 
 			// System.exit(0);
-			if (id != -1) {
+			if (id >=0) {
 				Config.blocksView.get(id).setStatus(5);
 			}
 	}

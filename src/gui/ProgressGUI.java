@@ -112,7 +112,7 @@ public class ProgressGUI extends Frame {
 		c.gridx = 1;
 		add(blockParamsPanel, c);
 		setVisible(true);
-		Timer timer = new Timer(10000, new ActionListener() {
+		Timer timer = new Timer(1000, new ActionListener() {
 		@Override
 			public void actionPerformed(ActionEvent e) {
 			updateView();

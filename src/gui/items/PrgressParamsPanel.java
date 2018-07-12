@@ -4,6 +4,8 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -21,6 +23,7 @@ public class PrgressParamsPanel extends JPanel {
 	public JLabel numberBlocksLabel;
 	public SliderPanel sliderOverlapPanel;
 	public Button startWorkFlowButton;
+	public Button checkStatusButton;
 	public Button generateResultButton;
 	public JTextField jobsField;
 	public WorkflowFunction workflow;
@@ -30,7 +33,7 @@ public class PrgressParamsPanel extends JPanel {
 		
 		numberBlocksLabel = new JLabel("Total Blocks: 0", JLabel.CENTER);
 		int sizes = Config.getDimensions().length;
-		setLayout(new GridLayout(6 + sizes, 1, 20, 20));
+		setLayout(new GridLayout(7 + sizes, 1, 20, 20));
 		sliderBoxSizePanel = new ArrayList<SliderPanel>();
 		for (int i = 0; i < sizes; i++) {
 			SliderPanel slider = new SliderPanel(i, "Box Size[" + i + "]:", 100, 2000, 200);
@@ -68,6 +71,7 @@ public class PrgressParamsPanel extends JPanel {
 		
 	
 		startWorkFlowButton = new Button("START..");
+		checkStatusButton = new Button("Check running tasks in Cluster");
 		generateResultButton = new Button("Get and Generate Result");
 	
 		jobsField = new JTextField("10");
@@ -78,6 +82,7 @@ public class PrgressParamsPanel extends JPanel {
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
 		this.add(workflow.progressBarPanel);
+		
 		this.add(numberBlocksLabel);
 		for (SliderPanel slider : sliderBoxSizePanel) {
 			this.add(slider);
@@ -85,6 +90,7 @@ public class PrgressParamsPanel extends JPanel {
 		this.add(sliderOverlapPanel);
 		this.add(jobsPanel);
 		this.add(startWorkFlowButton);
+		this.add(checkStatusButton);
 		this.add(generateResultButton);
 
 		startWorkFlowButton.addActionListener(new ActionListener() {
@@ -212,6 +218,80 @@ public class PrgressParamsPanel extends JPanel {
 						
 					}
 				});
+			}
+		});
+		
+		checkStatusButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				workflow.generateStatus(new MyCallBack() {
+					
+					@Override
+					public void onSuccess() {
+						workflow.getStatus(new MyCallBack() {
+							
+							@Override
+							public void onSuccess() {
+								try {
+									workflow.showLog(new MyCallBack() {
+										
+										@Override
+										public void onSuccess() {
+											// TODO Auto-generated method stub
+											
+										}
+										
+										@Override
+										public void onError(String error) {
+											// TODO Auto-generated method stub
+											
+										}
+										
+										@Override
+										public void log(String log) {
+											// TODO Auto-generated method stub
+											
+										}
+									});
+								} catch (FileNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+							}
+							
+							@Override
+							public void onError(String error) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void log(String log) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
+						
+					}
+					
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void log(String log) {
+						log(log);
+						
+					}
+				});
+				
 			}
 		});
 		generateResultButton.addActionListener(new ActionListener() {
