@@ -15,6 +15,7 @@ import com.jcraft.jsch.JSchException;
 import blockmanager.Block;
 import blockmanager.BlocksManager;
 import clustering.jsch.SCP;
+import clustering.scripting.ShellGenerator;
 import gui.items.LogPanel;
 import gui.items.ProgressBarPanel;
 import tools.Config;
@@ -167,7 +168,7 @@ public class WorkflowFunction {
 					final int key = i;
 					String scriptPath;
 					try {
-						scriptPath = ScriptGenerator.generateScript(
+						scriptPath = ShellGenerator.generateShell(
 								Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1],
 								blocksPerjob.get(key), key);
 						logPanel.addText("Script "+i+"  generated");
