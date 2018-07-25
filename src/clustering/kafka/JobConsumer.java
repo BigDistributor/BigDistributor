@@ -6,14 +6,17 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
+import clustering.MyCallBack;
+
 import java.util.Collections;
 import java.util.Properties;
 
 public class JobConsumer extends ShutdownableThread {
     private final KafkaConsumer<Integer, String> consumer;
     private final String topic;
+    private MyCallBack callback;
 
-    public JobConsumer(String topic) {
+    public JobConsumer(String topic, MyCallBack callback) {
         super("KafkaConsumerExample", false);
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaProperties.KAFKA_SERVER_URL + ":" + KafkaProperties.KAFKA_SERVER_PORT);
@@ -26,6 +29,8 @@ public class JobConsumer extends ShutdownableThread {
 
         consumer = new KafkaConsumer<>(props);
         this.topic = topic;
+        this.callback = callback;
+        callback.log("Listner created");
     }
 
     @Override
@@ -33,7 +38,7 @@ public class JobConsumer extends ShutdownableThread {
         consumer.subscribe(Collections.singletonList(this.topic));
         ConsumerRecords<Integer, String> records = consumer.poll(1000);
         for (ConsumerRecord<Integer, String> record : records) {
-            System.out.println("Received message: (" + record.key() + ", " + record.value() + ") at offset " + record.offset());
+            callback.log("Received message: (" + record.key() + ", " + record.value() + ") at offset " + record.offset());
         }
     }
 
@@ -47,7 +52,26 @@ public class JobConsumer extends ShutdownableThread {
         return false;
     }
     public static void main(String[] args) {
-        JobConsumer consumerThread = new JobConsumer(KafkaProperties.TOPIC);
+        JobConsumer consumerThread = new JobConsumer(KafkaProperties.TOPIC_DONE_TASK,new MyCallBack() {
+			
+			@Override
+			public void onSuccess() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onError(String error) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void log(String log) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
         consumerThread.start();
 
     }

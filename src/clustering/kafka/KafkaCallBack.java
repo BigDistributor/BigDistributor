@@ -6,10 +6,10 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 public class KafkaCallBack implements Callback {
 
     private final long startTime;
-    private final int key;
+    private final String key;
     private final String message;
 
-    public KafkaCallBack(long startTime, int key, String message) {
+    public KafkaCallBack(long startTime, String key, String message) {
         this.startTime = startTime;
         this.key = key;
         this.message = message;

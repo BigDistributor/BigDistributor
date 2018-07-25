@@ -2,6 +2,7 @@ package tools;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.jcraft.jsch.Session;
 
@@ -28,8 +29,7 @@ public enum Config {
 
 	private static int blocks;
 	private static String path = "";
-
-	private static ArrayList<String> scriptFiles;
+	
 
 	private static String localTaskPath = "/Users/Marwan/Desktop/Task/GaussianTask.jar";
 	private static String clusterTaskPath;
@@ -42,12 +42,11 @@ public enum Config {
 	private static int[] blocksStatus;
 	private static long[] dimensions;
 
-	// public static int progressValue = 0;
-
-	public static ArrayList<String> log;
 
 	private static int overlap = 5;
 	private static long[] blocksSize;
+	
+	private static int totalInputFiles;
 
 	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
@@ -55,8 +54,10 @@ public enum Config {
 	public static ArrayList<BlockView> blocksView;
 
 	public static long totalBlocks = 0;
+	
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
+	private static String uuid;
 
 	public static int getBlocks() {
 		return blocks;
@@ -163,14 +164,6 @@ public enum Config {
 		Config.currentSession = session;
 	}
 
-	public static ArrayList<String> getScriptFiles() {
-		return scriptFiles;
-	}
-
-	public static void setScriptFiles(ArrayList<String> pathScripts) {
-		Config.scriptFiles = pathScripts;
-	}
-
 	public static String getPseudo() {
 		return pseudo;
 	}
@@ -235,23 +228,15 @@ public enum Config {
 		System.out.println("Got Config: " + Config.host);
 	}
 
-	public static void addScriptFile(String scriptFile) {
-		if (scriptFiles == null) {
-			scriptFiles = new ArrayList<String>();
-		}
-		scriptFiles.add(scriptFile);
-	}
+//	public static void addScriptFile(String scriptFile) {
+//		if (scriptFiles == null) {
+//			scriptFiles = new ArrayList<String>();
+//		}
+//		scriptFiles.add(scriptFile);
+//	}
 
 	public static String getClusterInput() {
 		return clusterPath;
-	}
-
-	public static void openInput() {
-		log = new ArrayList<String>();
-		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
-		setInputFile(image);
-		setDimensions(Helper.getDimensions(image));
-		setBlocksSize(200);
 	}
 
 	public static void setBlocksSize(int value) {
@@ -276,4 +261,29 @@ public enum Config {
 	public static void setInputPrefix(String inputPrefix) {
 		Config.inputPrefix = inputPrefix;
 	}
+
+	public static int getTotalInputFiles() {
+		return totalInputFiles;
+	}
+
+	public static void setTotalInputFiles(int totalInputFiles) {
+		Config.totalInputFiles = totalInputFiles;
+	}
+
+	public static void init() {
+		Config.setUUID(UUID.randomUUID().toString().replace("-", ""));
+		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
+		setInputFile(image);
+		setDimensions(Helper.getDimensions(image));
+		setBlocksSize(200);
+	}
+
+	public static String getUUID() {
+		return uuid;
+	}
+
+	public static void setUUID(String uuid) {
+		Config.uuid = uuid;
+	}
+
 }

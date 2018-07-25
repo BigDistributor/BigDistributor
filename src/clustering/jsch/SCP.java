@@ -47,7 +47,8 @@ public class SCP {
 			if (Config.getSession() == null) {
 				connect(user, host);
 			}
-			String command = "cd " + scriptPath + " && qsub " + scriptFile;
+			String command = "cd " + scriptPath + " && chmod +x " + scriptFile + " && ./"+scriptFile;
+			System.out.println(command);
 			Channel channel = Config.getSession().openChannel("exec");
 			callBack.log(command);
 			((ChannelExec) channel).setCommand(command);

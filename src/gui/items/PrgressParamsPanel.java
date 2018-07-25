@@ -109,26 +109,64 @@ public class PrgressParamsPanel extends JPanel {
 									
 									@Override
 									public void onSuccess() {
-										int jobs;
-										try {
-											jobs = Integer.parseInt(jobsField.getText());
-										} catch (Exception e) {
-											log("Invalide Task number! putted default 10 Jobs");
-											jobs = 10;
-										}
-										workflow.generateScript(jobs,new MyCallBack() {
+										workflow.generateShell(new MyCallBack() {
 											
 											@Override
 											public void onSuccess() {
-												workflow.sendScript(new MyCallBack() {
+												workflow.sendShell(new MyCallBack() {
 													
 													@Override
 													public void onSuccess() {
-														workflow.runScript(new MyCallBack() {
+														int jobs;
+														try {
+															jobs = Integer.parseInt(jobsField.getText());
+														} catch (Exception e) {
+															log("Invalide Task number! putted default 10 Jobs");
+															jobs = 10;
+														}
+														workflow.generateBatch(jobs, new MyCallBack() {
 															
 															@Override
 															public void onSuccess() {
-																// TODO Auto-generated method stub
+																workflow.sendBatch(new MyCallBack() {
+																	
+																	@Override
+																	public void onSuccess() {
+																		workflow.runBatch(new MyCallBack() {
+																			
+																			@Override
+																			public void onSuccess() {
+																				// TODO Auto-generated method stub
+																				
+																			}
+																			
+																			@Override
+																			public void onError(String error) {
+																				// TODO Auto-generated method stub
+																				
+																			}
+
+																			@Override
+																			public void log(String log) {
+																				// TODO Auto-generated method stub
+																				
+																			}
+																		});
+																		
+																	}
+																	
+																	@Override
+																	public void onError(String error) {
+																		// TODO Auto-generated method stub
+																		
+																	}
+																	
+																	@Override
+																	public void log(String log) {
+																		// TODO Auto-generated method stub
+																		
+																	}
+																});
 																
 															}
 															
@@ -137,14 +175,13 @@ public class PrgressParamsPanel extends JPanel {
 																// TODO Auto-generated method stub
 																
 															}
-
+															
 															@Override
 															public void log(String log) {
 																// TODO Auto-generated method stub
 																
 															}
 														});
-														
 													}
 													
 													@Override
@@ -250,7 +287,7 @@ public class PrgressParamsPanel extends JPanel {
 										
 										@Override
 										public void log(String log) {
-											// TODO Auto-generated method stub
+											workflow.logPanel.addText(log);
 											
 										}
 									});

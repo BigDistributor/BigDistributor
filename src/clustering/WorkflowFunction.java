@@ -1,6 +1,5 @@
 package clustering;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,6 +14,9 @@ import com.jcraft.jsch.JSchException;
 import blockmanager.Block;
 import blockmanager.BlocksManager;
 import clustering.jsch.SCP;
+import clustering.kafka.JobConsumer;
+import clustering.kafka.KafkaProperties;
+import clustering.scripting.BatchGenerator;
 import clustering.scripting.ShellGenerator;
 import gui.items.LogPanel;
 import gui.items.ProgressBarPanel;
@@ -26,12 +28,12 @@ public class WorkflowFunction {
 	public static HashMap<Integer, Block> blockMap;
 	public ProgressBarPanel progressBarPanel;
 	public LogPanel logPanel;
-	
+
 	public WorkflowFunction() {
 		progressBarPanel = new ProgressBarPanel(0, 100);
 		logPanel = new LogPanel();
 	}
-	
+
 	public void sendTask(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
@@ -40,8 +42,8 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Send Task..");
 				progressBarPanel.updateBar(0);
-				Config.setClusterTaskPath(Config.getClusterPath()
-						+ Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1]);
+//				 Config.getClusterPath()+Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length- 1]
+				Config.setClusterTaskPath("task.jar");
 				System.out.println(Config.getClusterTaskPath());
 				try {
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(),
@@ -58,7 +60,8 @@ public class WorkflowFunction {
 					callBack.onError(e.toString());
 				}
 				progressBarPanel.updateBar(100);
-				if(valid) callBack.onSuccess();
+				if (valid)
+					callBack.onSuccess();
 			}
 		});
 		task.start();
@@ -73,29 +76,31 @@ public class WorkflowFunction {
 				logPanel.addText("Generate input blocks..");
 				progressBarPanel.updateBar(0);
 				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(),
-						Config.getOverlap(),callback);
+						Config.getOverlap(), callback);
+				Config.setTotalInputFiles(blocks.size());
 				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks, new MyCallBack() {
-					
+
 					@Override
 					public void onSuccess() {
 						// TODO Auto-generated method stub
-						
+
 					}
-					
+
 					@Override
 					public void onError(String error) {
 						// TODO Auto-generated method stub
-						
+
 					}
-					
+
 					@Override
 					public void log(String log) {
 						logPanel.addText(log);
-						
+
 					}
 				});
 				Config.setBlocks(blockMap.size());
-				if(valid) callback.onSuccess();
+				if (valid)
+					callback.onSuccess();
 			}
 		});
 		task.run();
@@ -122,88 +127,55 @@ public class WorkflowFunction {
 						callBack.onError(e.toString());
 					}
 					key++;
-					progressBarPanel.updateBar( (key * 100) / files.size());
+					progressBarPanel.updateBar((key * 100) / files.size());
 				}
-				if(valid) callBack.onSuccess();
+				if (valid)
+					callBack.onSuccess();
 			}
 		});
 		task.run();
 	}
 
-	public void generateScript(int jobs,MyCallBack callBack) {
+	public void generateShell(MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
-
 			@Override
 			public void run() {
-				boolean valid = true;
 				logPanel.addText("Generate Script..");
-				progressBarPanel.updateBar(0);
-				String[] localBlocksfiles = new File(Config.getTempFolderPath()).list();
-				System.out.println();
-				for (int i = 0; i < localBlocksfiles.length; i++)
-					System.out.print(localBlocksfiles[i]);
-				System.out.println();
-				List<String[]> blocksPerjob = Helper.generateBlocksPerJob(localBlocksfiles, jobs,new MyCallBack() {
-					
-					@Override
-					public void onSuccess() {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void onError(String error) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void log(String log) {
-						logPanel.addText(log);
-						
-					}
-				});
-				for (int i = 0; i < blocksPerjob.size(); i++) {
-					progressBarPanel.updateBar((i * 100) / blocksPerjob.size());
-					final int key = i;
-					String scriptPath;
-					try {
-						scriptPath = ShellGenerator.generateShell(
-								Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length - 1],
-								blocksPerjob.get(key), key);
-						logPanel.addText("Script "+i+"  generated");
-						String scriptFileName = scriptPath.split("/")[scriptPath.split("/").length - 1];
-						Config.addScriptFile(scriptFileName);
-						
-					} catch (FileNotFoundException e) {
-						callBack.onError(e.toString());
-						valid = false;
-					}
-
-				}
-				if(valid) callBack.onSuccess();
+				ShellGenerator.generateTaskShell(callback);
+				callback.onSuccess();
 			}
 		});
 		task.run();
 	}
 
-	public void sendScript(MyCallBack callBack) {
+	public void generateBatch(int job, MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Boolean valid  = true;
-				logPanel.addText("Send Script..");
-				for (String script : Config.getScriptFiles()) {
+				logPanel.addText("Generate Batch..");
+				BatchGenerator.GenerateBatch(job, Config.getTotalInputFiles(), callback);
+			}
+		});
+		task.run();
+	}
+
+	public void sendShell(MyCallBack callBack) {
+		Thread task = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Boolean valid = true;
+				logPanel.addText("Send Shell..");
 					try {
-						SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath()+"//"+ script,
-								Config.getClusterPath()+ script, -1);
+						SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "//task.sh" ,
+								Config.getClusterPath() + "task.sh", -1);
 					} catch (JSchException e) {
 						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
 						try {
-							SCP.connect(Config.getPseudo(),Config.getHost());
+							SCP.connect(Config.getPseudo(), Config.getHost());
 						} catch (JSchException e1) {
 							logPanel.addText("Invalide Host");
 							e1.printStackTrace();
@@ -212,43 +184,55 @@ public class WorkflowFunction {
 						callBack.onError(e.toString());
 						e.printStackTrace();
 					}
-				}
-				if(valid) callBack.onSuccess();
+				
+				if (valid)
+					callBack.onSuccess();
 			}
 		});
 		task.run();
-
 	}
-
-	public void runScript(MyCallBack callBack) {
+	
+	public void sendBatch(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				Boolean valid = true;
-				System.out.println("Run Script..");
-				for (String scriptFile : Config.getScriptFiles()) {
+				logPanel.addText("Send Shell..");
 					try {
-						SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), scriptFile, new MyCallBack() {
-							
-							@Override
-							public void onSuccess() {
-								// TODO Auto-generated method stub
-								
-							}
-							
-							@Override
-							public void onError(String error) {
-								// TODO Auto-generated method stub
-								
-							}
-							
-							@Override
-							public void log(String log) {
-								logPanel.addText(log);
-								
-							}
-						});
+						SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "//submit.cmd" ,
+								Config.getClusterPath() + "submit.cmd", -1);
+					} catch (JSchException e) {
+						valid = false;
+						callBack.onError(e.toString());
+						e.printStackTrace();
+						try {
+							SCP.connect(Config.getPseudo(), Config.getHost());
+						} catch (JSchException e1) {
+							logPanel.addText("Invalide Host");
+							e1.printStackTrace();
+						}
+					} catch (IOException e) {
+						callBack.onError(e.toString());
+						e.printStackTrace();
+					}
+				
+				if (valid)
+					callBack.onSuccess();
+			}
+		});
+		task.run();
+	}
+
+	public void runBatch(MyCallBack callback) {
+		Thread task = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				Boolean valid = true;
+				logPanel.addText("Run Submit..");
+					try {
+						SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), "submit.cmd",callback);
 					} catch (JSchException e) {
 						try {
 							SCP.connect(Config.getPseudo(), Config.getHost());
@@ -257,12 +241,12 @@ public class WorkflowFunction {
 							e1.printStackTrace();
 						}
 						valid = false;
-						callBack.onError(e.toString());
+						callback.onError(e.toString());
 						e.printStackTrace();
 					}
 
-				}
-				if(valid) callBack.onSuccess();
+				if (valid)
+					callback.onSuccess();
 			}
 		});
 		task.run();
@@ -283,7 +267,7 @@ public class WorkflowFunction {
 						SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
 								Config.getTempFolderPath() + "//" + file, key);
 
-						logPanel.addText("block "+key+" got with success !");
+						logPanel.addText("block " + key + " got with success !");
 						key++;
 						progressBarPanel.updateBar((key * 100) / files.size());
 					} catch (IOException e) {
@@ -300,13 +284,14 @@ public class WorkflowFunction {
 						valid = false;
 						callBack.onError(e.toString());
 						e.printStackTrace();
-					}catch(IndexOutOfBoundsException e) {
+					} catch (IndexOutOfBoundsException e) {
 						e.printStackTrace();
 						callBack.onSuccess();
 					}
-					
+
 				}
-				if(valid) callBack.onSuccess();
+				if (valid)
+					callBack.onSuccess();
 			}
 		});
 		task.run();
@@ -318,60 +303,27 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				logPanel.addText("Generate result..");
-				BlocksManager.generateResult(blockMap, Config.getTempFolderPath(),callBack);
+				BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
 				callBack.onSuccess();
 			}
 		});
 		task.run();
 
 	}
-	
-	
-	public void generateStatus(MyCallBack callBack) {
+
+	public void generateStatus(MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Boolean valid = true;
 				logPanel.addText("Get Status..");
-								try {
-						SCP.generateLog(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), new MyCallBack() {
-							
-							@Override
-							public void onSuccess() {
-								// TODO Auto-generated method stub
-								
-							}
-							
-							@Override
-							public void onError(String error) {
-								// TODO Auto-generated method stub
-								
-							}
-							
-							@Override
-							public void log(String log) {
-								logPanel.addText(log);
-								
-							}
-						});
-					} catch (JSchException e) {
-						try {
-							SCP.connect(Config.getPseudo(), Config.getHost());
-						} catch (JSchException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						valid = false;
-						callBack.onError(e.toString());
-						e.printStackTrace();
-					}
-				if(valid) callBack.onSuccess();
+				JobConsumer consumerThread = new JobConsumer(KafkaProperties.TOPIC_DONE_TASK,callback);
+		        consumerThread.start();
 			}
 		});
 		task.run();
 	}
-	
+
 	public void getStatus(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
@@ -379,37 +331,38 @@ public class WorkflowFunction {
 			public void run() {
 				Boolean valid = true;
 				System.out.println("Get Status..");
-									try {
-						SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//log.txt",
-								Config.getTempFolderPath() + "//log.txt", -2);
-					} catch (IOException e) {
-						valid = false;
-						callBack.onError(e.toString());
-						e.printStackTrace();
-					} catch (JSchException e) {
-						try {
-							SCP.connect(Config.getPseudo(), Config.getHost());
-						} catch (JSchException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						valid = false;
-						callBack.onError(e.toString());
-						e.printStackTrace();
+				try {
+					SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//log.txt",
+							Config.getTempFolderPath() + "//log.txt", -2);
+				} catch (IOException e) {
+					valid = false;
+					callBack.onError(e.toString());
+					e.printStackTrace();
+				} catch (JSchException e) {
+					try {
+						SCP.connect(Config.getPseudo(), Config.getHost());
+					} catch (JSchException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				if(valid) callBack.onSuccess();
+					valid = false;
+					callBack.onError(e.toString());
+					e.printStackTrace();
+				}
+				if (valid)
+					callBack.onSuccess();
 			}
 		});
 		task.run();
 	}
-	
+
 	public void showLog(MyCallBack callback) throws FileNotFoundException, IOException {
-		try(FileInputStream inputStream = new FileInputStream(Config.getTempFolderPath()+"//log.txt")) {     
-		    String everything = IOUtils.toString(inputStream);
-		    if (everything.length()<=10) logPanel.addText("0 Task running");
-		    else logPanel.addText(everything);   
-	}
+		try (FileInputStream inputStream = new FileInputStream(Config.getTempFolderPath() + "//log.txt")) {
+			String everything = IOUtils.toString(inputStream);
+			if (everything.length() <= 10)
+				logPanel.addText("0 Task running");
+			else
+				logPanel.addText(everything);
+		}
 	}
 }
-	
-	

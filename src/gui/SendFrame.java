@@ -3,7 +3,6 @@ package gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -71,9 +70,9 @@ public class SendFrame extends Frame{
 			}
 		});
 	}
+	
 	public static void main(String[] args) {
 		SendFrame sendFrame = new SendFrame("Input");
-		Config.log = new ArrayList<String>();
 		sendFrame.setVisible(true);
 	}
 

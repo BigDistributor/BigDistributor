@@ -1,10 +1,7 @@
 package master;
 
-import java.util.ArrayList;
-
 import gui.InputFrame;
 import ij.plugin.PlugIn;
-import tools.Config;
 
 public class MainFrame_ implements PlugIn {
 
@@ -13,7 +10,6 @@ public class MainFrame_ implements PlugIn {
 
 	public void run(String arg) {
 		InputFrame inputFrame = new InputFrame("Input");
-		Config.log = new ArrayList<String>();
 		inputFrame.setVisible(true);
 	}
 

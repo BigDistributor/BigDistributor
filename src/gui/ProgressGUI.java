@@ -33,8 +33,7 @@ public class ProgressGUI extends Frame {
 	}
 
 	public static void main(String[] args) {
-		Config.openInput();
-		
+		Config.init();
 		ProgressGUI progressGUI = new ProgressGUI("Progress..");
 		progressGUI.setVisible(true);
 	}

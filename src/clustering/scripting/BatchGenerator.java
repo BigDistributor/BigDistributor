@@ -9,28 +9,27 @@ import tools.Config;
 
 public class BatchGenerator {
 
-	public static void GenerateBatch(MyCallBack callback) {
+	public static void GenerateBatch(int tasksPerJob ,int totalInputFiles,MyCallBack callback) {
 		boolean error = false;
 		File file = new File(Config.getTempFolderPath());
 		String filePath = file.getAbsolutePath()+"/submit.cmd";
-		int totalInputFiles = 94;
-		int tasksPerJob = 10;
 		int jobs = totalInputFiles / tasksPerJob;
 		int restPortions = totalInputFiles % tasksPerJob;
 		try (PrintWriter out = new PrintWriter(filePath)) {
 		    out.println("#!/bin/bash");
+		    out.println( "cd " + Config.getClusterPath());
 		    int i=0;
 		    for (i=0;i<jobs;i++){
 		    	if(i==0) {
-		    	out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i+1)*tasksPerJob+" ./job.sh");
+		    	out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i+1)*tasksPerJob+" ./task.sh");
 		    	}else {
-		    		out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i+1)*tasksPerJob+" -hold_jid task_"+(i-1)+" ./job.sh");
+		    		out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i+1)*tasksPerJob+" -hold_jid task_"+(i-1)+" ./task.sh");
 		    	}
-		    	out.println("qsub -N \"prov_"+i+"\" -t "+i+" -hold_jid task_"+i+" ./provider.sh");
+		    	out.println("qsub -N \"prov_"+i+"\" -t "+i+" -hold_jid task_"+i+" -v uuid="+Config.getUUID()+" ./logProvider.sh");
 		    }
 		    if(restPortions>0) {
-		    	out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i*tasksPerJob+restPortions)+" -hold_jid task_"+(i-1)+" ./job.sh");
-		    	out.println("qsub -N \"prov_"+i+"\" -t "+i+" -hold_jid task_"+i+" ./provider.sh");
+		    	out.println("qsub -N \"task_"+i+"\" -t "+i*tasksPerJob+"-"+(i*tasksPerJob+restPortions)+" -hold_jid task_"+(i-1)+" ./task.sh");
+		    	out.println("qsub -N \"prov_"+i+"\" -t "+i+" -hold_jid task_"+i+" -v uuid='"+Config.getUUID()+"' ./logProvider.sh");
 		    }
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
@@ -42,7 +41,7 @@ public class BatchGenerator {
 		}
 	}
 public static void main(String[] args) {
-	BatchGenerator.GenerateBatch(new MyCallBack() {
+	BatchGenerator.GenerateBatch(10,94,new MyCallBack() {
 		
 		@Override
 		public void onSuccess() {
