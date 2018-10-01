@@ -10,7 +10,8 @@
 	<artifactId>imagej-clustering</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<name>imagej clustering</name>
-	<properties><enforcer.skip>true</enforcer.skip></properties>
+	<properties><enforcer.skip>true</enforcer.skip>
+	</properties>
 	
 	<dependencies>
 		<dependency>
