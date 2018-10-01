@@ -43,7 +43,7 @@ public class ShellGenerator {
 			out.println("# This is my job script with qsub-options ");
 			out.println("#$ -pe smp 8");
 			out.println("##$ -pe orte 32");
-			out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G");
+			out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G -l h_stack=128M -cwd");
 			out.println("#$ -o output/task-$JOB_ID.txt");
 			out.println("#$ -e error/task-$JOB_ID.txt");
 			out.println("# export NSLOTS=8");
@@ -70,7 +70,6 @@ public class ShellGenerator {
 			out.println("# This is my job script with qsub-options ");
 			out.println("#$ -pe smp 8");
 			out.println("##$ -pe orte 32");
-
 			out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G -l h_stack=128M -cwd");
 			out.println("#$ -o output/task-$JOB_ID.txt");
 			out.println("#$ -e error/task-$JOB_ID.txt");
