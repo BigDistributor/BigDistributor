@@ -100,6 +100,14 @@ public class PrgressParamsPanel extends JPanel {
 		startWorkFlowButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				try {
+					Config.parallelJobs = Integer.parseInt(jobsField.getText());
+				} catch (Exception ex) {
+					workflow.logPanel.addText(
+							"Invalide Task number! putted default 10 Jobs");
+					Config.parallelJobs = 10;
+				}
+				 
 
 				workflow.sendTask(new MyCallBack() {
 
@@ -121,15 +129,8 @@ public class PrgressParamsPanel extends JPanel {
 
 													@Override
 													public void onSuccess() {
-														int jobs;
-														try {
-															jobs = Integer.parseInt(jobsField.getText());
-														} catch (Exception e) {
-															workflow.logPanel.addText(
-																	"Invalide Task number! putted default 10 Jobs");
-															jobs = 10;
-														}
-														workflow.generateBatch(jobs, new MyCallBack() {
+														
+														workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 															@Override
 															public void onSuccess() {

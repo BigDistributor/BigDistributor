@@ -73,7 +73,7 @@ public class Helper {
 		JPanel panel = new JPanel();
 		ImageIcon imageIcon = new ImageIcon(path); // load the image to a imageIcon
 		Image image = imageIcon.getImage(); // transform it 
-		Image newimg = image.getScaledInstance( 150, 50,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		Image newimg = image.getScaledInstance( 130, 50,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 		imageIcon = new ImageIcon(newimg); 
 		JLabel picLabel = new JLabel(imageIcon);
 		panel.add(picLabel);

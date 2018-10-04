@@ -60,6 +60,7 @@ public enum Config {
 	private static String inputPrefix = ".tif";
 	private static String uuid;
 	public static Img<FloatType> resultImg;
+	public static int parallelJobs;
 
 	public static int getBlocks() {
 		return blocks;
