@@ -71,8 +71,8 @@ public class ShellGenerator {
 			out.println("#$ -pe smp 8");
 			out.println("##$ -pe orte 32");
 			out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G -l h_stack=128M -cwd");
-			out.println("#$ -o output/task-$JOB_ID.txt");
-			out.println("#$ -e error/task-$JOB_ID.txt");
+			out.println("#$ -o output/log-$JOB_ID.txt");
+			out.println("#$ -e error/log-$JOB_ID.txt");
 			out.println("# export NSLOTS=8");
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");

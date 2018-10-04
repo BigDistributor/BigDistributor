@@ -30,7 +30,7 @@ import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 
 public class BlocksManager {
-	public static void generateResult(HashMap<Integer, Block> blockMap, String blocksDir,MyCallBack callback) {
+	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,MyCallBack callback) {
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
 				new FloatType());
@@ -39,7 +39,7 @@ public class BlocksManager {
 			Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
 			blockMap.get(key).pasteBlock(resultImage, tmp, callback);
 		}
-		ImageJFunctions.show(resultImage).setTitle("Result");
+		return resultImage;
 	}
 
 	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, List<Block> blocks,MyCallBack callBack) {

@@ -14,6 +14,7 @@ import main.java.com.blockmanager.GraphicBlocksManager;
 import main.java.com.clustering.MyCallBack;
 import main.java.com.clustering.WorkflowFunction;
 import main.java.com.tools.Config;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 
 public class PrgressParamsPanel extends JPanel {
 	private static final long serialVersionUID = -5489935889866505715L;
@@ -294,7 +295,7 @@ public class PrgressParamsPanel extends JPanel {
 
 									@Override
 									public void onSuccess() {
-										// TODO Auto-generated method stub
+										ImageJFunctions.show(Config.resultImg).setTitle("Result");
 
 									}
 

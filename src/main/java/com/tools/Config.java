@@ -59,6 +59,7 @@ public enum Config {
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
 	private static String uuid;
+	public static Img<FloatType> resultImg;
 
 	public static int getBlocks() {
 		return blocks;

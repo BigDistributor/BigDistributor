@@ -25,6 +25,7 @@ import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
 import main.java.com.clustering.MyCallBack;
+import main.java.com.gui.items.Colors;
 import main.java.com.tools.Config;
 
 public class SCP {
@@ -43,213 +44,214 @@ public class SCP {
 		Config.getSession().disconnect();
 	}
 
-	public static void run(String user, String host, int port, String scriptPath, String scriptFile, MyCallBack callBack) throws JSchException {
-			if (Config.getSession() == null) {
-				connect(user, host);
-			}
-			String command = "cd " + scriptPath + " && chmod +x " + scriptFile + " && ./"+scriptFile;
-			System.out.println(command);
-			Channel channel = Config.getSession().openChannel("exec");
-			callBack.log(command);
-			((ChannelExec) channel).setCommand(command);
-			channel.connect();
-	}
-	
-	public static void generateLog(String user, String host, int port, String scriptPath, MyCallBack callBack) throws JSchException {
-		
+	public static void validateConnection(String user, String host) throws JSchException {
 		if (Config.getSession() == null) {
 			connect(user, host);
 		}
+		if (!Config.getSession().isConnected()) {
+			connect(user, host);
+		}
+	}
+
+	public static void run(String user, String host, int port, String scriptPath, String scriptFile,
+			MyCallBack callBack) throws JSchException {
+		validateConnection(user, host);
+		String command = "cd " + scriptPath + " && chmod +x " + scriptFile + " && ./" + scriptFile;
+		System.out.println(command);
+		Channel channel = Config.getSession().openChannel("exec");
+		callBack.log(command);
+		((ChannelExec) channel).setCommand(command);
+		channel.connect();
+	}
+
+	public static void generateLog(String user, String host, int port, String scriptPath, MyCallBack callBack)
+			throws JSchException {
+		validateConnection(user, host);
 		String command = "cd " + scriptPath + " && qstat > log.txt";
 		Channel channel = Config.getSession().openChannel("exec");
 		callBack.log(command);
 		((ChannelExec) channel).setCommand(command);
 		channel.connect();
-}
+	}
 
-	public static void get(String user, String host, int port, String remoteFile, String localFile, int id) throws IOException, JSchException {
+	public static void get(String user, String host, int port, String remoteFile, String localFile, int id)
+			throws IOException, JSchException {
 		FileOutputStream fos = null;
+		validateConnection(user, host);
+		String prefix = null;
+		if (new File(localFile).isDirectory()) {
+			prefix = localFile + File.separator;
+		}
 
-			if (Config.getSession() == null) {
-				connect(user, host);
+		// exec 'scp -f rfile' remotely
+		String command = "scp -f " + remoteFile;
+		Channel channel = Config.getSession().openChannel("exec");
+		((ChannelExec) channel).setCommand(command);
+
+		// get I/O streams for remote scp
+		OutputStream out = channel.getOutputStream();
+		InputStream in = channel.getInputStream();
+
+		channel.connect();
+
+		byte[] buf = new byte[Config.BUFFER_SIZE];
+
+		// send '\0'
+		buf[0] = 0;
+		out.write(buf, 0, 1);
+		out.flush();
+
+		while (true) {
+			int c = checkAck(in);
+			if (c != 'C') {
+				break;
 			}
-			String prefix = null;
-			if (new File(localFile).isDirectory()) {
-				prefix = localFile + File.separator;
+
+			// read '0644 '
+			in.read(buf, 0, 5);
+
+			long filesize = 0L;
+			while (true) {
+				if (in.read(buf, 0, 1) < 0) {
+					// error
+					break;
+				}
+				if (buf[0] == ' ')
+					break;
+				filesize = filesize * 10L + (long) (buf[0] - '0');
 			}
 
-			// exec 'scp -f rfile' remotely
-			String command = "scp -f " + remoteFile;
-			Channel channel = Config.getSession().openChannel("exec");
-			((ChannelExec) channel).setCommand(command);
+			String file = null;
+			for (int i = 0;; i++) {
+				in.read(buf, i, 1);
+				if (buf[i] == (byte) 0x0a) {
+					file = new String(buf, 0, i);
+					break;
+				}
+			}
 
-			// get I/O streams for remote scp
-			OutputStream out = channel.getOutputStream();
-			InputStream in = channel.getInputStream();
-
-			channel.connect();
-
-			byte[] buf = new byte[Config.BUFFER_SIZE];
-
-			// send '\0'
 			buf[0] = 0;
 			out.write(buf, 0, 1);
 			out.flush();
 
+			// read a content of lfile
+			fos = new FileOutputStream(prefix == null ? localFile : prefix + file);
+			int foo;
 			while (true) {
-				int c = checkAck(in);
-				if (c != 'C') {
+				if (buf.length < filesize)
+					foo = buf.length;
+				else
+					foo = (int) filesize;
+				foo = in.read(buf, 0, foo);
+				if (foo < 0) {
+					// error
 					break;
 				}
-
-				// read '0644 '
-				in.read(buf, 0, 5);
-
-				long filesize = 0L;
-				while (true) {
-					if (in.read(buf, 0, 1) < 0) {
-						// error
-						break;
-					}
-					if (buf[0] == ' ')
-						break;
-					filesize = filesize * 10L + (long) (buf[0] - '0');
-				}
-
-				String file = null;
-				for (int i = 0;; i++) {
-					in.read(buf, i, 1);
-					if (buf[i] == (byte) 0x0a) {
-						file = new String(buf, 0, i);
-						break;
-					}
-				}
-
-
-				buf[0] = 0;
-				out.write(buf, 0, 1);
-				out.flush();
-
-				// read a content of lfile
-				fos = new FileOutputStream(prefix == null ? localFile : prefix + file);
-				int foo;
-				while (true) {
-					if (buf.length < filesize)
-						foo = buf.length;
-					else
-						foo = (int) filesize;
-					foo = in.read(buf, 0, foo);
-					if (foo < 0) {
-						// error
-						break;
-					}
-					fos.write(buf, 0, foo);
-					filesize -= foo;
-					if (filesize == 0L)
-						break;
-				}
-				fos.close();
-				fos = null;
-
-				if (checkAck(in) != 0) {
-					System.exit(0);
-				}
-
-				// send '\0'
-				buf[0] = 0;
-				out.write(buf, 0, 1);
-				out.flush();
+				fos.write(buf, 0, foo);
+				filesize -= foo;
+				if (filesize == 0L)
+					break;
 			}
-
-			// System.exit(0);
-			if (id >=0) {
-				Config.blocksView.get(id).setStatus(5);
-			}
-	}
-
-	public static void send(String user, String host, int port, String localFile, String remoteFile, int id) throws JSchException, IOException {
-		FileInputStream fis = null;
-	
-			if (Config.getSession() == null) {
-				connect(user, host);
-			}
-			boolean ptimestamp = true;
-
-			// exec 'scp -t rfile' remotely
-			String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + remoteFile;
-			Channel channel = Config.getSession().openChannel("exec");
-			((ChannelExec) channel).setCommand(command);
-
-			// get I/O streams for remote scp
-			OutputStream out = channel.getOutputStream();
-			InputStream in = channel.getInputStream();
-
-			channel.connect();
+			fos.close();
+			fos = null;
 
 			if (checkAck(in) != 0) {
 				System.exit(0);
 			}
 
-			File _lfile = new File(localFile);
+			// send '\0'
+			buf[0] = 0;
+			out.write(buf, 0, 1);
+			out.flush();
+		}
 
-			if (ptimestamp) {
-				command = "T " + (_lfile.lastModified() / 1000) + " 0";
-				// The access time should be sent here,
-				// but it is not accessible with JavaAPI ;-<
-				command += (" " + (_lfile.lastModified() / 1000) + " 0\n");
-				out.write(command.getBytes());
-				out.flush();
-				if (checkAck(in) != 0) {
-					System.exit(0);
-				}
-			}
+		// System.exit(0);
+		if (id >= 0) {
+			Config.blocksView.get(id).setStatus(Colors.GOT);
+		}
+	}
 
-			// send "C0644 filesize filename", where filename should not include '/'
-			long filesize = _lfile.length();
-			command = "C0644 " + filesize + " ";
-			if (localFile.lastIndexOf('/') > 0) {
-				command += localFile.substring(localFile.lastIndexOf('/') + 1);
-			} else {
-				command += localFile;
-			}
-			command += "\n";
+	public static void send(String user, String host, int port, String localFile, String remoteFile, int id)
+			throws JSchException, IOException {
+		FileInputStream fis = null;
+		validateConnection(user, host);
+		boolean ptimestamp = true;
+
+		// exec 'scp -t rfile' remotely
+		String command = "scp " + (ptimestamp ? "-p" : "") + " -t " + remoteFile;
+		Channel channel = Config.getSession().openChannel("exec");
+		((ChannelExec) channel).setCommand(command);
+
+		// get I/O streams for remote scp
+		OutputStream out = channel.getOutputStream();
+		InputStream in = channel.getInputStream();
+
+		channel.connect();
+
+		if (checkAck(in) != 0) {
+			System.exit(0);
+		}
+
+		File _lfile = new File(localFile);
+
+		if (ptimestamp) {
+			command = "T " + (_lfile.lastModified() / 1000) + " 0";
+			// The access time should be sent here,
+			// but it is not accessible with JavaAPI ;-<
+			command += (" " + (_lfile.lastModified() / 1000) + " 0\n");
 			out.write(command.getBytes());
 			out.flush();
 			if (checkAck(in) != 0) {
 				System.exit(0);
 			}
+		}
 
-			// send a content of lfile
-			fis = new FileInputStream(localFile);
-			byte[] buf = new byte[Config.BUFFER_SIZE];
-			while (true) {
-				int len = fis.read(buf, 0, buf.length);
-				if (len <= 0)
-					break;
-				out.write(buf, 0, len); // out.flush();
-			}
-			fis.close();
-			fis = null;
-			// send '\0'
-			buf[0] = 0;
-			out.write(buf, 0, 1);
-			out.flush();
-			if (checkAck(in) != 0) {
-				System.exit(0);
-			}
-			out.close();
+		// send "C0644 filesize filename", where filename should not include '/'
+		long filesize = _lfile.length();
+		command = "C0644 " + filesize + " ";
+		if (localFile.lastIndexOf('/') > 0) {
+			command += localFile.substring(localFile.lastIndexOf('/') + 1);
+		} else {
+			command += localFile;
+		}
+		command += "\n";
+		out.write(command.getBytes());
+		out.flush();
+		if (checkAck(in) != 0) {
+			System.exit(0);
+		}
 
-			channel.disconnect();
+		// send a content of lfile
+		fis = new FileInputStream(localFile);
+		byte[] buf = new byte[Config.BUFFER_SIZE];
+		while (true) {
+			int len = fis.read(buf, 0, buf.length);
+			if (len <= 0)
+				break;
+			out.write(buf, 0, len); // out.flush();
+		}
+		fis.close();
+		fis = null;
+		// send '\0'
+		buf[0] = 0;
+		out.write(buf, 0, 1);
+		out.flush();
+		if (checkAck(in) != 0) {
+			System.exit(0);
+		}
+		out.close();
 
-			// System.exit(0);
-			if (id != -1) {
-				try {
-				Config.blocksView.get(id).setStatus(2);
+		channel.disconnect();
+
+		// System.exit(0);
+		if (id != -1) {
+			try {
+				Config.blocksView.get(id).setStatus(Colors.SENT);
 				throw new Exception("Out of boxes");
-				}catch (Exception e) {
-//					Helper.log("Out of size");
-				}
+			} catch (Exception e) {
+				// Helper.log("Out of size");
 			}
+		}
 	}
 
 	public static class MyUserInfo implements UserInfo, UIKeyboardInteractive {
@@ -358,10 +360,10 @@ public class SCP {
 				sb.append((char) c);
 			} while (c != '\n');
 			if (b == 1) { // error
-//				Helper.log(sb.toString());
+				// Helper.log(sb.toString());
 			}
 			if (b == 2) { // fatal error
-//				Helper.log(sb.toString());
+				// Helper.log(sb.toString());
 			}
 		}
 		return b;

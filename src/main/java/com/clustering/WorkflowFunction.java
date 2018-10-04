@@ -66,7 +66,7 @@ public class WorkflowFunction {
 		});
 		task.start();
 	}
-	
+
 	public void cleanFolder(String dir, MyCallBack callback) {
 		try {
 			FileUtils.cleanDirectory(new File(dir));
@@ -272,16 +272,16 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				System.out.println("Get Data back..");
 				progressBarPanel.updateBar(0);
-				ArrayList<String> files = Config.getBlocksFilesNames();
-				int key = 0;
-				for (String file : files) {
+//				ArrayList<String> files = Config.getBlocksFilesNames();
+//				int key = 0;
+				for (int i = 1; i<=Config.getTotalInputFiles();i++) {
+					String file = i + Config.getInputPrefix(); 
 					try {
-						SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
-								Config.getTempFolderPath() + "//" + file, key);
+							SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
+								Config.getTempFolderPath() + "//" + file, i-1);
 
-						logPanel.addText("block " + key + " got with success !");
-						key++;
-						progressBarPanel.updateBar((key * 100) / files.size());
+						logPanel.addText("block " + i + " got with success !");
+						progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
 					} catch (IOException e) {
 						valid = false;
 						callBack.onError(e.toString());
@@ -315,7 +315,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				logPanel.addText("Generate result..");
-				BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
+				Config.resultImg = BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
 				callBack.onSuccess();
 			}
 		});
@@ -339,7 +339,6 @@ public class WorkflowFunction {
 			@Override
 			public void log(String log) {
 				System.out.println("Log got: " + log);
-				logPanel.addText("Log got:" + log);
 				processClusterLog(log);
 			}
 		});
@@ -349,8 +348,10 @@ public class WorkflowFunction {
 	private void processClusterLog(String log) {
 		String[] parts = log.split(";");
 		try {
-			if (parts[1] == Config.getUUID()) {
-				int id = Integer.parseInt(parts[1]);
+			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
+			if (parts[1].equals(Config.getUUID()) ) {
+				logPanel.addText("Log got:" + log);
+				int id = Integer.parseInt(parts[2]);
 				Config.blocksView.get(id).setStatus(Colors.PROCESSED);
 			}
 		} catch (Exception e) {
