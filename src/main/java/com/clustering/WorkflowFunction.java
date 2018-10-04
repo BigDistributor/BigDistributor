@@ -150,7 +150,6 @@ public class WorkflowFunction {
 			public void run() {
 				logPanel.addText("Generate Script..");
 				ShellGenerator.generateTaskShell(callback);
-				callback.onSuccess();
 			}
 		});
 		task.run();
@@ -210,7 +209,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Send Shell..");
+				logPanel.addText("Send submit..");
 				try {
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "//submit.cmd",
 							Config.getClusterPath() + "submit.cmd", -1);
@@ -348,7 +347,7 @@ public class WorkflowFunction {
 	private void processClusterLog(String log) {
 		String[] parts = log.split(";");
 		try {
-			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
+//			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
 			if (parts[1].equals(Config.getUUID()) ) {
 				logPanel.addText("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);

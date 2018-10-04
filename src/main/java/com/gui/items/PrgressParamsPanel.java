@@ -107,8 +107,6 @@ public class PrgressParamsPanel extends JPanel {
 							"Invalide Task number! putted default 10 Jobs");
 					Config.parallelJobs = 10;
 				}
-				 
-
 				workflow.sendTask(new MyCallBack() {
 
 					@Override
@@ -129,7 +127,6 @@ public class PrgressParamsPanel extends JPanel {
 
 													@Override
 													public void onSuccess() {
-														
 														workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 															@Override
