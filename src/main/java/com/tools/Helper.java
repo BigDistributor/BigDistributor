@@ -1,9 +1,18 @@
 package main.java.com.tools;
 
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import main.java.com.clustering.MyCallBack;
 import net.imglib2.img.Img;
@@ -58,6 +67,17 @@ public class Helper {
 			if (file.endsWith(prefix)) result.add(file);
 		}
 		return result;
+	}
+
+	public static JPanel createImagePanel(String path) throws IOException {
+		JPanel panel = new JPanel();
+		ImageIcon imageIcon = new ImageIcon(path); // load the image to a imageIcon
+		Image image = imageIcon.getImage(); // transform it 
+		Image newimg = image.getScaledInstance( 150, 50,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		imageIcon = new ImageIcon(newimg); 
+		JLabel picLabel = new JLabel(imageIcon);
+		panel.add(picLabel);
+		return panel;
 	}
 
 }

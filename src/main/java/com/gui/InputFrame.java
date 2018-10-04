@@ -13,12 +13,13 @@ import main.java.com.gui.items.FilePicker;
 import main.java.com.gui.items.Frame;
 import main.java.com.tools.Config;
 
-public class InputFrame extends Frame{
+public class InputFrame extends Frame {
 	private static final long serialVersionUID = -6778326835751228740L;
-	FilePicker jarPicker ;
+	FilePicker jarPicker;
 	FilePicker inputPicker;
 	JButton nextButton;
 	JButton configButton;
+
 	public InputFrame(String arg0) {
 		super(arg0);
 		jarPicker = new FilePicker("Jar:", "Browse");
@@ -37,24 +38,26 @@ public class InputFrame extends Frame{
 		panel.add(configButton);
 		add(panel);
 		nextButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Config.setLocalTaskPath(jarPicker.getSelectedFilePath());	
-				Config.setOriginalInputFilePath(inputPicker.getSelectedFilePath());
-				setVisible(false); 
-				dispose();
-				Config.init();
-				ProgressGUI progressGUI = new ProgressGUI("Progress..");
-				progressGUI.setVisible(true);
+				if ((!jarPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
+					Config.setLocalTaskPath(jarPicker.getSelectedFilePath());
+					Config.setOriginalInputFilePath(inputPicker.getSelectedFilePath());
+					setVisible(false);
+					dispose();
+					Config.init();
+					ProgressGUI progressGUI = new ProgressGUI("Progress..");
+					progressGUI.setVisible(true);
+				}
 			}
 		});
-		configButton.addActionListener(new ActionListener() {		
+		configButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ConfigFrame configFrame = new ConfigFrame("Cluster Config");
 				configFrame.setVisible(true);
-				configFrame.setAlwaysOnTop (true);	
+				configFrame.setAlwaysOnTop(true);
 			}
 		});
 	}

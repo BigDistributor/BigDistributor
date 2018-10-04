@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -14,6 +15,7 @@ import main.java.com.blockmanager.GraphicBlocksManager;
 import main.java.com.clustering.MyCallBack;
 import main.java.com.clustering.WorkflowFunction;
 import main.java.com.tools.Config;
+import main.java.com.tools.Helper;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 
 public class PrgressParamsPanel extends JPanel {
@@ -32,7 +34,7 @@ public class PrgressParamsPanel extends JPanel {
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", JLabel.CENTER);
 		int sizes = Config.getDimensions().length;
-		setLayout(new GridLayout(6 + sizes, 1, 20, 20));
+		setLayout(new GridLayout(7 + sizes, 1, 20, 20));
 		sliderBoxSizePanel = new ArrayList<SliderPanel>();
 		for (int i = 0; i < sizes; i++) {
 			SliderPanel slider = new SliderPanel(i, "Box Size[" + i + "]:", 100, 2000, 200);
@@ -79,6 +81,12 @@ public class PrgressParamsPanel extends JPanel {
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
 		this.add(workflow.progressBarPanel);
+		try {
+			this.add(Helper.createImagePanel("img/labels.png"));
+		} catch (IOException e1) {
+			System.out.println("Error add image Label");
+			e1.printStackTrace();
+		}
 
 		this.add(numberBlocksLabel);
 		for (SliderPanel slider : sliderBoxSizePanel) {

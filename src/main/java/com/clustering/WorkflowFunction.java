@@ -352,7 +352,7 @@ public class WorkflowFunction {
 			if (parts[1].equals(Config.getUUID()) ) {
 				logPanel.addText("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);
-				Config.blocksView.get(id).setStatus(Colors.PROCESSED);
+				Config.blocksView.get(id-1).setStatus(Colors.PROCESSED);
 			}
 		} catch (Exception e) {
 			System.out.println("converting log error");
