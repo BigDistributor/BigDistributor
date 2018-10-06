@@ -43,8 +43,9 @@ public class WorkflowFunction {
 				progressBarPanel.updateBar(0);
 				// Config.getClusterPath()+Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length-
 				// 1]
-				Config.setClusterTaskPath(Config.getClusterPath() + "//task.jar");
-				System.out.println(Config.getClusterTaskPath());
+				Config.setClusterTaskPath(Config.getClusterPath() + "/task.jar");
+				System.out.println("Task in cloud: "+ Config.getClusterTaskPath());
+				System.out.println("Task in local: "+ Config.getLocalTaskPath());
 				try {
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(),
 							Config.getClusterTaskPath(), -1);
@@ -175,12 +176,15 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Send Shell..");
 				try {
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "//task.sh",
-							Config.getClusterPath() + "task.sh", -1);
+					
+					System.out.println("Local task sh:"+Config.getTempFolderPath() + "//task.sh");
+					System.out.println("Cloud task sh:"+Config.getClusterPath() + "task.sh");
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.sh",
 							Config.getClusterPath() + "logProvider.sh", -1);
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.jar",
 							Config.getClusterPath() + "logProvider.jar", -1);
+					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "tools/task.sh",
+							Config.getClusterPath() + "task.sh", -1);
 				} catch (JSchException e) {
 					valid = false;
 					callBack.onError(e.toString());
@@ -297,7 +301,7 @@ public class WorkflowFunction {
 						e.printStackTrace();
 					} catch (IndexOutOfBoundsException e) {
 						e.printStackTrace();
-						callBack.onSuccess();
+//						callBack.onSuccess();
 					}
 
 				}

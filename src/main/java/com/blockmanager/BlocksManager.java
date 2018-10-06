@@ -24,7 +24,6 @@ import net.imglib2.algorithm.gauss3.Gauss3;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
@@ -57,7 +56,7 @@ public class BlocksManager {
 			blockMap.put(i, block);
 			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp),
 					tempDir.getAbsolutePath() + "/" + i + ".tif", callBack);
-//			Todo
+//TODO
 //			Config.progressValue = (i * 100) / blocks.size();
 		}
 		return blockMap;
