@@ -183,7 +183,7 @@ public class WorkflowFunction {
 							Config.getClusterPath() + "logProvider.sh", -1);
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.jar",
 							Config.getClusterPath() + "logProvider.jar", -1);
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "tools/task.sh",
+					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//task.sh",
 							Config.getClusterPath() + "task.sh", -1);
 				} catch (JSchException e) {
 					valid = false;
