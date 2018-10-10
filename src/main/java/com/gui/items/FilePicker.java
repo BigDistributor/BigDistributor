@@ -56,6 +56,14 @@ public class FilePicker extends JPanel {
 	public JFileChooser getFileChooser() {
 		return this.fileChooser;
 	}
+	
+	public void hideButton() {
+		button.setVisible(false);
+	}
+	
+	public void showButton() {
+		button.setVisible(true);
+	}
 
 	public class FileTypeFilter extends FileFilter {
 		private String extension;

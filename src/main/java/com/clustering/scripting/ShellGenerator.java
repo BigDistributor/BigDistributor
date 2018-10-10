@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import main.java.com.clustering.MyCallBack;
+import main.java.com.tools.AppMode;
 import main.java.com.tools.Config;
 
 public class ShellGenerator {
@@ -50,7 +51,11 @@ public class ShellGenerator {
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
-			out.println("java -jar task.jar $SGE_TASK_ID" + Config.getInputPrefix());
+			if(Config.APP_MODE == AppMode.LocalInputMode) {
+			out.println("java -jar task.jar $SGE_TASK_ID" + Config.getInputPrefix());}
+			else if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				out.println("java -jar task.jar " + Config.getOriginalInputFilePath());
+			}
 			callback.onSuccess();
 			return filePath;
 		} catch (FileNotFoundException e) {

@@ -19,6 +19,7 @@ import main.java.com.clustering.scripting.ShellGenerator;
 import main.java.com.gui.items.Colors;
 import main.java.com.gui.items.LogPanel;
 import main.java.com.gui.items.ProgressBarPanel;
+import main.java.com.tools.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
 
@@ -162,7 +163,11 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				logPanel.addText("Generate Batch..");
-				BatchGenerator.GenerateBatch(job, Config.getTotalInputFiles(), callback);
+				if(Config.APP_MODE == AppMode.LocalInputMode) {
+				BatchGenerator.GenerateBatchForLocalFiles(job, Config.getTotalInputFiles(), callback);}
+				else if(Config.APP_MODE == AppMode.ClusterInputMode){
+					BatchGenerator.GenerateBatchForClusterFile(callback);
+				}
 			}
 		});
 		task.run();

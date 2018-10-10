@@ -13,7 +13,7 @@ import net.imglib2.type.numeric.real.FloatType;
 public enum Config {
 	INSTANCE;
 	
-	public static AppMode APP_MODE = AppMode.ClusterInputMode;
+	public static AppMode APP_MODE = AppMode.LocalInputMode;
 	public static final int BUFFER_SIZE = 64 * 1024;
 	public static final int MINIMUM_BOX_SIZE = 50;
 	public static final int PREVIEW_PANEL_WIDTH = 800;
@@ -276,9 +276,14 @@ public enum Config {
 	public static void init() {
 		Config.setUUID(UUID.randomUUID().toString().replace("-", ""));
 		System.out.println("UUID:"+Config.getUUID());
+		if(APP_MODE==AppMode.LocalInputMode) {
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
 		setInputFile(image);
 		setDimensions(Helper.getDimensions(image));
+		}else if (APP_MODE==AppMode.ClusterInputMode) {
+			setDimensions(new long[]{200,200});
+		}
+		
 		setBlocksSize(200);
 	}
 
