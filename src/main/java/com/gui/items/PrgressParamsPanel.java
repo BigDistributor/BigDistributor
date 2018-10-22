@@ -409,7 +409,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 		}
 		if (e.getSource() == generateResultButton) {
 			if (Config.APP_MODE == AppMode.ClusterInputMode) {
-				workflow.getDataBack(new MyCallBack() {
+				workflow.getAllDataBack(new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
@@ -431,7 +431,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 				});
 
 			} else if (Config.APP_MODE == AppMode.LocalInputMode) {
-						workflow.getDataBack(new MyCallBack() {
+						workflow.getAllDataBack(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
@@ -439,7 +439,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 
 									@Override
 									public void onSuccess() {
-										ImageJFunctions.show(Config.resultImg).setTitle("Result");
+										ImageJFunctions.show(Config.resultImage).setTitle("Result");
 
 									}
 

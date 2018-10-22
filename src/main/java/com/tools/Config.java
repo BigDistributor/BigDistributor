@@ -8,6 +8,7 @@ import com.jcraft.jsch.Session;
 
 import main.java.com.gui.items.BlockView;
 import net.imglib2.img.Img;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
@@ -52,6 +53,7 @@ public enum Config {
 	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
 	private static Img<FloatType> inputFile;
+	public static Img<FloatType> resultImage;
 	public static ArrayList<BlockView> blocksView;
 
 	public static long totalBlocks = 0;
@@ -59,7 +61,6 @@ public enum Config {
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
 	private static String uuid;
-	public static Img<FloatType> resultImg;
 	public static int parallelJobs;
 
 	public static int getBlocks() {
@@ -278,6 +279,8 @@ public enum Config {
 		System.out.println("UUID:"+Config.getUUID());
 		if(APP_MODE==AppMode.LocalInputMode) {
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
+		resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
+				new FloatType());
 		setInputFile(image);
 		setDimensions(Helper.getDimensions(image));
 		}else if (APP_MODE==AppMode.ClusterInputMode) {

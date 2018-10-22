@@ -167,7 +167,11 @@ public class SCP {
 
 		// System.exit(0);
 		if (id >= 0) {
-			Config.blocksView.get(id).setStatus(Colors.GOT);
+			try {
+			Config.blocksView.get(id).setStatus(Colors.GOT);}
+			catch(IndexOutOfBoundsException ex) {
+				System.out.println("Error! no box for index: "+id);
+			}
 		}
 	}
 
