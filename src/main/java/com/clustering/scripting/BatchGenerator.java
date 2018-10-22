@@ -51,6 +51,8 @@ public class BatchGenerator {
 				out.println("qsub -N \"prov_" + (i + 1) + "\" -t " + (i + 1) + " -hold_jid task_" + (i + 1)
 						+ " -v uuid='" + Config.getUUID() + "' ./logProvider.sh");
 			}
+			out.flush();
+			out.close();
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
 			e.printStackTrace();

@@ -193,6 +193,7 @@ public class SCP {
 		}
 
 		File _lfile = new File(localFile);
+		System.out.println("File: "+localFile+" |Size:"+_lfile.length());
 
 		if (ptimestamp) {
 			command = "T " + (_lfile.lastModified() / 1000) + " 0";

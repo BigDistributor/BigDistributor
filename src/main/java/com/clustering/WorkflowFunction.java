@@ -188,8 +188,9 @@ public class WorkflowFunction {
 							Config.getClusterPath() + "logProvider.sh", -1);
 					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.jar",
 							Config.getClusterPath() + "logProvider.jar", -1);
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//task.sh",
-							Config.getClusterPath() + "task.sh", -1);
+				
+					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath()+"//task.sh",
+							Config.getClusterPath() + "/task.sh", -1);
 				} catch (JSchException e) {
 					valid = false;
 					callBack.onError(e.toString());
@@ -277,41 +278,73 @@ public class WorkflowFunction {
 
 			@Override
 			public void run() {
-				Boolean valid = true;
-				System.out.println("Get Data back..");
-				progressBarPanel.updateBar(0);
-//				ArrayList<String> files = Config.getBlocksFilesNames();
-//				int key = 0;
-				for (int i = 1; i<=Config.getTotalInputFiles();i++) {
-					String file = i + Config.getInputPrefix(); 
-					try {
-							SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
-								Config.getTempFolderPath() + "//" + file, i-1);
-
-						logPanel.addText("block " + i + " got with success !");
-						progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
-					} catch (IOException e) {
-						valid = false;
-						callBack.onError(e.toString());
-						e.printStackTrace();
-					} catch (JSchException e) {
+				if (Config.APP_MODE == AppMode.ClusterInputMode) {
+					Boolean valid = true;
+					System.out.println("Get Data back..");
+					progressBarPanel.updateBar(0);
 						try {
-							SCP.connect(Config.getPseudo(), Config.getHost());
-						} catch (JSchException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+								SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getOriginalInputFilePath(),
+									Config.getTempFolderPath() + "//file.tif" , 0);
+							logPanel.addText("file got with success !");
+							progressBarPanel.updateBar(1);
+						} catch (IOException e) {
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (JSchException e) {
+							try {
+								SCP.connect(Config.getPseudo(), Config.getHost());
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (IndexOutOfBoundsException e) {
+							e.printStackTrace();
+//							callBack.onSuccess();
 						}
-						valid = false;
-						callBack.onError(e.toString());
-						e.printStackTrace();
-					} catch (IndexOutOfBoundsException e) {
-						e.printStackTrace();
-//						callBack.onSuccess();
-					}
 
+					if (valid)
+						callBack.onSuccess();
+				}else if (Config.APP_MODE == AppMode.LocalInputMode) {
+					Boolean valid = true;
+					System.out.println("Get Data back..");
+					progressBarPanel.updateBar(0);
+//					ArrayList<String> files = Config.getBlocksFilesNames();
+//					int key = 0;
+					for (int i = 1; i<=Config.getTotalInputFiles();i++) {
+						String file = i + Config.getInputPrefix(); 
+						try {
+								SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
+									Config.getTempFolderPath() + "//" + file, i-1);
+
+							logPanel.addText("block " + i + " got with success !");
+							progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
+						} catch (IOException e) {
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (JSchException e) {
+							try {
+								SCP.connect(Config.getPseudo(), Config.getHost());
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (IndexOutOfBoundsException e) {
+							e.printStackTrace();
+//							callBack.onSuccess();
+						}
+
+					}
+					if (valid)
+						callBack.onSuccess();
 				}
-				if (valid)
-					callBack.onSuccess();
 			}
 		});
 		task.run();

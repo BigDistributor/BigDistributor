@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,9 +18,10 @@ import main.java.com.clustering.WorkflowFunction;
 import main.java.com.tools.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
+import main.java.com.tools.IOFunctions;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 
-public class PrgressParamsPanel extends JPanel implements ActionListener{
+public class PrgressParamsPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5489935889866505715L;
 	public ArrayList<SliderPanel> sliderBoxSizePanel;
 	public JLabel numberBlocksLabel;
@@ -100,288 +102,37 @@ public class PrgressParamsPanel extends JPanel implements ActionListener{
 
 		startWorkFlowButton.addActionListener(this);
 
-		generateResultButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Thread task = new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						workflow.getDataBack(new MyCallBack() {
-
-							@Override
-							public void onSuccess() {
-								workflow.combineData(new MyCallBack() {
-
-									@Override
-									public void onSuccess() {
-										ImageJFunctions.show(Config.resultImg).setTitle("Result");
-
-									}
-
-									@Override
-									public void onError(String error) {
-										// TODO Auto-generated method stub
-
-									}
-
-									@Override
-									public void log(String log) {
-										// TODO Auto-generated method stub
-
-									}
-								});
-
-							}
-
-							@Override
-							public void onError(String error) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void log(String log) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-					}
-				});
-				task.start();
-			}
-		});
+		generateResultButton.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == startWorkFlowButton) {
-			if(Config.APP_MODE == AppMode.ClusterInputMode) {
-						workflow.sendTask(new MyCallBack() {
+		if (e.getSource() == startWorkFlowButton) {
+			if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				workflow.sendTask(new MyCallBack() {
 
-							@Override
-							public void onSuccess() {
-								workflow.generateShell(new MyCallBack() {
-
-													@Override
-													public void onSuccess() {
-														workflow.sendShell(new MyCallBack() {
-
-															@Override
-															public void onSuccess() {
-																workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
-
-																	@Override
-																	public void onSuccess() {
-																		workflow.sendBatch(new MyCallBack() {
-
-																			@Override
-																			public void onSuccess() {
-																				workflow.runBatch(new MyCallBack() {
-
-																					@Override
-																					public void onSuccess() {}
-
-																					@Override
-																					public void onError(String error) {
-																						// TODO Auto-generated method stub
-
-																					}
-
-																					@Override
-																					public void log(String log) {
-																						// TODO Auto-generated method stub
-
-																					}
-																				});
-
-																			}
-
-																			@Override
-																			public void onError(String error) {
-																				// TODO Auto-generated method stub
-
-																			}
-
-																			@Override
-																			public void log(String log) {
-																				// TODO Auto-generated method stub
-
-																			}
-																		});
-
-																	}
-
-																	@Override
-																	public void onError(String error) {
-																		// TODO Auto-generated method stub
-
-																	}
-
-																	@Override
-																	public void log(String log) {
-																		// TODO Auto-generated method stub
-
-																	}
-																});
-															}
-
-															@Override
-															public void onError(String error) {
-																// TODO Auto-generated method stub
-
-															}
-
-															@Override
-															public void log(String log) {
-																// TODO Auto-generated method stub
-
-															}
-														});
-
-													}
-
-													@Override
-													public void onError(String error) {
-														// TODO Auto-generated method stub
-
-													}
-
-													@Override
-													public void log(String log) {
-														// TODO Auto-generated method stub
-
-													}
-												});
-							}
-
-							@Override
-							public void onError(String error) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void log(String log) {
-								// TODO Auto-generated method stub
-
-							}
-						});
-			}
-			if(Config.APP_MODE == AppMode.LocalInputMode) {
-				new ActionListener() {
 					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Config.parallelJobs = Integer.parseInt(jobsField.getText());
-						} catch (Exception ex) {
-							workflow.logPanel.addText(
-									"Invalide Task number! putted default 10 Jobs");
-							Config.parallelJobs = 10;
-						}
-						workflow.sendTask(new MyCallBack() {
+					public void onSuccess() {
+						workflow.generateShell(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
-								workflow.generateInput(new MyCallBack() {
+								workflow.sendShell(new MyCallBack() {
 
 									@Override
 									public void onSuccess() {
-										workflow.sendInput(new MyCallBack() {
+										workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 											@Override
 											public void onSuccess() {
-												workflow.generateShell(new MyCallBack() {
+												workflow.sendBatch(new MyCallBack() {
 
 													@Override
 													public void onSuccess() {
-														workflow.sendShell(new MyCallBack() {
+														workflow.runBatch(new MyCallBack() {
 
 															@Override
 															public void onSuccess() {
-																workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
-
-																	@Override
-																	public void onSuccess() {
-																		workflow.sendBatch(new MyCallBack() {
-
-																			@Override
-																			public void onSuccess() {
-																				workflow.runBatch(new MyCallBack() {
-
-																					@Override
-																					public void onSuccess() {
-//																						workflow.cleanFolder(
-//																								Config.getTempFolderPath(),
-//																								new MyCallBack() {
-//																									@Override
-//																									public void onSuccess() {
-//																										// TODO Auto-generated
-//																										// method stub
-		//
-//																									}
-		//
-//																									@Override
-//																									public void onError(
-//																											String error) {
-//																										// TODO Auto-generated
-//																										// method stub
-		//
-//																									}
-		//
-//																									@Override
-//																									public void log(
-//																											String log) {
-//																										// TODO Auto-generated
-//																										// method stub
-		//
-//																									}
-//																								});
-
-																					}
-
-																					@Override
-																					public void onError(String error) {
-																						// TODO Auto-generated method stub
-
-																					}
-
-																					@Override
-																					public void log(String log) {
-																						// TODO Auto-generated method stub
-
-																					}
-																				});
-
-																			}
-
-																			@Override
-																			public void onError(String error) {
-																				// TODO Auto-generated method stub
-
-																			}
-
-																			@Override
-																			public void log(String log) {
-																				// TODO Auto-generated method stub
-
-																			}
-																		});
-
-																	}
-
-																	@Override
-																	public void onError(String error) {
-																		// TODO Auto-generated method stub
-
-																	}
-
-																	@Override
-																	public void log(String log) {
-																		// TODO Auto-generated method stub
-
-																	}
-																});
 															}
 
 															@Override
@@ -426,7 +177,6 @@ public class PrgressParamsPanel extends JPanel implements ActionListener{
 
 											}
 										});
-
 									}
 
 									@Override
@@ -441,6 +191,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener{
 
 									}
 								});
+
 							}
 
 							@Override
@@ -456,8 +207,271 @@ public class PrgressParamsPanel extends JPanel implements ActionListener{
 							}
 						});
 					}
-				};
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void log(String log) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 			}
+			if (Config.APP_MODE == AppMode.LocalInputMode) {
+
+				try {
+					Config.parallelJobs = Integer.parseInt(jobsField.getText());
+				} catch (Exception ex) {
+					workflow.logPanel.addText("Invalide Task number! putted default 10 Jobs");
+					Config.parallelJobs = 10;
+				}
+				workflow.sendTask(new MyCallBack() {
+
+					@Override
+					public void onSuccess() {
+						workflow.generateInput(new MyCallBack() {
+
+							@Override
+							public void onSuccess() {
+								workflow.sendInput(new MyCallBack() {
+
+									@Override
+									public void onSuccess() {
+										workflow.generateShell(new MyCallBack() {
+
+											@Override
+											public void onSuccess() {
+												workflow.sendShell(new MyCallBack() {
+
+													@Override
+													public void onSuccess() {
+														workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
+
+															@Override
+															public void onSuccess() {
+																workflow.sendBatch(new MyCallBack() {
+
+																	@Override
+																	public void onSuccess() {
+																		workflow.runBatch(new MyCallBack() {
+
+																			@Override
+																			public void onSuccess() {
+																				// workflow.cleanFolder(
+																				// Config.getTempFolderPath(),
+																				// new MyCallBack() {
+																				// @Override
+																				// public void onSuccess() {
+																				// // TODO Auto-generated
+																				// // method stub
+																				//
+																				// }
+																				//
+																				// @Override
+																				// public void onError(
+																				// String error) {
+																				// // TODO Auto-generated
+																				// // method stub
+																				//
+																				// }
+																				//
+																				// @Override
+																				// public void log(
+																				// String log) {
+																				// // TODO Auto-generated
+																				// // method stub
+																				//
+																				// }
+																				// });
+
+																			}
+
+																			@Override
+																			public void onError(String error) {
+																				// TODO Auto-generated method stub
+
+																			}
+
+																			@Override
+																			public void log(String log) {
+																				// TODO Auto-generated method stub
+
+																			}
+																		});
+
+																	}
+
+																	@Override
+																	public void onError(String error) {
+																		// TODO Auto-generated method stub
+
+																	}
+
+																	@Override
+																	public void log(String log) {
+																		// TODO Auto-generated method stub
+
+																	}
+																});
+
+															}
+
+															@Override
+															public void onError(String error) {
+																// TODO Auto-generated method stub
+
+															}
+
+															@Override
+															public void log(String log) {
+																// TODO Auto-generated method stub
+
+															}
+														});
+													}
+
+													@Override
+													public void onError(String error) {
+														// TODO Auto-generated method stub
+
+													}
+
+													@Override
+													public void log(String log) {
+														// TODO Auto-generated method stub
+
+													}
+												});
+
+											}
+
+											@Override
+											public void onError(String error) {
+												// TODO Auto-generated method stub
+
+											}
+
+											@Override
+											public void log(String log) {
+												// TODO Auto-generated method stub
+
+											}
+										});
+
+									}
+
+									@Override
+									public void onError(String error) {
+										// TODO Auto-generated method stub
+
+									}
+
+									@Override
+									public void log(String log) {
+										// TODO Auto-generated method stub
+
+									}
+								});
+
+							}
+
+							@Override
+							public void onError(String error) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void log(String log) {
+								// TODO Auto-generated method stub
+
+							}
+						});
+					}
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void log(String log) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+			}
+		}
+		if (e.getSource() == generateResultButton) {
+			if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				workflow.getDataBack(new MyCallBack() {
+
+					@Override
+					public void onSuccess() {
+						ImageJFunctions.show(IOFunctions.openAs32Bit(new File(Config.getTempFolderPath()+"/file.tif"))).setTitle("Result");
+
+					}
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void log(String log) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+			} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+						workflow.getDataBack(new MyCallBack() {
+
+							@Override
+							public void onSuccess() {
+								workflow.combineData(new MyCallBack() {
+
+									@Override
+									public void onSuccess() {
+										ImageJFunctions.show(Config.resultImg).setTitle("Result");
+
+									}
+
+									@Override
+									public void onError(String error) {
+										// TODO Auto-generated method stub
+
+									}
+
+									@Override
+									public void log(String log) {
+										// TODO Auto-generated method stub
+
+									}
+								});
+
+							}
+
+							@Override
+							public void onError(String error) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void log(String log) {
+								// TODO Auto-generated method stub
+
+							}
+						});
+			}
+
 		}
 	}
 }

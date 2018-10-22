@@ -56,6 +56,8 @@ public class ShellGenerator {
 			else if (Config.APP_MODE == AppMode.ClusterInputMode) {
 				out.println("java -jar task.jar " + Config.getOriginalInputFilePath());
 			}
+			out.flush();
+			out.close();
 			callback.onSuccess();
 			return filePath;
 		} catch (FileNotFoundException e) {
@@ -83,6 +85,8 @@ public class ShellGenerator {
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
 			out.println("java -jar logProvider.jar ${uuid} $SGE_TASK_ID");
+			out.flush();
+			out.close();
 			callback.onSuccess();
 			return filePath;
 		} catch (FileNotFoundException e) {
