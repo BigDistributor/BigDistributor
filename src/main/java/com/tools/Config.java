@@ -2,11 +2,11 @@ package main.java.com.tools;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import com.jcraft.jsch.Session;
 
 import main.java.com.gui.items.BlockView;
+import main.java.com.tools.server.Login;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -21,11 +21,9 @@ public enum Config {
 
 	public static int previewPreferedHeight = 500;
 
-	private static String pseudo = "mzouink";
-	private static String pw = "";
-	private static String host = "maxlogin2.mdc-berlin.net";
-	private static int port = 22;
-	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
+	private static Login login;
+	
+//	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
 
 	private static int blocks;
@@ -58,7 +56,6 @@ public enum Config {
 	
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
-	private static String uuid;
 	public static Img<FloatType> resultImg;
 	public static int parallelJobs;
 
@@ -151,14 +148,6 @@ public enum Config {
 		Config.overlap = overlap;
 	}
 
-	public static String getClusterPath() {
-		return clusterPath;
-	}
-
-	public static void setClusterPath(String clusterPath) {
-		Config.clusterPath = clusterPath;
-	}
-
 	public static Session getSession() {
 		return currentSession;
 	}
@@ -166,38 +155,8 @@ public enum Config {
 	public static void setSession(Session session) {
 		Config.currentSession = session;
 	}
-
-	public static String getPseudo() {
-		return pseudo;
-	}
-
-	public static void setPseudo(String pseudo) {
-		Config.pseudo = pseudo;
-	}
-
-	public static String getPw() {
-		return pw;
-	}
-
-	public static void setPw(String pw) {
-		Config.pw = pw;
-	}
-
-	public static String getHost() {
-		return host;
-	}
-
-	public static void setHost(String host) {
-		Config.host = host;
-	}
-
-	public static int getPort() {
-		return port;
-	}
-
-	public static void setPort(int port) {
-		Config.port = port;
-	}
+	
+	
 
 	public static String getPath() {
 		return path;
@@ -223,24 +182,17 @@ public enum Config {
 		Config.dimensions = dimensions;
 	}
 
-	public static void config(String host, int port, String pseudo, String pw) {
-		Config.host = host;
-		Config.port = port;
-		Config.pseudo = pseudo;
-		Config.pw = pw;
-		System.out.println("Got Config: " + Config.host);
+	public static void setLogin(Login login) {
+		Config.login = login;
+
+	}
+	
+	public static Login getLogin() {
+		return Config.login;
 	}
 
-//	public static void addScriptFile(String scriptFile) {
-//		if (scriptFiles == null) {
-//			scriptFiles = new ArrayList<String>();
-//		}
-//		scriptFiles.add(scriptFile);
-//	}
 
-	public static String getClusterInput() {
-		return clusterPath;
-	}
+
 
 	public static void setBlocksSize(int value) {
 		blocksSize = new long[dimensions.length];
@@ -274,21 +226,13 @@ public enum Config {
 	}
 
 	public static void init() {
-		Config.setUUID(UUID.randomUUID().toString().replace("-", ""));
-		System.out.println("UUID:"+Config.getUUID());
+//		Config.setUUID(UUID.randomUUID().toString().replace("-", ""));
+//		System.out.println("UUID:"+Config.getUUID());
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
 		setInputFile(image);
 		setDimensions(Helper.getDimensions(image));
 		setBlocksSize(200);
 	}
 
-
-	public static String getUUID() {
-		return uuid;
-	}
-
-	public static void setUUID(String uuid) {
-		Config.uuid = uuid;
-	}
 
 }

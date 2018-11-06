@@ -5,9 +5,6 @@ import main.java.com.gui.InputFrame;
 
 public class MainFrame_ implements PlugIn {
 
-	public static String defaultfilename = "";
-	public static String defaultPath = "";
-
 	public void run(String arg) {
 		InputFrame inputFrame = new InputFrame("Input");
 		inputFrame.setVisible(true);

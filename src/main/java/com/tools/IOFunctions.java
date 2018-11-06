@@ -50,6 +50,7 @@ public class IOFunctions {
 			try {
 				imp = ((ImagePlusImg<T, ?>) img).getImagePlus();
 			} catch (ImgLibException e) {
+				System.out.println(e.toString());
 			}
 
 		if (imp == null) {
@@ -143,6 +144,7 @@ public class IOFunctions {
 				try {
 					out.close();
 				} catch (IOException e) {
+					System.out.println(e.toString());
 				}
 		}
 		return true;

@@ -414,8 +414,10 @@ public class Block extends AbstractInterval
 	
 	private static final void copyX( final float[] blockArray, final float[] targetArray, final int count, int iTarget, int iBlock )
 	{
+		int iT = iTarget;
+		int iB = iBlock;
 		for ( int x = 0; x < count; ++x )
-			targetArray[ iTarget++ ] = blockArray[ iBlock++ ];
+			targetArray[ iT++ ] = blockArray[ iB++ ];
 	}
 
 	public static final long[] max( final long[] min, final long[] size )

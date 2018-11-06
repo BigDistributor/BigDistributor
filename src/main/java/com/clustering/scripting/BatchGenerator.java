@@ -10,6 +10,8 @@ import main.java.com.tools.Config;
 public class BatchGenerator {
 
 	public static void GenerateBatch(int tasksPerJob, int totalInputFiles, MyCallBack callback) {
+		String id = Config.getLogin().getId();
+		String path = Config.getLogin().getServer().getPath();
 		boolean error = false;
 		File file = new File(Config.getTempFolderPath());
 		String filePath = file.getAbsolutePath() + "/submit.cmd";
@@ -18,7 +20,7 @@ public class BatchGenerator {
 		int restPortions = totalInputFiles % tasksPerJob;
 		try (PrintWriter out = new PrintWriter(filePath)) {
 			out.println("#!/bin/bash");
-			out.println("cd " + Config.getClusterPath());
+			out.println("cd " + path);
 			int i = 0;
 			for (i = 0; i < jobs; i++) {
 				if (tasksPerJob > 1) {
@@ -38,7 +40,7 @@ public class BatchGenerator {
 					}
 				}
 				out.println("qsub -N \"prov_" + (i + 1) + "\" -t " + (i + 1) + " -hold_jid task_" + (i + 1)
-						+ " -v uuid=" + Config.getUUID() + " ./logProvider.sh");
+						+ " -v uuid=" + id + " ./logProvider.sh");
 			}
 			if (restPortions > 0) {
 				if ((i * tasksPerJob + 1) == (i * tasksPerJob + restPortions)) {
@@ -49,7 +51,7 @@ public class BatchGenerator {
 							+ (i * tasksPerJob + restPortions) + " -hold_jid task_" + i + " ./task.sh");
 				}
 				out.println("qsub -N \"prov_" + (i + 1) + "\" -t " + (i + 1) + " -hold_jid task_" + (i + 1)
-						+ " -v uuid='" + Config.getUUID() + "' ./logProvider.sh");
+						+ " -v uuid='" + id + "' ./logProvider.sh");
 			}
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());

@@ -27,12 +27,13 @@ import com.jcraft.jsch.UserInfo;
 import main.java.com.clustering.MyCallBack;
 import main.java.com.gui.items.Colors;
 import main.java.com.tools.Config;
+import main.java.com.tools.server.Login;
 
 public class SCP {
 
-	public static void connect(String user, String host) throws JSchException {
+	public static void connect(Login login) throws JSchException {
 		JSch jsch = new JSch();
-		Config.setSession(jsch.getSession(user, host, 22));
+		Config.setSession(jsch.getSession(login.getAccount().getPseudo(), login.getServer().getHost(),login.getServer().getPort()));
 
 		// username and password will be given via UserInfo interface.
 		UserInfo ui = new MyUserInfo();
@@ -44,19 +45,19 @@ public class SCP {
 		Config.getSession().disconnect();
 	}
 
-	public static void validateConnection(String user, String host) throws JSchException {
+	public static void validateConnection(Login login) throws JSchException {
 		if (Config.getSession() == null) {
-			connect(user, host);
+			connect(login);
 		}
 		if (!Config.getSession().isConnected()) {
-			connect(user, host);
+			connect(login);
 		}
 	}
 
-	public static void run(String user, String host, int port, String scriptPath, String scriptFile,
+	public static void run(Login login, String scriptFile,
 			MyCallBack callBack) throws JSchException {
-		validateConnection(user, host);
-		String command = "cd " + scriptPath + " && chmod +x " + scriptFile + " && ./" + scriptFile;
+		validateConnection(login);
+		String command = "cd " + Config.getLogin().getServer().getPath() + " && chmod +x " + scriptFile + " && ./" + scriptFile;
 		System.out.println(command);
 		Channel channel = Config.getSession().openChannel("exec");
 		callBack.log(command);
@@ -64,9 +65,9 @@ public class SCP {
 		channel.connect();
 	}
 
-	public static void generateLog(String user, String host, int port, String scriptPath, MyCallBack callBack)
+	public static void generateLog(Login login, String scriptPath, MyCallBack callBack)
 			throws JSchException {
-		validateConnection(user, host);
+		validateConnection(login);
 		String command = "cd " + scriptPath + " && qstat > log.txt";
 		Channel channel = Config.getSession().openChannel("exec");
 		callBack.log(command);
@@ -74,10 +75,10 @@ public class SCP {
 		channel.connect();
 	}
 
-	public static void get(String user, String host, int port, String remoteFile, String localFile, int id)
+	public static void get(Login login, String remoteFile, String localFile, int id)
 			throws IOException, JSchException {
 		FileOutputStream fos = null;
-		validateConnection(user, host);
+		validateConnection(login);
 		String prefix = null;
 		if (new File(localFile).isDirectory()) {
 			prefix = localFile + File.separator;
@@ -171,10 +172,10 @@ public class SCP {
 		}
 	}
 
-	public static void send(String user, String host, int port, String localFile, String remoteFile, int id)
+	public static void send(Login login,  String localFile, String remoteFile, int id)
 			throws JSchException, IOException {
 		FileInputStream fis = null;
-		validateConnection(user, host);
+		validateConnection(login);
 		boolean ptimestamp = true;
 
 		// exec 'scp -t rfile' remotely

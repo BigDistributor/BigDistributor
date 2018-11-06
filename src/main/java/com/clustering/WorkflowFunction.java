@@ -43,11 +43,11 @@ public class WorkflowFunction {
 				progressBarPanel.updateBar(0);
 				// Config.getClusterPath()+Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length-
 				// 1]
-				Config.setClusterTaskPath(Config.getClusterPath() + "/task.jar");
+				Config.setClusterTaskPath(Config.getLogin().getServer().getPath() + "/task.jar");
 				System.out.println("Task in cloud: "+ Config.getClusterTaskPath());
 				System.out.println("Task in local: "+ Config.getLocalTaskPath());
 				try {
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getLocalTaskPath(),
+					SCP.send(Config.getLogin(), Config.getLocalTaskPath(),
 							Config.getClusterTaskPath(), -1);
 				} catch (JSchException e) {
 					valid = false;
@@ -129,8 +129,8 @@ public class WorkflowFunction {
 				int key = 0;
 				for (String file : files) {
 					try {
-						SCP.send(Config.getPseudo(), Config.getHost(), Config.getPort(), local + "//" + file,
-								Config.getClusterPath() + "//" + file, key);
+						SCP.send(Config.getLogin(), local + "//" + file,
+								Config.getLogin().getServer().getPath() + "//" + file, key);
 					} catch (JSchException | IOException e) {
 						valid = false;
 						callBack.onError(e.toString());
@@ -178,19 +178,19 @@ public class WorkflowFunction {
 				try {
 					
 					System.out.println("Local task sh:"+Config.getTempFolderPath() + "//task.sh");
-					System.out.println("Cloud task sh:"+Config.getClusterPath() + "task.sh");
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.sh",
-							Config.getClusterPath() + "logProvider.sh", -1);
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//logProvider.jar",
-							Config.getClusterPath() + "logProvider.jar", -1);
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, "tools//task.sh",
-							Config.getClusterPath() + "task.sh", -1);
+					System.out.println("Cloud task sh:"+Config.getLogin().getServer().getPath() + "task.sh");
+					SCP.send(Config.getLogin(), "tools//logProvider.sh",
+							Config.getLogin().getServer().getPath() + "logProvider.sh", -1);
+					SCP.send(Config.getLogin(), "tools//logProvider.jar",
+							Config.getLogin().getServer().getPath() + "logProvider.jar", -1);
+					SCP.send(Config.getLogin(), "tools//task.sh",
+							Config.getLogin().getServer().getPath() + "task.sh", -1);
 				} catch (JSchException e) {
 					valid = false;
 					callBack.onError(e.toString());
 					e.printStackTrace();
 					try {
-						SCP.connect(Config.getPseudo(), Config.getHost());
+						SCP.connect(Config.getLogin());
 					} catch (JSchException e1) {
 						logPanel.addText("Invalide Host");
 						e1.printStackTrace();
@@ -215,14 +215,14 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Send submit..");
 				try {
-					SCP.send(Config.getPseudo(), Config.getHost(), 22, Config.getTempFolderPath() + "//submit.cmd",
-							Config.getClusterPath() + "submit.cmd", -1);
+					SCP.send(Config.getLogin(), Config.getTempFolderPath() + "//submit.cmd",
+							Config.getLogin().getServer().getPath() + "submit.cmd", -1);
 				} catch (JSchException e) {
 					valid = false;
 					callBack.onError(e.toString());
 					e.printStackTrace();
 					try {
-						SCP.connect(Config.getPseudo(), Config.getHost());
+						SCP.connect(Config.getLogin());
 					} catch (JSchException e1) {
 						logPanel.addText("Invalide Host");
 						e1.printStackTrace();
@@ -247,10 +247,10 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Run Submit..");
 				try {
-					SCP.run(Config.getPseudo(), Config.getHost(), 22, Config.getClusterPath(), "submit.cmd", callback);
+					SCP.run(Config.getLogin(), "submit.cmd", callback);
 				} catch (JSchException e) {
 					try {
-						SCP.connect(Config.getPseudo(), Config.getHost());
+						SCP.connect(Config.getLogin());
 					} catch (JSchException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -280,7 +280,7 @@ public class WorkflowFunction {
 				for (int i = 1; i<=Config.getTotalInputFiles();i++) {
 					String file = i + Config.getInputPrefix(); 
 					try {
-							SCP.get(Config.getPseudo(), Config.getHost(), 22, Config.getClusterInput() + "//" + file,
+							SCP.get(Config.getLogin(),Config.getLogin().getServer().getPath() + "//" + file,
 								Config.getTempFolderPath() + "//" + file, i-1);
 
 						logPanel.addText("block " + i + " got with success !");
@@ -291,7 +291,7 @@ public class WorkflowFunction {
 						e.printStackTrace();
 					} catch (JSchException e) {
 						try {
-							SCP.connect(Config.getPseudo(), Config.getHost());
+							SCP.connect(Config.getLogin());
 						} catch (JSchException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -352,7 +352,7 @@ public class WorkflowFunction {
 		String[] parts = log.split(";");
 		try {
 //			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
-			if (parts[1].equals(Config.getUUID()) ) {
+			if (parts[1].equals(Config.getLogin().getId()) ) {
 				logPanel.addText("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);
 				for (int j = (id-1)*Config.parallelJobs; j < id*Config.parallelJobs; j++) {
