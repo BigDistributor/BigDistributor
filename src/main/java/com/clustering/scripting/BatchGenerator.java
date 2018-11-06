@@ -9,7 +9,7 @@ import main.java.com.tools.Config;
 
 public class BatchGenerator {
 
-	public static void GenerateBatch(int tasksPerJob, int totalInputFiles, MyCallBack callback) {
+	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles, MyCallBack callback) {
 		String id = Config.getLogin().getId();
 		String path = Config.getLogin().getServer().getPath();
 		boolean error = false;
@@ -53,6 +53,31 @@ public class BatchGenerator {
 				out.println("qsub -N \"prov_" + (i + 1) + "\" -t " + (i + 1) + " -hold_jid task_" + (i + 1)
 						+ " -v uuid='" + id + "' ./logProvider.sh");
 			}
+			out.flush();
+			out.close();
+		} catch (FileNotFoundException e) {
+			callback.onError(e.toString());
+			e.printStackTrace();
+			error = true;
+		}
+		if (!error) {
+			callback.onSuccess();
+		}
+	}
+	
+	public static void GenerateBatchForClusterFile( MyCallBack callback) {
+		String id = Config.getLogin().getId();
+		String path = Config.getLogin().getServer().getPath();
+		boolean error = false;
+		File file = new File(Config.getTempFolderPath());
+		String filePath = file.getAbsolutePath() + "/submit.cmd";
+		try (PrintWriter out = new PrintWriter(filePath)) {
+			out.println("#!/bin/bash");
+			out.println("cd " + path);
+            out.println("qsub -N \"task_1\" ./task.sh");
+		out.println("qsub -N \"prov_1\" -hold_jid task_1 -v uuid=" + id + " ./logProvider.sh");
+			
+			
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
 			e.printStackTrace();
@@ -64,7 +89,7 @@ public class BatchGenerator {
 	}
 
 	public static void main(String[] args) {
-		BatchGenerator.GenerateBatch(10, 94, new MyCallBack() {
+		BatchGenerator.GenerateBatchForLocalFiles(10, 94, new MyCallBack() {
 
 			@Override
 			public void onSuccess() {

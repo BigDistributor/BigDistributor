@@ -19,8 +19,13 @@ import main.java.com.clustering.scripting.ShellGenerator;
 import main.java.com.gui.items.Colors;
 import main.java.com.gui.items.LogPanel;
 import main.java.com.gui.items.ProgressBarPanel;
+import main.java.com.tools.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
+import main.java.com.tools.IOFunctions;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.real.FloatType;
 
 public class WorkflowFunction {
 	public List<Block> blocks;
@@ -162,7 +167,11 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				logPanel.addText("Generate Batch..");
-				BatchGenerator.GenerateBatch(job, Config.getTotalInputFiles(), callback);
+				if (Config.APP_MODE == AppMode.LocalInputMode) {
+					BatchGenerator.GenerateBatchForLocalFiles(job, Config.getTotalInputFiles(), callback);
+				} else if (Config.APP_MODE == AppMode.ClusterInputMode) {
+					BatchGenerator.GenerateBatchForClusterFile(callback);
+				}
 			}
 		});
 		task.run();
@@ -267,24 +276,22 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void getDataBack(MyCallBack callBack) {
+	public void getAllDataBack(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Boolean valid = true;
-				System.out.println("Get Data back..");
-				progressBarPanel.updateBar(0);
-//				ArrayList<String> files = Config.getBlocksFilesNames();
-//				int key = 0;
-				for (int i = 1; i<=Config.getTotalInputFiles();i++) {
-					String file = i + Config.getInputPrefix(); 
+				if (Config.APP_MODE == AppMode.ClusterInputMode) {
+					Boolean valid = true;
+					System.out.println("Get Data back..");
+					progressBarPanel.updateBar(0);
 					try {
-							SCP.get(Config.getLogin(),Config.getLogin().getServer().getPath() + "//" + file,
-								Config.getTempFolderPath() + "//" + file, i-1);
 
-						logPanel.addText("block " + i + " got with success !");
-						progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
+						SCP.get(Config.getLogin(), Config.getOriginalInputFilePath(),
+								Config.getTempFolderPath() + "//file.tif", 0);
+						logPanel.addText("file got with success !");
+						progressBarPanel.updateBar(1);
+
 					} catch (IOException e) {
 						valid = false;
 						callBack.onError(e.toString());
@@ -301,12 +308,97 @@ public class WorkflowFunction {
 						e.printStackTrace();
 					} catch (IndexOutOfBoundsException e) {
 						e.printStackTrace();
-//						callBack.onSuccess();
+						// callBack.onSuccess();
 					}
 
+					if (valid)
+						callBack.onSuccess();
+				} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+					Boolean valid = true;
+					System.out.println("Get Data back..");
+					progressBarPanel.updateBar(0);
+					// ArrayList<String> files = Config.getBlocksFilesNames();
+					// int key = 0;
+					for (int i = 1; i <= Config.getTotalInputFiles(); i++) {
+						String file = i + Config.getInputPrefix();
+						try {
+							SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath()+ "//" + file,
+									Config.getTempFolderPath() + "//" + file, i - 1);
+
+							logPanel.addText("block " + i + " got with success !");
+							progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
+						} catch (IOException e) {
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (JSchException e) {
+							try {
+								SCP.connect(Config.getLogin());
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (IndexOutOfBoundsException e) {
+							e.printStackTrace();
+							// callBack.onSuccess();
+						}
+
+					}
+					if (valid)
+						callBack.onSuccess();
 				}
-				if (valid)
-					callBack.onSuccess();
+			}
+		});
+		task.run();
+	}
+
+	public void getBlockDataBack(int start, int end, MyCallBack callBack) {
+		Thread task = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (Config.APP_MODE == AppMode.ClusterInputMode) {
+					throw new Error("Cluster blocks get not implimented yet");
+				} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+					Boolean valid = true;
+					System.out.println("Get Data back..");
+					progressBarPanel.updateBar(0);
+					// ArrayList<String> files = Config.getBlocksFilesNames();
+					// int key = 0;
+					for (int i = start; i <= end; i++) {
+						String file = i + Config.getInputPrefix();
+						try {
+							SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath() + "//" + file,
+									Config.getTempFolderPath() + "//" + file, i - 1);
+
+							logPanel.addText("block " + i + " got with success !");
+							progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
+						} catch (IOException e) {
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (JSchException e) {
+							try {
+								SCP.connect(Config.getLogin());
+							} catch (JSchException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							valid = false;
+							callBack.onError(e.toString());
+							e.printStackTrace();
+						} catch (IndexOutOfBoundsException e) {
+							e.printStackTrace();
+							// callBack.onSuccess();
+						}
+
+					}
+					if (valid)
+						callBack.onSuccess();
+				}
 			}
 		});
 		task.run();
@@ -318,7 +410,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				logPanel.addText("Generate result..");
-				Config.resultImg = BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
+				Config.resultImage = BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
 				callBack.onSuccess();
 			}
 		});
@@ -348,6 +440,13 @@ public class WorkflowFunction {
 		consumerThread.start();
 	}
 
+	private void assembleBlockToResult(int key, MyCallBack callback) {
+		String string = Config.getTempFolderPath() + "/" + key + ".tif";
+		Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
+		blockMap.get(key).pasteBlock(Config.resultImage, tmp, callback);
+		callback.onSuccess();
+	}
+
 	private void processClusterLog(String log) {
 		String[] parts = log.split(";");
 		try {
@@ -355,12 +454,62 @@ public class WorkflowFunction {
 			if (parts[1].equals(Config.getLogin().getId()) ) {
 				logPanel.addText("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);
-				for (int j = (id-1)*Config.parallelJobs; j < id*Config.parallelJobs; j++) {
-					Config.blocksView.get(j).setStatus(Colors.PROCESSED);
+
+				for (int j = (id - 1) * Config.parallelJobs; j < id * Config.parallelJobs; j++) {
+					try {
+						Config.blocksView.get(j).setStatus(Colors.PROCESSED);
+
+					} catch (IndexOutOfBoundsException e) {
+						System.out.println("Error! Invalide elmn");
+					}
 				}
+				getBlockDataBack((id - 1) * Config.parallelJobs + 1, id * Config.parallelJobs, new MyCallBack() {
+
+					@Override
+					public void onSuccess() {
+						for (int i = (id - 1) * Config.parallelJobs + 1; i <= id * Config.parallelJobs; i++) {
+							assembleBlockToResult(i, new MyCallBack() {
+
+								@Override
+								public void onSuccess() {
+//									ImageJFunctions.show(Config.resultImage).setTitle("Result");
+
+								}
+
+								@Override
+								public void onError(String error) {
+									// TODO Auto-generated method stub
+
+								}
+
+								@Override
+								public void log(String log) {
+									// TODO Auto-generated method stub
+
+								}
+							});
+
+						}
+					}
+
+					@Override
+					public void onError(String error) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void log(String log) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
 			}
-		} catch (Exception e) {
-			System.out.println("converting log error");
+		} catch (NumberFormatException e) {
+			System.out.println("Error! converting log error");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error! Invalide log");
 		}
 	}
 }

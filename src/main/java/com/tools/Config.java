@@ -8,12 +8,13 @@ import com.jcraft.jsch.Session;
 import main.java.com.gui.items.BlockView;
 import main.java.com.tools.server.Login;
 import net.imglib2.img.Img;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
 	INSTANCE;
 	
-	public static AppMode APP_MODE = AppMode.ClusterInputMode;
+	public static AppMode APP_MODE = AppMode.LocalInputMode;
 	public static final int BUFFER_SIZE = 64 * 1024;
 	public static final int MINIMUM_BOX_SIZE = 50;
 	public static final int PREVIEW_PANEL_WIDTH = 800;
@@ -50,6 +51,7 @@ public enum Config {
 	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
 	private static Img<FloatType> inputFile;
+	public static Img<FloatType> resultImage;
 	public static ArrayList<BlockView> blocksView;
 
 	public static long totalBlocks = 0;
@@ -226,11 +228,17 @@ public enum Config {
 	}
 
 	public static void init() {
-//		Config.setUUID(UUID.randomUUID().toString().replace("-", ""));
-//		System.out.println("UUID:"+Config.getUUID());
+
+		if(APP_MODE==AppMode.LocalInputMode) {
 		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
+		resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
+				new FloatType());
 		setInputFile(image);
 		setDimensions(Helper.getDimensions(image));
+		}else if (APP_MODE==AppMode.ClusterInputMode) {
+			setDimensions(new long[]{200,200});
+		}
+		
 		setBlocksSize(200);
 	}
 

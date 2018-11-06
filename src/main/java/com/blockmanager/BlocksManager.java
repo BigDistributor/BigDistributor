@@ -40,6 +40,7 @@ public class BlocksManager {
 		}
 		return resultImage;
 	}
+	
 
 	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, List<Block> blocks,MyCallBack callBack) {
 		final long[] blockSizeDim = Config.getBlocksSize();
