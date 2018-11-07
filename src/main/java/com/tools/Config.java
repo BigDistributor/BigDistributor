@@ -1,6 +1,5 @@
 package main.java.com.tools;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import com.jcraft.jsch.Session;
@@ -8,7 +7,6 @@ import com.jcraft.jsch.Session;
 import main.java.com.gui.items.BlockView;
 import main.java.com.tools.server.Login;
 import net.imglib2.img.Img;
-import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
@@ -23,18 +21,13 @@ public enum Config {
 	public static int previewPreferedHeight = 500;
 
 	private static Login login;
+	private static Job job;
 	
 //	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
 
 	private static int blocks;
-	private static String path = "";
 	
-
-	private static String localTaskPath = "/Users/Marwan/Desktop/Task/GaussianTask.jar";
-	private static String clusterTaskPath;
-
-	private static String originalInputFilePath = "/Users/Marwan/Desktop/Task/DrosophilaWing.tif";
 
 	private static Session currentSession;
 
@@ -50,7 +43,6 @@ public enum Config {
 
 	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
-	private static Img<FloatType> inputFile;
 	public static Img<FloatType> resultImage;
 	public static ArrayList<BlockView> blocksView;
 
@@ -118,30 +110,8 @@ public enum Config {
 		Config.numberBlocks = numberBlocks;
 	}
 
-	public static String getClusterTaskPath() {
-		return clusterTaskPath;
-	}
 
-	public static void setClusterTaskPath(String clusterTaskPath) {
-		Config.clusterTaskPath = clusterTaskPath;
-	}
-
-	public static String getLocalTaskPath() {
-		return localTaskPath;
-	}
-
-	public static void setLocalTaskPath(String path) {
-		Config.localTaskPath = path;
-	}
-
-	public static String getOriginalInputFilePath() {
-		return originalInputFilePath;
-	}
-
-	public static void setOriginalInputFilePath(String path) {
-		Config.originalInputFilePath = path;
-	}
-
+	
 	public static int getOverlap() {
 		return overlap;
 	}
@@ -158,23 +128,6 @@ public enum Config {
 		Config.currentSession = session;
 	}
 	
-	
-
-	public static String getPath() {
-		return path;
-	}
-
-	public static void setPath(String path) {
-		Config.path = path;
-	}
-
-	public static Img<FloatType> getInputFile() {
-		return inputFile;
-	}
-
-	public static void setInputFile(Img<FloatType> inputFile) {
-		Config.inputFile = inputFile;
-	}
 
 	public static long[] getDimensions() {
 		return dimensions;
@@ -191,6 +144,14 @@ public enum Config {
 	
 	public static Login getLogin() {
 		return Config.login;
+	}
+	
+	public static void setJob(Job job) {
+		Config.job = job;
+	}
+	
+	public static Job getJob() {
+		return Config.job;
 	}
 
 
@@ -230,11 +191,11 @@ public enum Config {
 	public static void init() {
 
 		if(APP_MODE==AppMode.LocalInputMode) {
-		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
-		resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
-				new FloatType());
-		setInputFile(image);
-		setDimensions(Helper.getDimensions(image));
+//		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getAll()));
+//		resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
+//				new FloatType());
+//		setInputFile(image);
+//		setDimensions(Helper.getDimensions(image));
 		}else if (APP_MODE==AppMode.ClusterInputMode) {
 			setDimensions(new long[]{200,200});
 		}

@@ -54,7 +54,7 @@ public class ShellGenerator {
 			if(Config.APP_MODE == AppMode.LocalInputMode) {
 			out.println("java -jar task.jar $SGE_TASK_ID" + Config.getInputPrefix());}
 			else if (Config.APP_MODE == AppMode.ClusterInputMode) {
-				out.println("java -jar task.jar " + Config.getOriginalInputFilePath());
+				out.println("java -jar task.jar " + Config.getJob().getInput().getFile().getAll());
 			}
 			out.flush();
 			out.close();

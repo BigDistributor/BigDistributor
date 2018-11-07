@@ -14,7 +14,6 @@ import main.java.com.gui.items.BlockView;
 import main.java.com.gui.items.Colors;
 import main.java.com.multithreading.Threads;
 import main.java.com.tools.Config;
-import main.java.com.tools.Helper;
 import main.java.com.tools.IOFunctions;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
@@ -30,8 +29,8 @@ import net.imglib2.view.Views;
 
 public class BlocksManager {
 	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,MyCallBack callback) {
-		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
-		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
+//		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getOriginalInputFilePath()));
+		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Config.getJob().getInput().getDimensions(),
 				new FloatType());
 		for (final Integer key : blockMap.keySet()) {
 			String string = blocksDir + "/" + key + ".tif";
@@ -76,17 +75,17 @@ public class BlocksManager {
 		return sumChange;
 	}
 
-	public static <T> List<Block> generateBlocks(RandomAccessibleInterval<T> input, long[] blockSize, int sigma,MyCallBack callback) {
+	public static <T> List<Block> generateBlocks(long[] dims, long[] blockSize, int sigma,MyCallBack callback) {
 		Config.setBlocksSize(blockSize);
 		final ExecutorService service = Threads.createExService(1);
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, blockSize);
-		final double[] sigmas = Util.getArrayFromValue((double) Config.getOverlap(), input.numDimensions());
+		final double[] sigmas = Util.getArrayFromValue((double) Config.getOverlap(), dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);
-		final long[] kernelSize = new long[input.numDimensions()];
-		final long[] imgSize = new long[input.numDimensions()];
-		for (int d = 0; d < input.numDimensions(); ++d) {
+		final long[] kernelSize = new long[dims.length];
+		final long[] imgSize = new long[dims.length];
+		for (int d = 0; d < dims.length; ++d) {
 			kernelSize[d] = halfKernelSizes[d] * 2 - 1;
-			imgSize[d] = input.dimension(d);
+			imgSize[d] = dims[d];
 		}
 		final List<Block> blocks = generator.divideIntoBlocks(imgSize, kernelSize, callback);
 		return blocks;

@@ -46,14 +46,11 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Send Task..");
 				progressBarPanel.updateBar(0);
-				// Config.getClusterPath()+Config.getLocalTaskPath().split("/")[Config.getLocalTaskPath().split("/").length-
-				// 1]
-				Config.setClusterTaskPath(Config.getLogin().getServer().getPath() + "/task.jar");
-				System.out.println("Task in cloud: "+ Config.getClusterTaskPath());
-				System.out.println("Task in local: "+ Config.getLocalTaskPath());
+				System.out.println("Task in cloud: "+ Config.getJob().getTask().getAll());
+				System.out.println("Task in local: "+Config.getLogin().getServer().getPath() + "/task.jar");
 				try {
-					SCP.send(Config.getLogin(), Config.getLocalTaskPath(),
-							Config.getClusterTaskPath(), -1);
+					SCP.send(Config.getLogin(), Config.getJob().getTask().getAll(),
+							Config.getLogin().getServer().getPath() + "/task.jar", -1);
 				} catch (JSchException e) {
 					valid = false;
 					// TODO Fix Connection
@@ -89,10 +86,10 @@ public class WorkflowFunction {
 				Boolean valid = true;
 				logPanel.addText("Generate input blocks..");
 				progressBarPanel.updateBar(0);
-				blocks = BlocksManager.generateBlocks(Config.getInputFile(), Config.getBlocksSize(),
+				blocks = BlocksManager.generateBlocks(Config.getJob().getInput().getDimensions(), Config.getBlocksSize(),
 						Config.getOverlap(), callback);
 				Config.setTotalInputFiles(blocks.size());
-				blockMap = BlocksManager.saveBlocks(Config.getInputFile(), blocks, new MyCallBack() {
+				blockMap = BlocksManager.saveBlocks(IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), blocks, new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
@@ -287,7 +284,7 @@ public class WorkflowFunction {
 					progressBarPanel.updateBar(0);
 					try {
 
-						SCP.get(Config.getLogin(), Config.getOriginalInputFilePath(),
+						SCP.get(Config.getLogin(), Config.getJob().getInput().getFile().getAll(),
 								Config.getTempFolderPath() + "//file.tif", 0);
 						logPanel.addText("file got with success !");
 						progressBarPanel.updateBar(1);

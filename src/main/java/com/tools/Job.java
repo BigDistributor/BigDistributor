@@ -1,39 +1,52 @@
 package main.java.com.tools;
 
 public class Job {
-	final private File task;
-	final private File input;
+	final private JFile task;
+	final private JDataFile input;
+	final private AppMode appMode;
 
-	public Job(Builder builder) {
+	private Job(Builder builder) {
 		this.task = builder.task;
 		this.input = builder.input;
+		this.appMode = builder.appMode;
 	}
 
-	public File getTask() {
+	public JFile getTask() {
 		return task;
 	}
 
-	public File getInput() {
+	public JDataFile getInput() {
 		return input;
 	}
 
-	public static class Builder {
-		private File task;
-		private File input;
+	public AppMode getAppMode() {
+		return appMode;
+	}
 
-		public Builder task(File task) {
+	public static class Builder {
+		private JFile task;
+		private JDataFile input;
+		private AppMode appMode;
+
+		public Builder task(JFile task) {
 			this.task = task;
 			return this;
 		}
 
-		public Builder input(File input) {
+		public Builder input(JDataFile input) {
 			this.input = input;
+			return this;
+		}
+
+		public Builder appMode(AppMode appMode) {
+			this.appMode = appMode;
 			return this;
 		}
 
 		public Job buid() {
 			return new Job(this);
 		}
+
 	}
 
 }
