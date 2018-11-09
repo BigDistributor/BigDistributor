@@ -26,6 +26,13 @@ Task can be:
 
 ![Features](img/Img_why.png)
 
+
+# Features
+
+![Features](img/img_diagram.png)
+
+
+
 ## Labraries used :
 
 imgLib2: https://github.com/imglib/imglib2
