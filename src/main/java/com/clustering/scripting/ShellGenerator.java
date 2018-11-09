@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import main.java.com.clustering.MyCallBack;
-import main.java.com.tools.AppMode;
+import main.java.com.controllers.items.AppMode;
 import main.java.com.tools.Config;
 
 public class ShellGenerator {

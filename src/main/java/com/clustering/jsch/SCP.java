@@ -27,7 +27,7 @@ import com.jcraft.jsch.UserInfo;
 import main.java.com.clustering.MyCallBack;
 import main.java.com.gui.items.Colors;
 import main.java.com.tools.Config;
-import main.java.com.tools.server.Login;
+import main.java.com.controllers.items.server.Login;
 
 public class SCP {
 

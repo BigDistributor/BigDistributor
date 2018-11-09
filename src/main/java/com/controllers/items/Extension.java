@@ -1,4 +1,4 @@
-package main.java.com.tools;
+package main.java.com.controllers.items;
 
 enum Extension {
 	TIF, JAR;

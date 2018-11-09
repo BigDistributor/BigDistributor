@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import com.jcraft.jsch.Session;
 
+import main.java.com.controllers.items.AppMode;
+import main.java.com.controllers.items.Job;
 import main.java.com.gui.items.BlockView;
-import main.java.com.tools.server.Login;
+import main.java.com.controllers.items.server.Login;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 

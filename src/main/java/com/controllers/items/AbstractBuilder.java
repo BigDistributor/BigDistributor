@@ -1,9 +1,9 @@
-package main.java.com.tools;
+package main.java.com.controllers.items;
 
 import com.google.gson.Gson;
 
 public class AbstractBuilder {
-	String test ="ghello";
+	public String test ="hello";
 	public String toJson() {
 		return new Gson().toJson(this);
 	}

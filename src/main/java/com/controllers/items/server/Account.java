@@ -1,4 +1,4 @@
-package main.java.com.tools.server;
+package main.java.com.controllers.items.server;
 
 public class Account {
 	private final String pseudo;

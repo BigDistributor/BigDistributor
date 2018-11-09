@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import main.java.com.blockmanager.GraphicBlocksManager;
 import main.java.com.clustering.MyCallBack;
 import main.java.com.clustering.WorkflowFunction;
-import main.java.com.tools.AppMode;
+import main.java.com.controllers.items.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
 import main.java.com.tools.IOFunctions;

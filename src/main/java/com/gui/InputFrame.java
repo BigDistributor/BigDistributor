@@ -15,11 +15,11 @@ import javax.swing.border.EmptyBorder;
 
 import main.java.com.gui.items.FilePicker;
 import main.java.com.gui.items.Frame;
-import main.java.com.tools.AppMode;
 import main.java.com.tools.Config;
-import main.java.com.tools.JDataFile;
-import main.java.com.tools.JFile;
-import main.java.com.tools.Job;
+import main.java.com.controllers.items.AppMode;
+import main.java.com.controllers.items.JDataFile;
+import main.java.com.controllers.items.JFile;
+import main.java.com.controllers.items.Job;
 
 
 public class InputFrame extends Frame implements ActionListener {

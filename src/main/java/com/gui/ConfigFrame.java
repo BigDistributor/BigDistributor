@@ -13,9 +13,9 @@ import javax.swing.border.EmptyBorder;
 
 import main.java.com.gui.items.Frame;
 import main.java.com.tools.Config;
-import main.java.com.tools.server.Account;
-import main.java.com.tools.server.Login;
-import main.java.com.tools.server.ServerConfiguration;
+import main.java.com.controllers.items.server.Account;
+import main.java.com.controllers.items.server.Login;
+import main.java.com.controllers.items.server.ServerConfiguration;
 
 public class ConfigFrame extends Frame {
 	private static final long serialVersionUID = -1404300721421953024L;
