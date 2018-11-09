@@ -27,9 +27,9 @@ Task can be:
 ![Features](img/Img_why.png)
 
 
-# Features
+# Diagram
 
-![Features](img/img_diagram.png)
+![Diagram](img/img_diagram.png)
 
 
 
