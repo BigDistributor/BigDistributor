@@ -24,7 +24,7 @@ Task can be:
 
 # Features
 
-![Features](img/img_why.png)
+![Features](img/Img_why.png)
 Improve Performance and Reduce Processing Time
 Ability to handle big data by splitting in small blocks
 Riability; handle different errors
