@@ -25,23 +25,25 @@ Task can be:
 # Features
 
 ![Features](img/Img_why.png)
-Improve Performance and Reduce Processing Time
-Ability to handle big data by splitting in small blocks
-Riability; handle different errors
-Process blocks with respect of the global context
 
 ## Labraries used :
 
 imgLib2: https://github.com/imglib/imglib2
+
 scifio-bf: https://github.com/scifio/scifio
+
 Apache kafka: https://kafka.apache.org/
+
 JSch: http://www.jcraft.com/jsch/
+
 Google guava: https://github.com/google/guava
+
 Google Gson: https://github.com/google/gson
 
 ### Installation
 
 requires [Docker](www.docker.com) to run, Install and start the server.
+
 Kafka Server image for Docker: https://github.com/Landoop/fast-data-dev
 #### install kafka Server
 ```sh
