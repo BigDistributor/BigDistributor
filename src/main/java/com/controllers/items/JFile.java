@@ -3,10 +3,10 @@ package main.java.com.controllers.items;
 import java.util.Arrays;
 
 
-public class JFile {
+public class JFile extends Object{
 	final private String path;
 	final private String name;
-	final private Extension extension;
+	final private JExtension extension;
 	final private String all;
 
 	protected JFile(Builder builder) {
@@ -24,18 +24,25 @@ public class JFile {
 		return name;
 	}
 
-	public Extension getExtension() {
+	public JExtension getExtension() {
 		return extension;
 	}
 	
 	public String getAll() {
 		return all;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "JFile [path=" + path + ", name=" + name + ", extension=" + extension + "]";
+	}
+
 
 	public static class Builder {
 		private String path;
 		private String name;
-		private Extension extension;
+		private JExtension extension;
 		protected String all;
 
 		public Builder path(String path) {
@@ -48,19 +55,32 @@ public class JFile {
 			return this;
 		}
 
-		public Builder extension(Extension extenstion) {
+		public Builder extension(JExtension extenstion) {
 			this.extension = extenstion;
+			return this;
+		}
+		
+		public Builder all(String all) {
+			this.all = all;
 			return this;
 		}
 
 		public Builder fromString(String string) {
+			System.out.println("File: "+string);
 			String[] parts = string.split("/");
 			String lastElement = parts[parts.length-1];
-			
+			System.out.println("LastElm: "+lastElement);
+
 			this.all = string;
 			this.path = String.valueOf(Arrays.copyOfRange(parts, 0, parts.length-2));
+			String[] elements = lastElement.split(".");
+			for (int i = 0; i < elements.length; i++) {
+				System.out.println(i+"-"+elements[i]);
+			}
 			this.name = lastElement.split(".")[0];
-			this.extension = Extension.formString(lastElement.split(".")[1]);
+
+			System.out.println("LastElm: "+lastElement.split(".").toString());
+			this.extension = JExtension.fromString(lastElement.split(".")[1]);
 			return this;
 		}
 
@@ -68,5 +88,15 @@ public class JFile {
 			return new JFile(this);
 		}
 
+	}
+	public static void main(String[] args) {
+		JFile file = new JFile.Builder()
+				.all("test")
+				.path("testPath")
+				.name("name")
+				.extension(JExtension.fromString("tif"))
+				.build();
+		
+		System.out.println(file);
 	}
 }

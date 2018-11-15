@@ -2,11 +2,11 @@ package main.java.com.gui.items;
 
 import java.awt.Rectangle;
 
-public class BlockView {
-	Rectangle area;
-	Rectangle mainArrea;
-	int status;
-	public BlockView(Rectangle area, Rectangle mainArrea, int status) {
+public class BlockPreview extends Object {
+	private Rectangle area;
+	private Rectangle mainArrea;
+	private int status;
+	public BlockPreview(Rectangle area, Rectangle mainArrea, int status) {
 		super();
 		this.area = area;
 		this.mainArrea = mainArrea;

@@ -1,6 +1,6 @@
 package main.java.com.controllers.items;
 
-public class Job {
+public class Job extends Object{
 	final private JFile task;
 	final private JDataFile input;
 	final private AppMode appMode;

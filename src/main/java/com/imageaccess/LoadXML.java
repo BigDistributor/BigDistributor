@@ -45,7 +45,7 @@ public class LoadXML
 		}
 	}
 
-	public RandomAccessibleInterval< FloatType > fuse( final List< ViewId > viewIds, final Interval interval )
+	public static RandomAccessibleInterval< FloatType > fuse(final SpimData2 spimData, final List< ViewId > viewIds, final Interval interval )
 	{
 		// filter not present ViewIds
 		final List< ViewId > removed = SpimData2.filterMissingViews( spimData, viewIds );
@@ -65,7 +65,7 @@ public class LoadXML
 		new ImageJ();
 		IOFunctions.printIJLog = true;
 
-		final LoadXML load = new LoadXML( "/Users/spreibi/Documents/Microscopy/SPIM/HisYFP-SPIM/dataset.xml" );
+		final LoadXML load = new LoadXML( "/home/mzouink/Desktop/example_dataset/dataset.xml" );
 
 		// select all views to process
 		final List< ViewId > viewIds = new ArrayList< ViewId >();
@@ -96,7 +96,7 @@ public class LoadXML
 		bb = new FinalInterval( new long[]{ 261, 332, 5 }, new long[]{ 1057, 773, 387 });
 
 		// get and display
-		final RandomAccessibleInterval< FloatType > fused = load.fuse( viewIds, bb );
+		final RandomAccessibleInterval< FloatType > fused = fuse(load.spimData, viewIds, bb );
 
 		final ImagePlus imp = ImageJFunctions.show( fused );
 		imp.setDimensions( 1, (int)fused.dimension( 2 ), 1 );

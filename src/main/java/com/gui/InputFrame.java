@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -13,13 +12,16 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import ij.ImageJ;
+import main.java.com.controllers.items.AppMode;
+import main.java.com.controllers.items.JDataFile;
+import main.java.com.controllers.items.Job;
+import main.java.com.gui.items.DataPreview;
 import main.java.com.gui.items.FilePicker;
 import main.java.com.gui.items.Frame;
 import main.java.com.tools.Config;
-import main.java.com.controllers.items.AppMode;
-import main.java.com.controllers.items.JDataFile;
-import main.java.com.controllers.items.JFile;
-import main.java.com.controllers.items.Job;
+import mpicbg.spim.data.sequence.ViewId;
+import mpicbg.spim.io.IOFunctions;
 
 
 public class InputFrame extends Frame implements ActionListener {
@@ -80,29 +82,38 @@ public class InputFrame extends Frame implements ActionListener {
 				JOptionPane.showMessageDialog(null, "Configurate first." , "Configuration needed !" , JOptionPane.INFORMATION_MESSAGE);
 				  
 			}else if ((!taskPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
+				new ImageJ();
+				IOFunctions.printIJLog = true;
+				setVisible(false);
 				
-				JFile taskFile = new JFile.Builder()
-											.fromString(taskPicker.getSelectedFilePath())
-											.build();
-				JFile inputFile = new JFile.Builder()
-											.fromString(inputPicker.getSelectedFilePath())
-											.build();
+				
 				JDataFile inputData = new JDataFile.Builder()
-													.file(inputFile)
+													.file(inputPicker.getFile())
 													.getDataInfos()
+													.load()
 													.build();
+				
+				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())
+					IOFunctions.println(viewid);
+				
 				Job job = new Job.Builder()
 							     .appMode(appMode)
-							     .task(taskFile)
+							     .task(taskPicker.getFile())
 							     .input(inputData)
 							     .buid();
 				
+				
+				
+				DataPreview dataPreview = new DataPreview.Builder()
+														 .file(inputData)
+														 .build();
+				dataPreview.generateBlocks();
+				
 				Config.setJob(job);
-		
-				setVisible(false);
+				Config.setDataPreview(dataPreview);
+				
 				dispose();
-				Config.init();
-				ProgressGUI progressGUI = new ProgressGUI("Progress..");
+				DashboardView progressGUI = new DashboardView("Progress..");
 				progressGUI.setVisible(true);
 			}
 		}

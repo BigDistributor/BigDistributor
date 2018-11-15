@@ -4,17 +4,15 @@ import java.util.ArrayList;
 
 import com.jcraft.jsch.Session;
 
-import main.java.com.controllers.items.AppMode;
 import main.java.com.controllers.items.Job;
-import main.java.com.gui.items.BlockView;
 import main.java.com.controllers.items.server.Login;
+import main.java.com.gui.items.DataPreview;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
 	INSTANCE;
 	
-	public static AppMode APP_MODE = AppMode.LocalInputMode;
 	public static final int BUFFER_SIZE = 64 * 1024;
 	public static final int MINIMUM_BOX_SIZE = 50;
 	public static final int PREVIEW_PANEL_WIDTH = 800;
@@ -24,6 +22,8 @@ public enum Config {
 
 	private static Login login;
 	private static Job job;
+
+	private static DataPreview dataPreview;
 	
 //	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
@@ -35,25 +35,19 @@ public enum Config {
 
 	private static int[] numberBlocks = {};
 	private static int[] blocksStatus;
-	private static long[] dimensions;
 
 
-	private static int overlap = 5;
-	private static long[] blocksSize;
 	
 	private static int totalInputFiles;
 
 	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
-	public static Img<FloatType> resultImage;
-	public static ArrayList<BlockView> blocksView;
-
-	public static long totalBlocks = 0;
 	
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
 	public static Img<FloatType> resultImg;
 	public static int parallelJobs;
+	public static Img<FloatType> resultImage;
 
 	public static int getBlocks() {
 		return blocks;
@@ -78,6 +72,7 @@ public enum Config {
 	public static void setDefaultInputPath(String defaultInputPath) {
 		Config.defaultInputPath = defaultInputPath;
 	}
+	
 
 	public static String getTempFolderPath() {
 		return tempFolderPath;
@@ -88,22 +83,7 @@ public enum Config {
 		Config.tempFolderPath = tempDir;
 	}
 
-	public static long[] getBlocksSize() {
-		return blocksSize;
-	}
-
-	public static long getBlockSize(int i) {
-		return blocksSize[i];
-	}
-
-	public static void setBlocksSize(long[] blocksSize) {
-		Config.blocksSize = blocksSize;
-	}
-
-	public static void setBlocksSize(long size, int position) {
-		Config.blocksSize[position] = size;
-	}
-
+	
 	public static int[] getNumberBlocks() {
 		return numberBlocks;
 	}
@@ -112,15 +92,6 @@ public enum Config {
 		Config.numberBlocks = numberBlocks;
 	}
 
-
-	
-	public static int getOverlap() {
-		return overlap;
-	}
-
-	public static void setOverlap(int overlap) {
-		Config.overlap = overlap;
-	}
 
 	public static Session getSession() {
 		return currentSession;
@@ -131,15 +102,7 @@ public enum Config {
 	}
 	
 
-	public static long[] getDimensions() {
-		return dimensions;
-	}
-
-	public static void setDimensions(long[] dimensions) {
-		Config.dimensions = dimensions;
-	}
-
-	public static void setLogin(Login login) {
+		public static void setLogin(Login login) {
 		Config.login = login;
 
 	}
@@ -154,16 +117,6 @@ public enum Config {
 	
 	public static Job getJob() {
 		return Config.job;
-	}
-
-
-
-
-	public static void setBlocksSize(int value) {
-		blocksSize = new long[dimensions.length];
-		for (int i = 0; i < blocksSize.length; i++) {
-			blocksSize[i] = value;
-		}
 	}
 
 	public static ArrayList<String> getBlocksFilesNames() {
@@ -190,20 +143,15 @@ public enum Config {
 		Config.totalInputFiles = totalInputFiles;
 	}
 
-	public static void init() {
-
-		if(APP_MODE==AppMode.LocalInputMode) {
-//		Img<FloatType> image = IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getAll()));
-//		resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),
-//				new FloatType());
-//		setInputFile(image);
-//		setDimensions(Helper.getDimensions(image));
-		}else if (APP_MODE==AppMode.ClusterInputMode) {
-			setDimensions(new long[]{200,200});
-		}
-		
-		setBlocksSize(200);
+	public static DataPreview getDataPreview() {
+		return dataPreview;
 	}
+
+	public static void setDataPreview(DataPreview dataPreview) {
+		Config.dataPreview = dataPreview;
+	}
+
+
 
 
 }

@@ -2,8 +2,11 @@ package main.java.com.gui.items;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
+
+import ij.process.AutoThresholder.Method;
 
 public class Frame extends JFrame{
 

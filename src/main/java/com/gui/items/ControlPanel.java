@@ -21,56 +21,28 @@ import main.java.com.tools.Helper;
 import main.java.com.tools.IOFunctions;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 
-public class PrgressParamsPanel extends JPanel implements ActionListener {
+public class ControlPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5489935889866505715L;
-	public ArrayList<SliderPanel> sliderBoxSizePanel;
-	public JLabel numberBlocksLabel;
-	public SliderPanel sliderOverlapPanel;
+
+//	public ParamsPanel paramsPanel;
 	public Button startWorkFlowButton;
 	public Button generateResultButton;
-	public JTextField jobsField;
 	public WorkflowFunction workflow;
+	public InputPanel inputPanel;
+	public SliderPanel sliderOverlapPanel;
+	public JLabel numberBlocksLabel;
+	public JTextField jobsField;
+	public BlockSizeControlPanel blockSizeControlPanel;
+	
 
-	public PrgressParamsPanel() {
+	public ControlPanel(int dimensions) {
 		workflow = new WorkflowFunction();
 		workflow.startStatusListener();
+		blockSizeControlPanel = new BlockSizeControlPanel(Config.getDataPreview().getFile().getDimensions().length);
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", JLabel.CENTER);
-		int sizes = Config.getDimensions().length;
-		setLayout(new GridLayout(7 + sizes, 1, 20, 20));
-		sliderBoxSizePanel = new ArrayList<SliderPanel>();
-		for (int i = 0; i < sizes; i++) {
-			SliderPanel slider = new SliderPanel(i, "Box Size[" + i + "]:", 100, 2000, 200);
-			sliderBoxSizePanel.add(slider);
-			Thread t = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					GraphicBlocksManager.updateValues(Config.getDimensions(), new MyCallBack() {
 
-						@Override
-						public void onSuccess() {
-							// TODO Auto-generated method stub
-
-						}
-
-						@Override
-						public void onError(String error) {
-							// TODO Auto-generated method stub
-
-						}
-
-						@Override
-						public void log(String log) {
-							workflow.logPanel.addText(log);
-
-						}
-					});
-					slider.updateValue((int) Config.getBlocksSize()[0]);
-					numberBlocksLabel.setText("Total Blocks:" + Config.totalBlocks);
-				}
-			});
-			t.start();
-		}
+		setLayout(new GridLayout(9,1, 20, 20));
 		sliderOverlapPanel = new SliderPanel(-1, "Overlap:", 0, 200, 10);
 
 		startWorkFlowButton = new Button("START..");
@@ -84,15 +56,10 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 		jobsPanel.add(jobLabel);
 		jobsPanel.add(jobsField);
 		this.add(workflow.progressBarPanel);
-		try {
-			this.add(Helper.createImagePanel("img/labels.png"));
-		} catch (IOException e1) {
-			System.out.println("Error add image Label");
-			e1.printStackTrace();
-		}
+		this.add(Helper.createImagePanel("img/labels.png"));
 
 		this.add(numberBlocksLabel);
-		for (SliderPanel slider : sliderBoxSizePanel) {
+		for (SliderPanel slider : blockSizeControlPanel.sliderPanels) {
 			this.add(slider);
 		}
 		this.add(sliderOverlapPanel);
@@ -108,7 +75,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startWorkFlowButton) {
-			if (Config.APP_MODE == AppMode.ClusterInputMode) {
+			if ( AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 				workflow.sendTask(new MyCallBack() {
 
 					@Override
@@ -221,12 +188,12 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 					}
 				});
 			}
-			if (Config.APP_MODE == AppMode.LocalInputMode) {
+			if ( AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 
 				try {
 					Config.parallelJobs = Integer.parseInt(jobsField.getText());
 				} catch (Exception ex) {
-					workflow.logPanel.addText("Invalide Task number! putted default 10 Jobs");
+					mpicbg.spim.io.IOFunctions.println("Invalide Task number! putted default 10 Jobs");
 					Config.parallelJobs = 10;
 				}
 				workflow.sendTask(new MyCallBack() {
@@ -408,7 +375,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 			}
 		}
 		if (e.getSource() == generateResultButton) {
-			if (Config.APP_MODE == AppMode.ClusterInputMode) {
+			if ( AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 				workflow.getAllDataBack(new MyCallBack() {
 
 					@Override
@@ -430,7 +397,7 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 					}
 				});
 
-			} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+			} else if ( AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 						workflow.getAllDataBack(new MyCallBack() {
 
 							@Override
@@ -439,7 +406,8 @@ public class PrgressParamsPanel extends JPanel implements ActionListener {
 
 									@Override
 									public void onSuccess() {
-										ImageJFunctions.show(Config.resultImage).setTitle("Result");
+										//TODO
+//										ImageJFunctions.show(Config.resultImage).setTitle("Result");
 
 									}
 

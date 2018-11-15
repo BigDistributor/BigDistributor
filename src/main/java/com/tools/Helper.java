@@ -12,13 +12,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import main.java.com.clustering.MyCallBack;
-import net.imglib2.img.Img;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.RandomAccessibleInterval;
 
 public class Helper {
 	
 
-	public static long[] getDimensions(Img<FloatType> image) {
+	public static <T> long[] getDimensions(RandomAccessibleInterval<T> image) {
 		long[] dimensions = new long[image.numDimensions()];
 		for (int d = 0; d < image.numDimensions(); ++d) {
 			dimensions[d] = image.dimension(d);
@@ -66,7 +65,7 @@ public class Helper {
 		return result;
 	}
 
-	public static JPanel createImagePanel(String path) throws IOException {
+	public static JPanel createImagePanel(String path) {
 		JPanel panel = new JPanel();
 		ImageIcon imageIcon = new ImageIcon(path); // load the image to a imageIcon
 		Image image = imageIcon.getImage(); // transform it 

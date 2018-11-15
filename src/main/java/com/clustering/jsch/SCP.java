@@ -169,7 +169,7 @@ public class SCP {
 		// System.exit(0);
 		if (id >= 0) {
 			try {
-			Config.blocksView.get(id).setStatus(Colors.GOT);}
+			Config.getDataPreview().getBlocksPreview().get(id).setStatus(Colors.GOT);}
 			catch(IndexOutOfBoundsException ex) {
 				System.out.println("Error! no box for index: "+id);
 			}
@@ -252,7 +252,7 @@ public class SCP {
 		// System.exit(0);
 		if (id != -1) {
 			try {
-				Config.blocksView.get(id).setStatus(Colors.SENT);
+				Config.getDataPreview().getBlocksPreview().get(id).setStatus(Colors.SENT);
 				throw new Exception("Out of boxes");
 			} catch (Exception e) {
 				// Helper.log("Out of size");

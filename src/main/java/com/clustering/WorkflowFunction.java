@@ -16,26 +16,24 @@ import main.java.com.clustering.jsch.SCP;
 import main.java.com.clustering.kafka.JobConsumer;
 import main.java.com.clustering.scripting.BatchGenerator;
 import main.java.com.clustering.scripting.ShellGenerator;
+import main.java.com.controllers.items.AppMode;
 import main.java.com.gui.items.Colors;
 import main.java.com.gui.items.LogPanel;
 import main.java.com.gui.items.ProgressBarPanel;
-import main.java.com.controllers.items.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
-import main.java.com.tools.IOFunctions;
+import mpicbg.spim.io.IOFunctions;
 import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class WorkflowFunction {
 	public List<Block> blocks;
 	public static HashMap<Integer, Block> blockMap;
 	public ProgressBarPanel progressBarPanel;
-	public LogPanel logPanel;
 
 	public WorkflowFunction() {
 		progressBarPanel = new ProgressBarPanel(0, 100);
-		logPanel = new LogPanel();
+
 	}
 
 	public void sendTask(MyCallBack callBack) {
@@ -44,7 +42,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Send Task..");
+				IOFunctions.println("Send Task..");
 				progressBarPanel.updateBar(0);
 				System.out.println("Task in cloud: "+ Config.getJob().getTask().getAll());
 				System.out.println("Task in local: "+Config.getLogin().getServer().getPath() + "/task.jar");
@@ -84,12 +82,16 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Generate input blocks..");
+				IOFunctions.println("Generate input blocks..");
 				progressBarPanel.updateBar(0);
-				blocks = BlocksManager.generateBlocks(Config.getJob().getInput().getDimensions(), Config.getBlocksSize(),
-						Config.getOverlap(), callback);
+				blocks = BlocksManager.generateBlocks(Config.getDataPreview(), callback);
+				//TODO create object to send ProcessData
 				Config.setTotalInputFiles(blocks.size());
-				blockMap = BlocksManager.saveBlocks(IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), blocks, new MyCallBack() {
+				blockMap = BlocksManager.saveBlocks(
+						IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), 
+						Config.getDataPreview().getBlocksSizes(),
+						blocks,
+						new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
@@ -105,7 +107,7 @@ public class WorkflowFunction {
 
 					@Override
 					public void log(String log) {
-						logPanel.addText(log);
+						IOFunctions.println(log);
 
 					}
 				});
@@ -123,7 +125,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Send input files..");
+				IOFunctions.println("Send input files..");
 				progressBarPanel.updateBar(0);
 				String local = Config.getTempFolderPath();
 				ArrayList<String> files = Helper.getFiles(local, Config.getInputPrefix());
@@ -151,7 +153,7 @@ public class WorkflowFunction {
 		Thread task = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				logPanel.addText("Generate Script..");
+				IOFunctions.println("Generate Script..");
 				ShellGenerator.generateTaskShell(callback);
 			}
 		});
@@ -163,10 +165,10 @@ public class WorkflowFunction {
 
 			@Override
 			public void run() {
-				logPanel.addText("Generate Batch..");
-				if (Config.APP_MODE == AppMode.LocalInputMode) {
+				IOFunctions.println("Generate Batch..");
+				if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 					BatchGenerator.GenerateBatchForLocalFiles(job, Config.getTotalInputFiles(), callback);
-				} else if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				} else if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 					BatchGenerator.GenerateBatchForClusterFile(callback);
 				}
 			}
@@ -180,7 +182,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Send Shell..");
+				IOFunctions.println("Send Shell..");
 				try {
 					
 					System.out.println("Local task sh:"+Config.getTempFolderPath() + "//task.sh");
@@ -198,7 +200,7 @@ public class WorkflowFunction {
 					try {
 						SCP.connect(Config.getLogin());
 					} catch (JSchException e1) {
-						logPanel.addText("Invalide Host");
+						IOFunctions.println("Invalide Host");
 						e1.printStackTrace();
 					}
 				} catch (IOException e) {
@@ -219,7 +221,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Send submit..");
+				IOFunctions.println("Send submit..");
 				try {
 					SCP.send(Config.getLogin(), Config.getTempFolderPath() + "//submit.cmd",
 							Config.getLogin().getServer().getPath() + "submit.cmd", -1);
@@ -230,7 +232,7 @@ public class WorkflowFunction {
 					try {
 						SCP.connect(Config.getLogin());
 					} catch (JSchException e1) {
-						logPanel.addText("Invalide Host");
+						IOFunctions.println("Invalide Host");
 						e1.printStackTrace();
 					}
 				} catch (IOException e) {
@@ -251,7 +253,7 @@ public class WorkflowFunction {
 			@Override
 			public void run() {
 				Boolean valid = true;
-				logPanel.addText("Run Submit..");
+				IOFunctions.println("Run Submit..");
 				try {
 					SCP.run(Config.getLogin(), "submit.cmd", callback);
 				} catch (JSchException e) {
@@ -278,7 +280,7 @@ public class WorkflowFunction {
 
 			@Override
 			public void run() {
-				if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 					Boolean valid = true;
 					System.out.println("Get Data back..");
 					progressBarPanel.updateBar(0);
@@ -286,7 +288,7 @@ public class WorkflowFunction {
 
 						SCP.get(Config.getLogin(), Config.getJob().getInput().getFile().getAll(),
 								Config.getTempFolderPath() + "//file.tif", 0);
-						logPanel.addText("file got with success !");
+						IOFunctions.println("file got with success !");
 						progressBarPanel.updateBar(1);
 
 					} catch (IOException e) {
@@ -310,7 +312,7 @@ public class WorkflowFunction {
 
 					if (valid)
 						callBack.onSuccess();
-				} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+				} else if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 					Boolean valid = true;
 					System.out.println("Get Data back..");
 					progressBarPanel.updateBar(0);
@@ -322,7 +324,7 @@ public class WorkflowFunction {
 							SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath()+ "//" + file,
 									Config.getTempFolderPath() + "//" + file, i - 1);
 
-							logPanel.addText("block " + i + " got with success !");
+							IOFunctions.println("block " + i + " got with success !");
 							progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
 						} catch (IOException e) {
 							valid = false;
@@ -357,9 +359,9 @@ public class WorkflowFunction {
 
 			@Override
 			public void run() {
-				if (Config.APP_MODE == AppMode.ClusterInputMode) {
+				if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 					throw new Error("Cluster blocks get not implimented yet");
-				} else if (Config.APP_MODE == AppMode.LocalInputMode) {
+				} else if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 					Boolean valid = true;
 					System.out.println("Get Data back..");
 					progressBarPanel.updateBar(0);
@@ -371,7 +373,7 @@ public class WorkflowFunction {
 							SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath() + "//" + file,
 									Config.getTempFolderPath() + "//" + file, i - 1);
 
-							logPanel.addText("block " + i + " got with success !");
+							IOFunctions.println("block " + i + " got with success !");
 							progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
 						} catch (IOException e) {
 							valid = false;
@@ -406,7 +408,7 @@ public class WorkflowFunction {
 
 			@Override
 			public void run() {
-				logPanel.addText("Generate result..");
+				IOFunctions.println("Generate result..");
 				Config.resultImage = BlocksManager.generateResult(blockMap, Config.getTempFolderPath(), callBack);
 				callBack.onSuccess();
 			}
@@ -416,7 +418,7 @@ public class WorkflowFunction {
 	}
 
 	public void startStatusListener() {
-		logPanel.addText("Get Status..");
+		IOFunctions.println("Get Status..");
 		JobConsumer consumerThread = new JobConsumer(new MyCallBack() {
 			@Override
 			public void onSuccess() {
@@ -449,12 +451,12 @@ public class WorkflowFunction {
 		try {
 //			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
 			if (parts[1].equals(Config.getLogin().getId()) ) {
-				logPanel.addText("Log got:" + log);
+				IOFunctions.println("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);
 
 				for (int j = (id - 1) * Config.parallelJobs; j < id * Config.parallelJobs; j++) {
 					try {
-						Config.blocksView.get(j).setStatus(Colors.PROCESSED);
+						Config.getDataPreview().getBlocksPreview().get(j).setStatus(Colors.PROCESSED);
 
 					} catch (IndexOutOfBoundsException e) {
 						System.out.println("Error! Invalide elmn");

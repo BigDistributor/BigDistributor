@@ -1,38 +1,38 @@
 package main.java.com.blockmanager;
 
+import java.util.ArrayList;
 import main.java.com.clustering.MyCallBack;
+import main.java.com.gui.items.BlockPreview;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class GraphicBlocksManager {
-	public static void updateValues(long[] dimensions, MyCallBack callback) {
-//		callback.log(dimensions.length+"D input");
-		long[] numberBlocks;
+	public static ArrayList<BlockPreview> generateBlocks(long[] dimensions, long[] blocksSize, long overlap) {
+
+		ArrayList<BlockPreview> blocksPreview = new ArrayList<>();
+		long[] numberBlocks = new long[2];
 		if (dimensions.length == 2) { 
-			numberBlocks = new long[2];
 			for (int i = 0; i < 2; i++)
-				numberBlocks[i] = (Config.getOverlap()*2+dimensions[i]) / Config.getBlockSize(i)
-				+ (((Config.getOverlap()*2+dimensions[i]) % Config.getBlockSize(i)) > 0 ? 1 : 0);
+				numberBlocks[i] = (overlap*2+dimensions[i]) / blocksSize[i]
+				+ (((overlap*2+dimensions[i]) % blocksSize[i]) > 0 ? 1 : 0);
 	
-			double perspectiveRation = computeRationView(numberBlocks, Config.getBlocksSize(),callback);
-			callback.log(dimensions[0]+"-"+dimensions[1]+"~ Blocks:"+numberBlocks[0]+"-"+numberBlocks[1]+" Perspective:"+perspectiveRation);
-		
-			Config.blocksView = BlocksManager.getBlocks(dimensions, numberBlocks, Config.getBlocksSize(),
-			Config.getOverlap(), perspectiveRation);
-			Config.totalBlocks = numberBlocks[0]*numberBlocks[1];
+			double perspectiveRation = computeRationView(numberBlocks,blocksSize);
+			
+			blocksPreview= BlocksManager.getBlocks(dimensions, numberBlocks, blocksSize,
+			(int)overlap, perspectiveRation);
 			} else {
-			numberBlocks = computeGraphicBlocks(dimensions, Config.getBlocksSize());
-			Config.blocksView = BlocksManager.getBlocks(numberBlocks, computeSizePreviewBox(numberBlocks));
-			Config.totalBlocks = numberBlocks[0]*numberBlocks[1]+numberBlocks[2];
+			numberBlocks = computeGraphicBlocks(dimensions, blocksSize);
+			blocksPreview = BlocksManager.getBlocks(numberBlocks, computeSizePreviewBox(numberBlocks));
 		}
+		return blocksPreview;
 		
-		Config.previewPreferedHeight = (int) (numberBlocks[1]*Config.getBlockSize(1));
+		
 	}
 	
-	public static double computeRationView(long[] numberBlocks, long[] blocksSize,MyCallBack callback) {
-		callback.log("Panel Width:"+Config.PREVIEW_PANEL_WIDTH+" NumberBlocks:"+numberBlocks[0]+" BlocksSize:"+blocksSize[0]);
+	public static double computeRationView(long[] numberBlocks, long[] blocksSize) {
+//		callback.log("Panel Width:"+Config.PREVIEW_PANEL_WIDTH+" NumberBlocks:"+numberBlocks/[0]+" BlocksSize:"+blocksSize[0]);
 		return Config.PREVIEW_PANEL_WIDTH / (1.0* numberBlocks[0] * blocksSize[0]);
 	}
 
@@ -85,9 +85,9 @@ public class GraphicBlocksManager {
 		return result;
 	}
 	
-	public long[] divideIntoBlocks( final long[] imgSize, final long[] kernelSize, MyCallBack callback )
+	public long[] divideIntoBlocks( final long[] imgSize, long[] blocksSize, final long[] kernelSize, MyCallBack callback )
 	{
-		long[] blockSize = Config.getBlocksSize();
+		long[] blockSize = blocksSize;
 		final int numDimensions = imgSize.length;
 		
 		// compute the effective size & local offset of each block
