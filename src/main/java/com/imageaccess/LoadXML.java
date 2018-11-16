@@ -8,6 +8,12 @@ import java.util.List;
 import ij.ImageJ;
 import ij.ImagePlus;
 import mpicbg.spim.data.SpimDataException;
+import mpicbg.spim.data.sequence.Angle;
+import mpicbg.spim.data.sequence.Channel;
+import mpicbg.spim.data.sequence.Illumination;
+import mpicbg.spim.data.sequence.ImgLoader;
+import mpicbg.spim.data.sequence.Tile;
+import mpicbg.spim.data.sequence.ViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.FinalInterval;
@@ -75,6 +81,24 @@ public class LoadXML
 		//viewIds.add( new ViewId( 0, 0 ) );
 		//viewIds.add( new ViewId( 0, 1 ) );
 		//viewIds.add( new ViewId( 0, 2 ) );
+
+		for ( final ViewId viewId : viewIds )
+		{
+			final ViewDescription vd = load.spimData.getSequenceDescription().getViewDescription( viewId );
+			
+			final int tpId = vd.getTimePointId();
+			final int setupId = vd.getViewSetupId();
+			
+			final Channel channel = vd.getViewSetup().getChannel();
+			final Illumination illum = vd.getViewSetup().getIllumination();
+			final Tile tile = vd.getViewSetup().getTile();
+			final Angle angle = vd.getViewSetup().getAngle();
+
+			ImgLoader loader = load.spimData.getSequenceDescription().getImgLoader();
+
+			// this is a 3d image stack - for 1 specific illum, tile, angle & channel
+			RandomAccessibleInterval img = loader.getSetupImgLoader( viewId.getViewSetupId() ).getImage( viewId.getTimePointId() );
+		}
 
 		// all defined a bounding boxes
 		for ( final BoundingBox bb : load.spimData.getBoundingBoxes().getBoundingBoxes() )

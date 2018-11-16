@@ -8,7 +8,6 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import loci.formats.IFormatReader;
 import loci.formats.ImageReader;
-import loci.formats.Memoizer;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -18,16 +17,14 @@ import net.preibisch.mvrecon.fiji.spimdata.imgloaders.filemap2.VirtualRAIFactory
 
 public class LoadTIFF
 {
-	private final File tempDir = Files.createTempDir();
-
-	public RandomAccessibleInterval< FloatType > load( final String fileName ) throws IncompatibleTypeException
+	public static RandomAccessibleInterval< FloatType > load( final String fileName ) throws IncompatibleTypeException
 	{
 		final File file = new File( fileName );
 
 		if ( !file.exists() )
 			throw new RuntimeException( "File " + fileName + " does not exist.");
 
-		IFormatReader reader = new Memoizer( new ImageReader(), Memoizer.DEFAULT_MINIMUM_ELAPSED, tempDir );
+		IFormatReader reader = new ImageReader();
 
 		// loads the first timepoint, first channel, first series of the image
 		return new VirtualRAIFactoryLOCI().createVirtualCached(
