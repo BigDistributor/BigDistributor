@@ -1,6 +1,7 @@
 package main.java.com.gui.items;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import main.java.com.blockmanager.GraphicBlocksManager;
 import main.java.com.controllers.items.JDataFile;
@@ -86,7 +87,8 @@ public class DataPreview extends Object{
 		
 		public DataPreview build() {
 //			previewPreferedHeight = (int) (numberBlocks[1]*blocksSize[1]);
-			this.blocksSizes = new long[] {DEFAULT_BLOCK_SIZE,DEFAULT_BLOCK_SIZE};
+			this.blocksSizes  = new long[file.getDimensions().length];
+			Arrays.fill(this.blocksSizes , DEFAULT_BLOCK_SIZE);
 			return new DataPreview(this);
 		}
 	}

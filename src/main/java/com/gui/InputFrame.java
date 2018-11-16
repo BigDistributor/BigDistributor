@@ -30,7 +30,7 @@ public class InputFrame extends Frame implements ActionListener {
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
 	private AppMode appMode = AppMode.LocalInputMode;
-	private boolean configurated = false;
+	private boolean configurated = true;
 
 	public InputFrame(String arg0) {
 		super(arg0);
@@ -89,12 +89,13 @@ public class InputFrame extends Frame implements ActionListener {
 				
 				JDataFile inputData = new JDataFile.Builder()
 													.file(inputPicker.getFile())
-													.getDataInfos()
 													.load()
+													.getDataInfos()
 													.build();
 				
-				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())
+				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())	
 					IOFunctions.println(viewid);
+				
 				
 				Job job = new Job.Builder()
 							     .appMode(appMode)
@@ -135,5 +136,12 @@ public class InputFrame extends Frame implements ActionListener {
 			appMode = AppMode.ClusterInputMode;
 		}
 	}
+	
+//	public static void main(String[] args) {
+//		InputFrame inputFrame = new InputFrame("Input");
+//		inputFrame.taskPicker.setText("/home/mzouink/Desktop/Task/gaussian.jar");
+//		inputFrame.inputPicker.setText( "/home/mzouink/Desktop/example_dataset/dataset.xml" );
+//		inputFrame.nextButton.doClick();
+//	}
 
 }

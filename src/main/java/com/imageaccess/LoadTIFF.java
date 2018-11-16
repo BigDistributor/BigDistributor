@@ -2,8 +2,6 @@ package main.java.com.imageaccess;
 
 import java.io.File;
 
-import com.google.common.io.Files;
-
 import ij.ImageJ;
 import ij.ImagePlus;
 import loci.formats.IFormatReader;

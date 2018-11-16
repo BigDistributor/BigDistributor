@@ -89,6 +89,10 @@ public class FilePicker extends JPanel {
 	public void showButton() {
 		button.setVisible(true);
 	}
+	
+	public void setText(String string) {
+		this.textField.setText(string);
+	}
 
 	public class FileTypeFilter extends FileFilter {
 		private String extension;

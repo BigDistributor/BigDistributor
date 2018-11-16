@@ -98,6 +98,8 @@ public class LoadXML
 
 			// this is a 3d image stack - for 1 specific illum, tile, angle & channel
 			RandomAccessibleInterval img = loader.getSetupImgLoader( viewId.getViewSetupId() ).getImage( viewId.getTimePointId() );
+			// img.numDimensions() = 3;
+			// it can be 2d, but then it is a 3d image with img.dimension( 2 ) = 1 
 		}
 
 		// all defined a bounding boxes

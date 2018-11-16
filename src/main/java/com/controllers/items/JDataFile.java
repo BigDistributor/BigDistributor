@@ -1,11 +1,9 @@
 package main.java.com.controllers.items;
 
-import java.io.File;
-
 import main.java.com.imageaccess.Loader;
 import main.java.com.tools.Helper;
-import main.java.com.tools.IOFunctions;
-import net.imglib2.img.Img;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class JDataFile extends Object{
@@ -45,10 +43,18 @@ public class JDataFile extends Object{
 		
 		public Builder getDataInfos() {
 			System.out.println("File to open:"+file.getAll());
-			Img<FloatType> image = IOFunctions.openAs32Bit(new File(file.getAll()));
+//			Img<FloatType> image = IOFunctions.openAs32Bit(new File(file.getAll()));
 //			resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),new FloatType());
-			dimensions = Helper.getDimensions(image);
+			RandomAccessibleInterval<FloatType> data;
+			try {
+				data = loader.fuse();
+				dimensions = Helper.getDimensions(data);
+			} catch (IncompatibleTypeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return this;
+			
 		}
 		
 		public Builder file(JFile file) {
