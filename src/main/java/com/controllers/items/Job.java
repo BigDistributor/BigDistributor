@@ -2,6 +2,7 @@ package main.java.com.controllers.items;
 
 public class Job extends Object{
 	final private JFile task;
+	final private JFile extra;
 	final private JDataFile input;
 	final private AppMode appMode;
 
@@ -9,6 +10,7 @@ public class Job extends Object{
 		this.task = builder.task;
 		this.input = builder.input;
 		this.appMode = builder.appMode;
+		this.extra = builder.extra;
 	}
 
 	public JFile getTask() {
@@ -18,6 +20,10 @@ public class Job extends Object{
 	public JDataFile getInput() {
 		return input;
 	}
+	
+	public JFile getExtra() {
+		return extra;
+	}
 
 	public AppMode getAppMode() {
 		return appMode;
@@ -25,6 +31,7 @@ public class Job extends Object{
 
 	public static class Builder {
 		private JFile task;
+		private JFile extra;
 		private JDataFile input;
 		private AppMode appMode;
 
@@ -35,6 +42,11 @@ public class Job extends Object{
 
 		public Builder input(JDataFile input) {
 			this.input = input;
+			return this;
+		}
+		
+		public Builder extra(JFile extra) {
+			this.extra = extra;
 			return this;
 		}
 

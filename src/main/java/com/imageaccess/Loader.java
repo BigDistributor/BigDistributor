@@ -14,6 +14,7 @@ import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 
+
 public class Loader {
 	final File file;
 	final SpimData2 spimData;
@@ -51,7 +52,8 @@ public class Loader {
 	{
 		switch (jfile.getExtension()) {
 		case TIF:
-			return LoadTIFF.load(jfile.getAll());
+//			return LoadTIFF.load(jfile.getAll());
+			return  main.java.com.tools.IOFunctions.openAs32Bit(new File(jfile.getAll()));
 		case XML:
 			final List<ViewId> viewIds = new ArrayList<>(spimData.getSequenceDescription().getViewDescriptions().values()); 
 			final BoundingBox bb = new BoundingBoxMaximal( viewIds,spimData ).estimate( "Full Bounding Box" );
@@ -68,8 +70,7 @@ public class Loader {
 		public static Loader load(JFile jfile) {
 			switch (jfile.getExtension()) {
 			case TIF:
-				//TODO
-				break;
+				return new Loader(null,null,jfile);
 			case XML:
 				final LoadXML load = new LoadXML(jfile.getAll() );
 				return new Loader(load.file, load.spimData,jfile);

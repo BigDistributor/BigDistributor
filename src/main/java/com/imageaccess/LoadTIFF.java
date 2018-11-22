@@ -11,12 +11,15 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
+import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.imgloaders.filemap2.VirtualRAIFactoryLOCI;
 
 public class LoadTIFF
 {
+
 	public static RandomAccessibleInterval< FloatType > load( final String fileName ) throws IncompatibleTypeException
 	{
+		System.out.println("to load: "+ fileName);
 		final File file = new File( fileName );
 
 		if ( !file.exists() )

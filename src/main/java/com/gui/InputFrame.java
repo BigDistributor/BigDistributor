@@ -26,7 +26,7 @@ import mpicbg.spim.io.IOFunctions;
 
 public class InputFrame extends Frame implements ActionListener {
 	private static final long serialVersionUID = -6778326835751228740L;
-	private FilePicker taskPicker, inputPicker;
+	private FilePicker taskPicker, inputPicker,extraPicker;
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
 	private AppMode appMode = AppMode.LocalInputMode;
@@ -53,6 +53,8 @@ public class InputFrame extends Frame implements ActionListener {
 		boxesPanel.add(remoteInputButton);
 
 		taskPicker = new FilePicker("Jar:", "Browse");
+
+		extraPicker = new FilePicker("Extra:", "Browse");
 		inputPicker = new FilePicker("Input:", "Browse");
 		nextButton = new JButton("Next");
 		nextButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -61,11 +63,12 @@ public class InputFrame extends Frame implements ActionListener {
 		configButton.setMnemonic(KeyEvent.VK_C);
 		configButton.addActionListener(this);
 
-		setSize(450, 330);
+		setSize(450, 400);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(30, 20, 30, 20));
-		panel.setLayout(new GridLayout(5, 1, 10, 25));
+		panel.setLayout(new GridLayout(6, 1, 10, 25));
 		panel.add(taskPicker);
+		panel.add(extraPicker);
 		panel.add(inputPicker);
 		panel.add(boxesPanel);
 
@@ -100,6 +103,7 @@ public class InputFrame extends Frame implements ActionListener {
 				Job job = new Job.Builder()
 							     .appMode(appMode)
 							     .task(taskPicker.getFile())
+							     .extra(extraPicker.getFile())
 							     .input(inputData)
 							     .buid();
 				

@@ -52,7 +52,7 @@ public class ShellGenerator {
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
 			if(AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
-			out.println("java -jar task.jar $SGE_TASK_ID" + Config.getInputPrefix());}
+			out.println("java -jar task.jar "+"$SGE_TASK_ID" + Config.getInputPrefix());}
 			else if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
 				out.println("java -jar task.jar " + Config.getJob().getInput().getFile().getAll());
 			}
