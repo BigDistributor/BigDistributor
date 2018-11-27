@@ -53,7 +53,8 @@ public class Loader {
 		switch (jfile.getExtension()) {
 		case TIF:
 //			return LoadTIFF.load(jfile.getAll());
-			return  main.java.com.tools.IOFunctions.openAs32Bit(new File(jfile.getAll()));
+//			main.java.com.tools.IOFunctions.openAs32Bit(new File(jfile.getAll()));
+			return  LoadTIFF.load(jfile.getAll());
 		case XML:
 			final List<ViewId> viewIds = new ArrayList<>(spimData.getSequenceDescription().getViewDescriptions().values()); 
 			final BoundingBox bb = new BoundingBoxMaximal( viewIds,spimData ).estimate( "Full Bounding Box" );

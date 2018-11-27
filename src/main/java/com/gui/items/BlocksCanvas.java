@@ -9,22 +9,22 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
+import main.java.com.tools.Config;
+
 
 public class BlocksCanvas extends JComponent {
 	final static float dash1[] = { 10.0f };
-	ArrayList<BlockPreview> blocks;
 	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1,
 			0.0f);
 	private static final long serialVersionUID = 7920533803582858096L;
 
-	public BlocksCanvas(ArrayList<BlockPreview> blocks) {
+	public BlocksCanvas() {
 		super();
-		this.blocks = blocks;
 	}
 
 	public void paint(Graphics g) {
 		try {
-		for (BlockPreview block : blocks) {
+		for (BlockPreview block : Config.getDataPreview().getBlocksPreview()) {
 			// fill rect used status
 			g.setColor(Colors.Color(block.getStatus()));
 			g.fillRect((int) block.getMainArrea().getX(), (int) block.getMainArrea().getY(),
@@ -52,7 +52,6 @@ public class BlocksCanvas extends JComponent {
 	}
 
 	public void update(ArrayList<BlockPreview> blocks) {
-		this.blocks = blocks;
 		this.repaint();
 	}
 }

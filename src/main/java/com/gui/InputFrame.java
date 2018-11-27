@@ -16,6 +16,8 @@ import ij.ImageJ;
 import main.java.com.controllers.items.AppMode;
 import main.java.com.controllers.items.JDataFile;
 import main.java.com.controllers.items.Job;
+import main.java.com.controllers.items.server.Login;
+import main.java.com.controllers.items.server.ServerConfiguration;
 import main.java.com.gui.items.DataPreview;
 import main.java.com.gui.items.FilePicker;
 import main.java.com.gui.items.Frame;
@@ -30,7 +32,7 @@ public class InputFrame extends Frame implements ActionListener {
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
 	private AppMode appMode = AppMode.LocalInputMode;
-	private boolean configurated = true;
+	private boolean configurated = false;
 
 	public InputFrame(String arg0) {
 		super(arg0);
@@ -96,8 +98,8 @@ public class InputFrame extends Frame implements ActionListener {
 													.getDataInfos()
 													.build();
 				
-				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())	
-					IOFunctions.println(viewid);
+//				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())	
+//					IOFunctions.println(viewid);
 				
 				
 				Job job = new Job.Builder()
@@ -118,8 +120,8 @@ public class InputFrame extends Frame implements ActionListener {
 				Config.setDataPreview(dataPreview);
 				
 				dispose();
-				DashboardView progressGUI = new DashboardView("Progress..");
-				progressGUI.setVisible(true);
+				DashboardView dashboardView = new DashboardView("Progress..");
+				dashboardView.setVisible(true);
 			}
 		}
 

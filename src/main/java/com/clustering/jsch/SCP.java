@@ -253,6 +253,7 @@ public class SCP {
 		if (id != -1) {
 			try {
 				Config.getDataPreview().getBlocksPreview().get(id).setStatus(Colors.SENT);
+				
 				throw new Exception("Out of boxes");
 			} catch (Exception e) {
 				// Helper.log("Out of size");

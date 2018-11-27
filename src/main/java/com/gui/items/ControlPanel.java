@@ -42,7 +42,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", JLabel.CENTER);
 
-		setLayout(new GridLayout(9,1, 20, 20));
+		setLayout(new GridLayout(10,1, 20, 20));
 		sliderOverlapPanel = new SliderPanel(-1, "Overlap:", 0, 200, 10);
 
 		startWorkFlowButton = new Button("START..");
@@ -80,23 +80,23 @@ public class ControlPanel extends JPanel implements ActionListener {
 
 					@Override
 					public void onSuccess() {
-						workflow.generateShell(new MyCallBack() {
+						WorkflowFunction.generateShell(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
-								workflow.sendShell(new MyCallBack() {
+								WorkflowFunction.sendShell(new MyCallBack() {
 
 									@Override
 									public void onSuccess() {
-										workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
+										WorkflowFunction.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 											@Override
 											public void onSuccess() {
-												workflow.sendBatch(new MyCallBack() {
+												WorkflowFunction.sendBatch(new MyCallBack() {
 
 													@Override
 													public void onSuccess() {
-														workflow.runBatch(new MyCallBack() {
+														WorkflowFunction.runBatch(new MyCallBack() {
 
 															@Override
 															public void onSuccess() {
@@ -208,19 +208,19 @@ public class ControlPanel extends JPanel implements ActionListener {
 
 									@Override
 									public void onSuccess() {
-										workflow.generateShell(new MyCallBack() {
+										WorkflowFunction.generateShell(new MyCallBack() {
 
 											@Override
 											public void onSuccess() {
-												workflow.sendShell(new MyCallBack() {
+												WorkflowFunction.sendShell(new MyCallBack() {
 
 													@Override
 													public void onSuccess() {
-														workflow.generateBatch(Config.parallelJobs, new MyCallBack() {
+														WorkflowFunction.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 															@Override
 															public void onSuccess() {
-																workflow.sendBatch(new MyCallBack() {
+																WorkflowFunction.sendBatch(new MyCallBack() {
 
 																	@Override
 																	public void onSuccess() {

@@ -23,6 +23,7 @@ import main.java.com.gui.items.ProgressBarPanel;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
 import mpicbg.spim.io.IOFunctions;
+import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -87,30 +88,36 @@ public class WorkflowFunction {
 				blocks = BlocksManager.generateBlocks(Config.getDataPreview(), callback);
 				//TODO create object to send ProcessData
 				Config.setTotalInputFiles(blocks.size());
-				blockMap = BlocksManager.saveBlocks(
-						IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), 
-						Config.getDataPreview().getBlocksSizes(),
-						blocks,
-						new MyCallBack() {
+				try {
+					blockMap = BlocksManager.saveBlocks(
+//						IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), 
+							Config.getJob().getInput().getLoader().fuse(),
+							Config.getDataPreview().getBlocksSizes(),
+							blocks,
+							new MyCallBack() {
 
-					@Override
-					public void onSuccess() {
-						// TODO Auto-generated method stub
+						@Override
+						public void onSuccess() {
+							// TODO Auto-generated method stub
 
-					}
+						}
 
-					@Override
-					public void onError(String error) {
-						// TODO Auto-generated method stub
+						@Override
+						public void onError(String error) {
+							// TODO Auto-generated method stub
 
-					}
+						}
 
-					@Override
-					public void log(String log) {
-						IOFunctions.println(log);
+						@Override
+						public void log(String log) {
+							IOFunctions.println(log);
 
-					}
-				});
+						}
+					});
+				} catch (IncompatibleTypeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Config.setBlocks(blockMap.size());
 				if (valid)
 					callback.onSuccess();
@@ -149,7 +156,7 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void generateShell(MyCallBack callback) {
+	public static void generateShell(MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -160,7 +167,7 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void generateBatch(int job, MyCallBack callback) {
+	public static void generateBatch(int job, MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
@@ -176,7 +183,7 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void sendShell(MyCallBack callBack) {
+	public static void sendShell(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
@@ -215,7 +222,7 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void sendBatch(MyCallBack callBack) {
+	public static void sendBatch(MyCallBack callBack) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
@@ -247,7 +254,7 @@ public class WorkflowFunction {
 		task.run();
 	}
 
-	public void runBatch(MyCallBack callback) {
+	public static void runBatch(MyCallBack callback) {
 		Thread task = new Thread(new Runnable() {
 
 			@Override
@@ -440,10 +447,15 @@ public class WorkflowFunction {
 	}
 
 	private void assembleBlockToResult(int key, MyCallBack callback) {
+		try {
 		String string = Config.getTempFolderPath() + "/" + key + ".tif";
 		Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
 		blockMap.get(key).pasteBlock(Config.resultImage, tmp, callback);
 		callback.onSuccess();
+		}catch(Exception e ) {
+			System.out.println(e.toString());
+			System.out.println("Can't past to result");
+		}
 	}
 
 	private void processClusterLog(String log) {

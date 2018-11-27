@@ -13,7 +13,7 @@ public class RightPanel extends JPanel{
 		super();
 		setLayout(new GridLayout(2, 1));
 
-		previewPanel = new PreviewPanel(Config.getDataPreview());
+//		previewPanel = new PreviewPanel(Config.getDataPreview());
 		
 		
 	}

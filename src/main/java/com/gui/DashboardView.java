@@ -32,10 +32,10 @@ public class DashboardView extends Frame {
 
 	public DashboardView(String arg0) {
 		super(arg0);
-		JPanel progressPreviewPanel = new JPanel(new GridLayout(2, 1));
+//		JPanel progressPreviewPanel = new JPanel(new GridLayout(2, 1));
 		setSize(FRAME_SIZE[0],FRAME_SIZE[1]);
 		setLayout(new GridBagLayout());
-		previewPanel = new PreviewPanel(Config.getDataPreview());
+		previewPanel = new PreviewPanel();
 		controlPanel = new ControlPanel(Config.getJob().getInput().getDimensions().length);
 		for(SliderPanel slider: controlPanel.blockSizeControlPanel.sliderPanels) {
 		slider.slider.addAdjustmentListener(new AdjustmentListener() {
@@ -50,6 +50,8 @@ public class DashboardView extends Frame {
 						Config.getDataPreview().generateBlocks();
 						slider.updateValue(e.getValue());
 //						controlPanel.numberBlocksLabel.setText("Total Blocks:"+Config.totalBlocks);
+
+						Config.getDataPreview().generateBlocks();
 						previewPanel.updateCanvas();
 					}
 				});
@@ -64,6 +66,8 @@ public class DashboardView extends Frame {
 				Config.getDataPreview().setOverlap(e.getValue());
 				Config.getDataPreview().generateBlocks();
 				controlPanel.sliderOverlapPanel.updateValue(e.getValue());
+
+				Config.getDataPreview().generateBlocks();
 				previewPanel.updateCanvas();
 			}
 		});
@@ -73,8 +77,8 @@ public class DashboardView extends Frame {
 		c.weighty = 1;
 		c.gridx = 0;
 		c.gridy = 0;
-		add(progressPreviewPanel, c);
-		progressPreviewPanel.add(previewPanel);
+		add(previewPanel, c);
+//		progressPreviewPanel.add(previewPanel);
 	
 
 //		progressPreviewPanel.add(controlPanel.workflow.logPanel);

@@ -44,7 +44,7 @@ public class BlocksManager {
 	
 	
 
-	public static HashMap<Integer, Block> saveBlocks(Img<FloatType> image, long[] blockSize, List<Block> blocks,MyCallBack callBack) {
+	public static HashMap<Integer, Block> saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,MyCallBack callBack) {
 		final long[] blockSizeDim = blockSize;
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);

@@ -2,16 +2,18 @@ package main.java.com.imageaccess;
 
 import java.io.File;
 
+import com.google.common.io.Files;
+
 import ij.ImageJ;
 import ij.ImagePlus;
 import loci.formats.IFormatReader;
 import loci.formats.ImageReader;
+import loci.formats.Memoizer;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.imgloaders.filemap2.VirtualRAIFactoryLOCI;
 
 public class LoadTIFF
@@ -19,13 +21,15 @@ public class LoadTIFF
 
 	public static RandomAccessibleInterval< FloatType > load( final String fileName ) throws IncompatibleTypeException
 	{
-		System.out.println("to load: "+ fileName);
+		final File tempDir = Files.createTempDir();
 		final File file = new File( fileName );
 
 		if ( !file.exists() )
 			throw new RuntimeException( "File " + fileName + " does not exist.");
-
-		IFormatReader reader = new ImageReader();
+		
+	
+		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
+//		IFormatReader reader = 
 
 		// loads the first timepoint, first channel, first series of the image
 		return new VirtualRAIFactoryLOCI().createVirtualCached(

@@ -5,10 +5,7 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.xml.crypto.Data;
 
-import main.java.com.blockmanager.GraphicBlocksManager;
-import main.java.com.clustering.MyCallBack;
 import main.java.com.tools.Config;
 
 public class PreviewPanel extends JPanel {
@@ -16,10 +13,10 @@ public class PreviewPanel extends JPanel {
 
 	private BlocksCanvas canvas;
 	
-	public PreviewPanel(DataPreview dataPreview) {
+	public PreviewPanel() {
 		super();
 		setLayout(new GridLayout());
-		canvas = new BlocksCanvas(dataPreview.getBlocksPreview());
+		canvas = new BlocksCanvas();
 		canvas.setSize(new Dimension(Config.PREVIEW_PANEL_WIDTH + 50, Config.PREIVIEW_PANEL_HEIGHT + 50));
 		canvas.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.previewPreferedHeight + 50));
 		JScrollPane scrollFrame = new JScrollPane(canvas);
@@ -29,9 +26,9 @@ public class PreviewPanel extends JPanel {
 	}
 
 	public void updateCanvas() {
-		Config.getDataPreview().generateBlocks();
-
 		canvas.update(Config.getDataPreview().getBlocksPreview());
+		revalidate();
+		repaint();
 	}
 
 }

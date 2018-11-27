@@ -43,8 +43,13 @@ public class ServerConfiguration {
 			this.path = path;
 			return this;
 		}
+		@Override
+		public String toString() {
+			return "Host:"+host+" |Port:"+port+" |ClusterPath:"+path;
+		}
 		
 		public ServerConfiguration build() {
+			System.out.println(this.toString());
 			return new ServerConfiguration(this);
 		}
 
