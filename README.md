@@ -33,7 +33,7 @@ Task can be:
 
 
 
-## Labraries used :
+## Libraries used :
 
 imgLib2: https://github.com/imglib/imglib2
 
