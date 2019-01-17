@@ -12,7 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import org.scijava.log.Logger;
+
 import ij.ImageJ;
+import main.java.com.clustering.workflow.MyLogger;
 import main.java.com.controllers.items.AppMode;
 import main.java.com.controllers.items.JDataFile;
 import main.java.com.controllers.items.Job;
@@ -37,7 +40,7 @@ public class InputFrame extends Frame implements ActionListener {
 
 	public InputFrame(String arg0) {
 		super(arg0);
-		
+		MyLogger.log.info("Hello");
 		Account account = new Account.Builder().build();
 		ServerConfiguration server = new ServerConfiguration.Builder().build();
 		Login login = new Login.Builder().id().server(server).account(account).build();
@@ -95,8 +98,7 @@ public class InputFrame extends Frame implements ActionListener {
 			}
 //			else 
 			if ((!taskPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
-				new ImageJ();
-				IOFunctions.printIJLog = true;
+
 				setVisible(false);
 				
 				
