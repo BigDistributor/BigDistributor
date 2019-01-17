@@ -77,7 +77,4 @@ kafka-topics --zookeeper 127.0.0.1:2181 --create --topic TASK_DONE --partitions 
 
  - A lot!
 
-License
-----
 
-MIT

@@ -9,6 +9,7 @@ import ij.ImagePlus;
 import loci.formats.IFormatReader;
 import loci.formats.ImageReader;
 import loci.formats.Memoizer;
+//import loci.formats.Memoizer;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -27,7 +28,6 @@ public class LoadTIFF
 		if ( !file.exists() )
 			throw new RuntimeException( "File " + fileName + " does not exist.");
 		
-	
 		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
 //		IFormatReader reader = 
 

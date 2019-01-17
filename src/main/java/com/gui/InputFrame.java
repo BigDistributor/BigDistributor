@@ -16,6 +16,7 @@ import ij.ImageJ;
 import main.java.com.controllers.items.AppMode;
 import main.java.com.controllers.items.JDataFile;
 import main.java.com.controllers.items.Job;
+import main.java.com.controllers.items.server.Account;
 import main.java.com.controllers.items.server.Login;
 import main.java.com.controllers.items.server.ServerConfiguration;
 import main.java.com.gui.items.DataPreview;
@@ -36,6 +37,11 @@ public class InputFrame extends Frame implements ActionListener {
 
 	public InputFrame(String arg0) {
 		super(arg0);
+		
+		Account account = new Account.Builder().build();
+		ServerConfiguration server = new ServerConfiguration.Builder().build();
+		Login login = new Login.Builder().id().server(server).account(account).build();
+		Config.setLogin(login);
 		
 		localInputButton = new JRadioButton("Local Input");
 		localInputButton.setMnemonic(KeyEvent.VK_L);
@@ -84,9 +90,11 @@ public class InputFrame extends Frame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextButton) {
 			if(!configurated) {
-				JOptionPane.showMessageDialog(null, "Configurate first." , "Configuration needed !" , JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Configurate first." , "Not configured ! using default configuration" , JOptionPane.INFORMATION_MESSAGE);
 				  
-			}else if ((!taskPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
+			}
+//			else 
+			if ((!taskPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
 				new ImageJ();
 				IOFunctions.printIJLog = true;
 				setVisible(false);

@@ -1,7 +1,7 @@
 package main.java.com.controllers.items;
 
 public enum JExtension {
-	TIF, JAR,XML;
+	TIF, JAR,XML,MODEL;
 	
 	  public static JExtension fromString(String string) {
 		switch (string) {
@@ -14,6 +14,9 @@ public enum JExtension {
 		case "jar":
 
 			return JExtension.JAR;
+			
+		case "model":
+			return JExtension.MODEL;
 
 		default:
 			System.out.println("Error extension: " + string);

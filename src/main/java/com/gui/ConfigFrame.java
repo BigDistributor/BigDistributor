@@ -29,7 +29,7 @@ public class ConfigFrame extends Frame {
 
 	public ConfigFrame(String arg0) {
 		super(arg0);
-		this.setSize(450, 300);
+		this.setSize(450, 350);
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(30, 20, 30, 20));
 		panel.setLayout(new GridLayout(6, 2, 10, 25));

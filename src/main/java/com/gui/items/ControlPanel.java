@@ -14,7 +14,14 @@ import javax.swing.JTextField;
 
 import main.java.com.blockmanager.GraphicBlocksManager;
 import main.java.com.clustering.MyCallBack;
-import main.java.com.clustering.WorkflowFunction;
+import main.java.com.clustering.workflow.DataGetter;
+import main.java.com.clustering.workflow.InputManager;
+import main.java.com.clustering.workflow.ResultManager;
+import main.java.com.clustering.workflow.ScriptManager;
+import main.java.com.clustering.workflow.StatusListenerManager;
+import main.java.com.clustering.workflow.TaskManager;
+import main.java.com.clustering.workflow.WorkerNodeManager;
+import main.java.com.clustering.workflow.Workflow;
 import main.java.com.controllers.items.AppMode;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
@@ -27,7 +34,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 //	public ParamsPanel paramsPanel;
 	public Button startWorkFlowButton;
 	public Button generateResultButton;
-	public WorkflowFunction workflow;
+	public Workflow workflow;
 	public InputPanel inputPanel;
 	public SliderPanel sliderOverlapPanel;
 	public JLabel numberBlocksLabel;
@@ -36,8 +43,8 @@ public class ControlPanel extends JPanel implements ActionListener {
 	
 
 	public ControlPanel(int dimensions) {
-		workflow = new WorkflowFunction();
-		workflow.startStatusListener();
+		workflow = new Workflow();
+		StatusListenerManager.startStatusListener();
 		blockSizeControlPanel = new BlockSizeControlPanel(Config.getDataPreview().getFile().getDimensions().length);
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", JLabel.CENTER);
@@ -76,27 +83,27 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startWorkFlowButton) {
 			if ( AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
-				workflow.sendTask(new MyCallBack() {
+				TaskManager.sendTask(new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
-						WorkflowFunction.generateShell(new MyCallBack() {
+						ScriptManager.generateShell(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
-								WorkflowFunction.sendShell(new MyCallBack() {
+								ScriptManager.sendShell(new MyCallBack() {
 
 									@Override
 									public void onSuccess() {
-										WorkflowFunction.generateBatch(Config.parallelJobs, new MyCallBack() {
+										ScriptManager.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 											@Override
 											public void onSuccess() {
-												WorkflowFunction.sendBatch(new MyCallBack() {
+												ScriptManager.sendBatch(new MyCallBack() {
 
 													@Override
 													public void onSuccess() {
-														WorkflowFunction.runBatch(new MyCallBack() {
+														WorkerNodeManager.runBatch(new MyCallBack() {
 
 															@Override
 															public void onSuccess() {
@@ -196,35 +203,35 @@ public class ControlPanel extends JPanel implements ActionListener {
 					mpicbg.spim.io.IOFunctions.println("Invalide Task number! putted default 10 Jobs");
 					Config.parallelJobs = 10;
 				}
-				workflow.sendTask(new MyCallBack() {
+				TaskManager.sendTask(new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
-						workflow.generateInput(new MyCallBack() {
+						InputManager.generateInput(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
-								workflow.sendInput(new MyCallBack() {
+								InputManager.sendInput(new MyCallBack() {
 
 									@Override
 									public void onSuccess() {
-										WorkflowFunction.generateShell(new MyCallBack() {
+										ScriptManager.generateShell(new MyCallBack() {
 
 											@Override
 											public void onSuccess() {
-												WorkflowFunction.sendShell(new MyCallBack() {
+												ScriptManager.sendShell(new MyCallBack() {
 
 													@Override
 													public void onSuccess() {
-														WorkflowFunction.generateBatch(Config.parallelJobs, new MyCallBack() {
+														ScriptManager.generateBatch(Config.parallelJobs, new MyCallBack() {
 
 															@Override
 															public void onSuccess() {
-																WorkflowFunction.sendBatch(new MyCallBack() {
+																ScriptManager.sendBatch(new MyCallBack() {
 
 																	@Override
 																	public void onSuccess() {
-																		workflow.runBatch(new MyCallBack() {
+																		WorkerNodeManager.runBatch(new MyCallBack() {
 
 																			@Override
 																			public void onSuccess() {
@@ -376,7 +383,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		}
 		if (e.getSource() == generateResultButton) {
 			if ( AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
-				workflow.getAllDataBack(new MyCallBack() {
+				DataGetter.getAllDataBack(new MyCallBack() {
 
 					@Override
 					public void onSuccess() {
@@ -398,11 +405,11 @@ public class ControlPanel extends JPanel implements ActionListener {
 				});
 
 			} else if ( AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
-						workflow.getAllDataBack(new MyCallBack() {
+						DataGetter.getAllDataBack(new MyCallBack() {
 
 							@Override
 							public void onSuccess() {
-								workflow.combineData(new MyCallBack() {
+								ResultManager.combineData(new MyCallBack() {
 
 									@Override
 									public void onSuccess() {
