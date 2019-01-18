@@ -12,14 +12,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import kafka.utils.ShutdownableThread;
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 
 public class JobConsumer extends ShutdownableThread {
     private final KafkaConsumer<Integer, String> consumer;
  
-    private MyCallBack callback;
+    private AbstractCallBack callback;
 
-    public JobConsumer(MyCallBack callback) {
+    public JobConsumer(AbstractCallBack callback) {
     	 super("KafkaJobConsumer", false);
 //    	 Logger logger = Logger.getLogger(this.getClass());
 //     	logger.setLevel(Level.ERROR);
@@ -61,10 +61,10 @@ public class JobConsumer extends ShutdownableThread {
         return false;
     }
     public static void main(String[] args) {
-        JobConsumer consumerThread = new JobConsumer(new MyCallBack() {
+        JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
 			
 			@Override
-			public void onSuccess() {
+			public void onSuccess(int pos) {
 				// TODO Auto-generated method stub
 				
 			}

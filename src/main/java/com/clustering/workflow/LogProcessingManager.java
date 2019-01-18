@@ -1,6 +1,8 @@
 package main.java.com.clustering.workflow;
 
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
+import main.java.com.controllers.tasks.DataGetter;
+import main.java.com.controllers.tasks.ResultManager;
 import main.java.com.gui.items.Colors;
 import main.java.com.tools.Config;
 import mpicbg.spim.io.IOFunctions;
@@ -23,15 +25,15 @@ public class LogProcessingManager {
 						System.out.println("Error! Invalide elmn");
 					}
 				}
-				DataGetter.getBlockDataBack((id - 1) * Config.parallelJobs + 1, id * Config.parallelJobs, new MyCallBack() {
+				DataGetter.getBlockDataBack((id - 1) * Config.parallelJobs + 1, id * Config.parallelJobs, new AbstractCallBack() {
 
 					@Override
-					public void onSuccess() {
+					public void onSuccess(int pos) {
 						for (int i = (id - 1) * Config.parallelJobs + 1; i <= id * Config.parallelJobs; i++) {
-							ResultManager.assembleBlockToResult(i, new MyCallBack() {
+							ResultManager.assembleBlockToResult(i, new AbstractCallBack() {
 
 								@Override
-								public void onSuccess() {
+								public void onSuccess(int pos) {
 //									ImageJFunctions.show(Config.resultImage).setTitle("Result");
 
 								}

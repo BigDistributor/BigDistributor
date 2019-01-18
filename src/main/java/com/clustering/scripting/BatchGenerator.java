@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.tools.Config;
 
 public class BatchGenerator {
 
-	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles, MyCallBack callback) {
+	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles,AbstractCallBack  callback,int taskPos) {
 		String id = Config.getLogin().getId();
 		String path = Config.getLogin().getServer().getPath();
 		boolean error = false;
@@ -61,11 +61,11 @@ public class BatchGenerator {
 			error = true;
 		}
 		if (!error) {
-			callback.onSuccess();
+			callback.onSuccess(taskPos);
 		}
 	}
 	
-	public static void GenerateBatchForClusterFile( MyCallBack callback) {
+	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int taskPos) {
 		String id = Config.getLogin().getId();
 		String path = Config.getLogin().getServer().getPath();
 		boolean error = false;
@@ -84,15 +84,15 @@ public class BatchGenerator {
 			error = true;
 		}
 		if (!error) {
-			callback.onSuccess();
+			callback.onSuccess(taskPos);
 		}
 	}
 
 	public static void main(String[] args) {
-		BatchGenerator.GenerateBatchForLocalFiles(10, 94, new MyCallBack() {
+		BatchGenerator.GenerateBatchForLocalFiles(10, 94, new AbstractCallBack() {
 
 			@Override
-			public void onSuccess() {
+			public void onSuccess(int pos) {
 				System.out.println("Done!");
 
 			}
@@ -108,6 +108,6 @@ public class BatchGenerator {
 				// TODO Auto-generated method stub
 
 			}
-		});
+		}, 0);
 	}
 }

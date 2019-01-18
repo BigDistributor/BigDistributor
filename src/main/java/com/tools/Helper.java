@@ -11,7 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import net.imglib2.RandomAccessibleInterval;
 
 public class Helper {
@@ -26,7 +26,7 @@ public class Helper {
 		return dimensions;
 	}
 
-	public static List<String[]> generateBlocksPerJob(String[] localBlocksfiles, int jobs, MyCallBack callBack) {
+	public static List<String[]> generateBlocksPerJob(String[] localBlocksfiles, int jobs, AbstractCallBack callBack) {
 		ArrayList<String[]> list = new ArrayList<String[]>();
 		int part = localBlocksfiles.length / jobs;
 		int rest = localBlocksfiles.length % jobs;

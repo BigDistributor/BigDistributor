@@ -18,7 +18,7 @@ import ij.io.FileSaver;
 import ij.io.Opener;
 import ij.io.TiffEncoder;
 import ij.process.ImageProcessor;
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
@@ -123,7 +123,7 @@ public class IOFunctions {
 	 * the entire virtual stack once to collect some slice labels, which takes
 	 * forever in this case.
 	 */
-	public static boolean saveTiffStack(final ImagePlus imp, final String path, MyCallBack callback) {
+	public static boolean saveTiffStack(final ImagePlus imp, final String path, AbstractCallBack callback) {
 		FileInfo fi = imp.getFileInfo();
 		boolean virtualStack = imp.getStack().isVirtual();
 		if (virtualStack)

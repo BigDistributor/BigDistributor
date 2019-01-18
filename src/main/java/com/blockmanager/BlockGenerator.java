@@ -24,8 +24,7 @@ package main.java.com.blockmanager;
 
 import java.util.HashMap;
 import java.util.List;
-
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 
 public interface BlockGenerator< T extends Block >
 {
@@ -36,6 +35,6 @@ public interface BlockGenerator< T extends Block >
 	 * @param kernelSize - the size of the kernel (has to be odd!)
 	 * @return array of blocks
 	 */
-	public List< T > divideIntoBlocks( final long[] imgSize, final long[] kernelSize, MyCallBack callback );
+	public List< T > divideIntoBlocks( final long[] imgSize, final long[] kernelSize, AbstractCallBack callback );
 	public HashMap< Integer, T > divideIntoHashMapBlocks( final long[] imgSize, final long[] kernelSize );
 }

@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import main.java.com.clustering.MyCallBack;
 import main.java.com.controllers.items.AppMode;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.tools.Config;
 
 public class ShellGenerator {
@@ -34,7 +34,7 @@ public class ShellGenerator {
 //	}
 
 	// job.sh
-	public static String generateTaskShell(MyCallBack callback)  {
+	public static String generateTaskShell(int pos,AbstractCallBack callback)  {
 
 		File file = new File(Config.getTempFolderPath());
 		String filePath = file.getAbsolutePath() + "/task.sh";
@@ -58,7 +58,7 @@ public class ShellGenerator {
 			}
 			out.flush();
 			out.close();
-			callback.onSuccess();
+			callback.onSuccess(pos);
 			return filePath;
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
@@ -67,7 +67,7 @@ public class ShellGenerator {
 	}
 
 	// provider.sh
-	public static String generateLogProviderShell(MyCallBack callback) {
+	public static String generateLogProviderShell(int pos, AbstractCallBack callback) {
 
 		File file = new File(Config.getTempFolderPath());
 		String filePath = file.getAbsolutePath() + "/logProvider.sh";
@@ -87,7 +87,7 @@ public class ShellGenerator {
 			out.println("java -jar logProvider.jar ${uuid} $SGE_TASK_ID");
 			out.flush();
 			out.close();
-			callback.onSuccess();
+			callback.onSuccess(pos);
 			return filePath;
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
@@ -96,10 +96,10 @@ public class ShellGenerator {
 	}
 
 	public static void main(String[] args) {
-		generateLogProviderShell(new MyCallBack() {
+		generateLogProviderShell(0, new AbstractCallBack() {
 
 			@Override
-			public void onSuccess() {
+			public void onSuccess(int pos) {
 				System.out.println("Done !");
 
 			}

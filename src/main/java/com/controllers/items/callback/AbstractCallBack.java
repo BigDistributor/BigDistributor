@@ -1,7 +1,10 @@
-package main.java.com.clustering;
+package main.java.com.controllers.items.callback;
 
-public interface MyCallBack {
-	void onSuccess();
+
+public interface AbstractCallBack {
+	void onSuccess(int pos);
 	void onError(String error);
 	void log(String log);
+	
+	
 }

@@ -24,9 +24,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
-import main.java.com.clustering.MyCallBack;
 import main.java.com.gui.items.Colors;
 import main.java.com.tools.Config;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.controllers.items.server.Login;
 
 public class SCP {
@@ -55,7 +55,7 @@ public class SCP {
 	}
 
 	public static void run(Login login, String scriptFile,
-			MyCallBack callBack) throws JSchException {
+			AbstractCallBack callBack) throws JSchException {
 		validateConnection(login);
 		String command = "cd " + Config.getLogin().getServer().getPath() + " && chmod +x " + scriptFile + " && ./" + scriptFile;
 		System.out.println(command);
@@ -65,7 +65,7 @@ public class SCP {
 		channel.connect();
 	}
 
-	public static void generateLog(Login login, String scriptPath, MyCallBack callBack)
+	public static void generateLog(Login login, String scriptPath, AbstractCallBack callBack)
 			throws JSchException {
 		validateConnection(login);
 		String command = "cd " + scriptPath + " && qstat > log.txt";

@@ -1,7 +1,8 @@
 package main.java.com.blockmanager;
 
 import java.util.ArrayList;
-import main.java.com.clustering.MyCallBack;
+
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.gui.items.BlockPreview;
 import main.java.com.tools.Config;
 import main.java.com.tools.Helper;
@@ -72,7 +73,7 @@ public class GraphicBlocksManager {
 		return (int) (Config.PREIVIEW_PANEL_HEIGHT / numberPreviewBlocks[0]);
 	}
 
-	public static long[] get2DDimensions(Img<FloatType> file,MyCallBack callback) {
+	public static long[] get2DDimensions(Img<FloatType> file,AbstractCallBack callback) {
 		long[] dims = Helper.getDimensions(file);
 		String logString = Helper.logArray(dims);
 		callback.log("Dims: " + logString);
@@ -85,7 +86,7 @@ public class GraphicBlocksManager {
 		return result;
 	}
 	
-	public long[] divideIntoBlocks( final long[] imgSize, long[] blocksSize, final long[] kernelSize, MyCallBack callback )
+	public long[] divideIntoBlocks( final long[] imgSize, long[] blocksSize, final long[] kernelSize, AbstractCallBack callback )
 	{
 		long[] blockSize = blocksSize;
 		final int numDimensions = imgSize.length;

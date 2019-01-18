@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import com.google.common.io.Files;
-
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.gui.items.BlockPreview;
 import main.java.com.gui.items.Colors;
 import main.java.com.gui.items.DataPreview;
@@ -29,7 +28,7 @@ import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 
 public class BlocksManager {
-	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,MyCallBack callback) {
+	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,AbstractCallBack callback) {
 
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Config.getJob().getInput().getDimensions(),
 				new FloatType());
@@ -44,7 +43,7 @@ public class BlocksManager {
 	
 	
 
-	public static HashMap<Integer, Block> saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,MyCallBack callBack) {
+	public static HashMap<Integer, Block> saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,AbstractCallBack callBack) {
 		final long[] blockSizeDim = blockSize;
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
@@ -78,7 +77,7 @@ public class BlocksManager {
 		return sumChange;
 	}
 
-	public static <T> List<Block> generateBlocks(DataPreview data,MyCallBack callback) {
+	public static <T> List<Block> generateBlocks(DataPreview data,AbstractCallBack callback) {
 		final ExecutorService service = Threads.createExService(1);
 		long[] dims = data.getFile().getDimensions();
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, data.getBlocksSizes());

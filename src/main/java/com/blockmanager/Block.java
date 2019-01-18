@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-
-import main.java.com.clustering.MyCallBack;
+import main.java.com.controllers.items.callback.AbstractCallBack;
 import main.java.com.multithreading.ImagePortion;
 import main.java.com.multithreading.Threads;
 import net.imglib2.AbstractInterval;
@@ -164,7 +163,7 @@ public class Block extends AbstractInterval
 	 * @param source - needs to be extended with an OutOfBounds in case the block extends past the boundaries of the RandomAccessibleInterval
 	 * @param block - the Block to copy it to
 	 */
-	public void copyBlock( final RandomAccessible< FloatType > source, final RandomAccessibleInterval< FloatType > block,MyCallBack callback )
+	public void copyBlock( final RandomAccessible< FloatType > source, final RandomAccessibleInterval< FloatType > block,AbstractCallBack callback )
 	{
 		// set up threads
 		final ArrayList< Callable< Boolean > > tasks = new ArrayList< Callable< Boolean > >();
@@ -206,7 +205,7 @@ public class Block extends AbstractInterval
 		}
 	}
 
-	public void pasteBlock( final RandomAccessibleInterval< FloatType > target, final RandomAccessibleInterval< FloatType > block , MyCallBack callback)
+	public void pasteBlock( final RandomAccessibleInterval< FloatType > target, final RandomAccessibleInterval< FloatType > block , AbstractCallBack callback)
 	{
 		// set up threads
 		final ArrayList< Callable< Boolean > > tasks = new ArrayList< Callable< Boolean > >();
