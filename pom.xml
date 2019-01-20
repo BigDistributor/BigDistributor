@@ -111,6 +111,11 @@
 			<artifactId>multiview-reconstruction</artifactId>
 			<version>0.2.17</version>
 		</dependency>
+		<dependency>
+		 <groupId>org.janelia.saalfeldlab</groupId>
+        <artifactId>n5-imglib2</artifactId>
+        <version>3.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -119,6 +124,10 @@
 			<id>imagej.public</id>
 			<url>http://maven.imagej.net/content/groups/public</url>
 		</repository>
+    <repository>
+        <id>saalfeld-lab-maven-repo</id>
+        <url>https://saalfeldlab.github.io/maven</url>
+    </repository>
 	</repositories>
 
 </project>
