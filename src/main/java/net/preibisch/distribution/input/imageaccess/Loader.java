@@ -77,7 +77,7 @@ public class Loader {
 				return new Loader(loadxml.file, loadxml.spimData,jfile);
 			case N5:
 				final LoadN5 loadn5 = new LoadN5(jfile.getAll());
-				return new Loader(loadn5.file, loadn5.spimData, jfile);
+				return new Loader(null,null, jfile);
 
 			default:
 				break;

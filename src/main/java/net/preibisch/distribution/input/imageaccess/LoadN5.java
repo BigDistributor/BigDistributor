@@ -1,62 +1,47 @@
 package main.java.net.preibisch.distribution.input.imageaccess;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.util.Arrays;
 
-import mpicbg.spim.data.SpimDataException;
-import mpicbg.spim.data.sequence.ViewId;
-import mpicbg.spim.io.IOFunctions;
-import net.imglib2.Interval;
+import org.janelia.saalfeldlab.n5.N5FSReader;
+import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
+
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
-import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
-import net.preibisch.mvrecon.process.fusion.FusionTools;
 
 public class LoadN5 {
 	final File file;
-	final SpimData2 spimData;
+	final N5FSReader n5Reader;
 
-	public LoadN5( final String xml )
-	{
-		this.file = new File( xml );
+	public LoadN5(final String n5path) {
+		this.file = new File(n5path);
 
-		if ( !file.exists() )
-			throw new RuntimeException( "File " + xml + " does not exist.");
-
-		try
-		{
-			this.spimData = new XmlIoSpimData2( "" ).load( file.getAbsolutePath() );
-		}
-		catch ( SpimDataException e )
-		{
+		if (!file.exists())
+			throw new RuntimeException("File " + n5path + " does not exist.");
+		try {
+			n5Reader = new N5FSReader("/home/saalfeld/projects/lauritzen/02/workspace.n5");
+			System.out.println(Arrays.toString(n5Reader.list("/")));
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
-			throw new RuntimeException( "Could not load xml: " + e );
+			throw new RuntimeException("Could not load n5: " + e);
 		}
+
 	}
 
-	public static RandomAccessibleInterval< FloatType > fuse(final SpimData2 spimData, final List< ViewId > viewIds, final Interval interval )
-	{
-		// filter not present ViewIds
-		final List< ViewId > removed = SpimData2.filterMissingViews( spimData, viewIds );
-		IOFunctions.println( new Date( System.currentTimeMillis() ) + ": Removed " +  removed.size() + " views because they are not present." );
-
-		// downsampling
-		double downsampling = Double.NaN;
-
-		// display virtually fused
-		final RandomAccessibleInterval< FloatType > virtual = FusionTools.fuseVirtual( spimData, viewIds, interval, downsampling );
-
+	public RandomAccessibleInterval<FloatType> fuse() {
+		RandomAccessibleInterval<FloatType> virtual = null;
+		try {
+			virtual = N5Utils.open(n5Reader, "volumes/raw/s0");
+			return virtual;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return virtual;
-	}
 
-	public static void main( String[] args )
-	{
-		
 	}
-
 
 }
