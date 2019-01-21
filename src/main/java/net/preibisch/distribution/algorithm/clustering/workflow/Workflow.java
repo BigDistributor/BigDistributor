@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.Block;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.FunctionSequenceManager;
+import main.java.net.preibisch.distribution.algorithm.controllers.tasks.StatusListenerManager;
 import main.java.net.preibisch.distribution.gui.items.ProgressBarPanel;
 
 public class Workflow {
@@ -19,6 +21,7 @@ public class Workflow {
 
 	public Workflow() {
 		progressBarPanel = new ProgressBarPanel(0, 100);
+		runFunction(new StatusListenerManager());
 	}
 
 	public static void startWorkflow() {
@@ -29,7 +32,11 @@ public class Workflow {
 	public static void resultWorkflow() {
 		FunctionSequenceManager fl = new FunctionSequenceManager(RESULT);
 		fl.start();
-
+	}
+	
+	public static void runFunction(AbstractTask task) {
+		FunctionSequenceManager fl = new FunctionSequenceManager(task);
+		fl.start();
 	}
 
 }

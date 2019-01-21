@@ -60,6 +60,10 @@ public final class FunctionSequenceManager {
 					  );
 	}
 	
+	public FunctionSequenceManager(AbstractTask task) {
+		functionsFlow = Arrays.asList(task);
+		initCallBack();
+	}
 	public FunctionSequenceManager(String task) {
 		if(Workflow.START.equals(task)) {
 		if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
@@ -74,6 +78,10 @@ public final class FunctionSequenceManager {
 			resultLocalInputModeWorkflow();
 		}
 		}
+		initCallBack();
+	}
+
+	private void initCallBack() {
 		callback = new AbstractCallBack() {
 
 			@Override

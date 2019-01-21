@@ -27,7 +27,7 @@ import java.util.List;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 
-public interface BlockGenerator< T extends Block >
+public interface BlockGenerator< T extends Block  >
 {
 	/**
 	 * Divides an image into blocks

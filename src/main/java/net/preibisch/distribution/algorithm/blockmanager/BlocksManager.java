@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import com.google.common.io.Files;
-
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
@@ -50,15 +48,14 @@ public class BlocksManager {
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		int i = 0;
 		final HashMap<Integer, Block> blockMap = new HashMap<>();
-		File tempDir = Files.createTempDir();
-		Config.setTempFolderPath(tempDir.getAbsolutePath());
-		callBack.log("Temp Dir: " + tempDir.getAbsolutePath());
+		String tempDir = Config.getJob().getTmpDir();
+		callBack.log("Temp Dir: " + tempDir);
 		for (final Block block : blocks) {
 			++i;
 			block.copyBlock(infiniteImg, tmp, callBack);
 			blockMap.put(i, block);
 			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp),
-					tempDir.getAbsolutePath() + "/" + i + ".tif", callBack);
+					tempDir + "/" + i + ".tif", callBack);
 //TODO
 //			Config.progressValue = (i * 100) / blocks.size();
 		}

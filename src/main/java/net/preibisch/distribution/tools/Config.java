@@ -25,7 +25,6 @@ public enum Config {
 
 	private static DataPreview dataPreview;
 	
-//	private static String clusterPath = "/fast/AG_Preibisch/Marwan/clustering/";
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
 
 	private static int blocks;
@@ -37,10 +36,8 @@ public enum Config {
 	private static int[] blocksStatus;
 
 
-	
 	private static int totalInputFiles;
 
-	private static String tempFolderPath = "/Users/Marwan/Desktop/Task/";
 
 	
 	private static ArrayList<String> blocksFilesNames;
@@ -75,14 +72,8 @@ public enum Config {
 	
 
 	public static String getTempFolderPath() {
-		return tempFolderPath;
+		return job.getTmpDir();
 	}
-
-	public static void setTempFolderPath(String tempDir) {
-		System.out.println("Temp Dir: "+tempDir);
-		Config.tempFolderPath = tempDir;
-	}
-
 	
 	public static int[] getNumberBlocks() {
 		return numberBlocks;

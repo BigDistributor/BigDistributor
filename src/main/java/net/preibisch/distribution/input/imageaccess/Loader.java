@@ -73,8 +73,11 @@ public class Loader {
 			case TIF:
 				return new Loader(null,null,jfile);
 			case XML:
-				final LoadXML load = new LoadXML(jfile.getAll() );
-				return new Loader(load.file, load.spimData,jfile);
+				final LoadXML loadxml = new LoadXML(jfile.getAll() );
+				return new Loader(loadxml.file, loadxml.spimData,jfile);
+			case N5:
+				final LoadN5 loadn5 = new LoadN5(jfile.getAll());
+				return new Loader(loadn5.file, loadn5.spimData, jfile);
 
 			default:
 				break;

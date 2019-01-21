@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.StatusListenerManager;
 import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.Helper;
 
@@ -21,7 +20,6 @@ public class ControlPanel extends JPanel implements ActionListener {
 //	public ParamsPanel paramsPanel;
 	public Button startWorkFlowButton;
 	public Button generateResultButton;
-	public Workflow workflow;
 	public InputPanel inputPanel;
 	public SliderPanel sliderOverlapPanel;
 	public JLabel numberBlocksLabel;
@@ -30,8 +28,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	
 
 	public ControlPanel(int dimensions) {
-		workflow = new Workflow();
-		StatusListenerManager.startStatusListener();
+		new Workflow();
 		blockSizeControlPanel = new BlockSizeControlPanel(Config.getDataPreview().getFile().getDimensions().length);
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", SwingConstants.CENTER);
@@ -75,6 +72,8 @@ public class ControlPanel extends JPanel implements ActionListener {
 				mpicbg.spim.io.IOFunctions.println("Invalide Task number! putted default 10 Jobs");
 				Config.parallelJobs = 10;
 			}
+			
+
 			Workflow.startWorkflow();
 		}
 		if (e.getSource() == generateResultButton) {

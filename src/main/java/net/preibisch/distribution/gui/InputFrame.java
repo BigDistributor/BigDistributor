@@ -112,6 +112,7 @@ public class InputFrame extends Frame implements ActionListener {
 							     .task(taskPicker.getFile())
 							     .extra(extraPicker.getFile())
 							     .input(inputData)
+							     .createTempDir()
 							     .buid();
 				
 				
