@@ -64,6 +64,18 @@ public class DataPreview extends Object{
 		this.blocksSizes = blocksSizes;
 	}
 	
+	private DataPreview(JDataFile file,long[] blocksSizes,long overlap) {
+		this.file = file;
+		this.overlap = overlap;
+		this.blocksSizes = blocksSizes;
+		
+	}
+	
+	
+	public static DataPreview of(JDataFile file, long[] blockSizes, long overlap) {
+		return new DataPreview(file,blockSizes,overlap);
+	}
+	
 
 	public static class Builder {
 		private JDataFile file;

@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.Helper;
 
@@ -69,7 +70,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 			try {
 				Config.parallelJobs = Integer.parseInt(jobsField.getText());
 			} catch (Exception ex) {
-				mpicbg.spim.io.IOFunctions.println("Invalide Task number! putted default 10 Jobs");
+				MyLogger.log.error("Invalide Task number! putted default 10 Jobs");
 				Config.parallelJobs = 10;
 			}
 			

@@ -6,7 +6,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCP;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
-import mpicbg.spim.io.IOFunctions;
 
 public class TaskLauncher implements AbstractTask{
 
@@ -14,7 +13,7 @@ public class TaskLauncher implements AbstractTask{
 	public void start(int pos, AbstractCallBack callback) {
 
 		Boolean valid = true;
-		IOFunctions.println("Run Submit..");
+		callback.log("Run Submit..");
 		try {
 			SCP.run(Config.getLogin(), "submit.cmd", callback);
 		} catch (JSchException e) {

@@ -18,8 +18,8 @@ public class ResultManager {
 		Workflow.blockMap.get(key).pasteBlock(Config.resultImage, tmp, callback);
 		callback.onSuccess(0);
 		}catch(Exception e ) {
-			System.out.println(e.toString());
-			System.out.println("Can't past to result");
+			callback.onError(e.toString());
+			callback.onError("Can't past to result");
 		}
 	}
 

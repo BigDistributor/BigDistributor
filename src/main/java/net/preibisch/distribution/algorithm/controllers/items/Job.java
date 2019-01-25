@@ -5,11 +5,19 @@ import java.io.File;
 import com.google.common.io.Files;
 
 public class Job extends Object{
+
+	public static final String TASK_CLUSTER_NAME = "task.jar";
+	
 	final private JFile task;
 	final private JFile extra;
+	
 	final private JDataFile input;
 	final private AppMode appMode;
 	final private String tmpDir;
+
+	private String metaDataPath;
+
+	private String taskShellPath;
 
 	private Job(Builder builder) {
 		this.task = builder.task;
@@ -39,6 +47,24 @@ public class Job extends Object{
 		return tmpDir;
 	}
 	
+	public String getMetaDataPath() {
+		return metaDataPath;
+	}
+
+	public void setMetaDataPath(String metaDataPath) {
+		this.metaDataPath = metaDataPath;
+	}
+	
+	public void setTaskShellPath(String taskShellPath) {
+		this.taskShellPath = taskShellPath;
+		
+	}
+	
+	public String getTaskShellPath() {
+		return taskShellPath;
+	}
+
+
 	public static class Builder {
 		private JFile task;
 		private JFile extra;
@@ -76,7 +102,5 @@ public class Job extends Object{
 		public Job buid() {
 			return new Job(this);
 		}
-
 	}
-
 }

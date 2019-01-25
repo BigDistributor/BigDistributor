@@ -6,11 +6,13 @@ import java.util.List;
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.AllDataGetter;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.BlockCombinator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputSender;
+import main.java.net.preibisch.distribution.algorithm.controllers.tasks.PreprocessTaskSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskLauncher;
@@ -37,14 +39,19 @@ public final class FunctionSequenceManager {
 	}
 
 	private void starterClusterInputModeWorkflow() {
-		functionsFlow = Arrays.asList(new TaskSender(),
-					  new TaskShellGenerator(),
-					 new TaskShellSender(),
-					  new TaskBatchGenerator(),
-					  new TaskBatchSender(),
-					  new TaskLauncher()
+		functionsFlow = Arrays.asList(
+					new MetaDataGenerator(),
+					new TaskShellGenerator(),
+					new TaskBatchGenerator(),
+					new PreprocessTaskSender(),
+					new TaskSender(),
+					new TaskShellSender(),
+					new TaskBatchSender(),
+					new TaskLauncher()
 					  );
 	}
+	
+	
 	
 	private void resultClusterInputModeWorkflow() {
 		functionsFlow = Arrays.asList(new AllDataGetter()
@@ -64,6 +71,13 @@ public final class FunctionSequenceManager {
 		functionsFlow = Arrays.asList(task);
 		initCallBack();
 	}
+	
+	public FunctionSequenceManager(AbstractTask... tasks) {
+		functionsFlow = Arrays.asList(tasks);
+		initCallBack();
+	}
+	
+	 
 	public FunctionSequenceManager(String task) {
 		if(Workflow.START.equals(task)) {
 		if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {

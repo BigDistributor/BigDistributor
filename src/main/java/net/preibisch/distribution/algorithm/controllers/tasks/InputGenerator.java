@@ -5,7 +5,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workfl
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
-import mpicbg.spim.io.IOFunctions;
 import net.imglib2.exception.IncompatibleTypeException;
 
 public class InputGenerator implements AbstractTask {
@@ -14,7 +13,7 @@ public class InputGenerator implements AbstractTask {
 	public void start(int pos, AbstractCallBack callback) {
 
 		Boolean valid = true;
-		IOFunctions.println("Generate input blocks..");
+		callback.log("Generate input blocks..");
 		Workflow.progressBarPanel.updateBar(0);
 		Workflow.blocks = BlocksManager.generateBlocks(Config.getDataPreview(), callback);
 		//TODO create object to send ProcessData
@@ -41,7 +40,7 @@ public class InputGenerator implements AbstractTask {
 
 				@Override
 				public void log(String log) {
-					IOFunctions.println(log);
+					callback.log(log);
 
 				}
 			});

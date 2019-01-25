@@ -25,20 +25,22 @@ public class MetaDataGenerator implements AbstractTask {
 	public void start(int pos, AbstractCallBack callback) {
 		callback.log("Creating metadata..");
 		BlocksMetaData md = new BlocksMetaData(generateBlocks(callback));
-		createJSon(md,Config.getJob().getTmpDir(), callback);
+		Config.getJob().setMetaDataPath(createJSon(md,Config.getJob().getTmpDir(), callback));
 		callback.onSuccess(pos);
 	}
 
-	private static void createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
+	private static String createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
 		File file = new File(folder,METADATA_FILE_NAME);
 		try (Writer writer = new FileWriter(file)) {
 			Gson gson = new GsonBuilder().create();
 			gson.toJson(md, writer);
+			
 			callback.log("Metadata created: "+file.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			callback.onError(e.toString());
 		}
+		return file.getAbsolutePath();
 	}
 
 	private static <T> List<BlockInfos> generateBlocks(AbstractCallBack callback) {

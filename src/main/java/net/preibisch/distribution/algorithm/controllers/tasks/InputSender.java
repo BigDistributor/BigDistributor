@@ -11,7 +11,6 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.Abstract
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.Helper;
-import mpicbg.spim.io.IOFunctions;
 
 public class InputSender implements AbstractTask {
 
@@ -19,7 +18,7 @@ public class InputSender implements AbstractTask {
 	public void start(int pos, AbstractCallBack callback) {
 
 		Boolean valid = true;
-		IOFunctions.println("Send input files..");
+		callback.log("Send input files..");
 		Workflow.progressBarPanel.updateBar(0);
 		String local = Config.getTempFolderPath();
 		ArrayList<String> files = Helper.getFiles(local, Config.getInputPrefix());

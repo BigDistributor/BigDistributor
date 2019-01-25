@@ -1,5 +1,6 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
+import java.io.File;
 import java.util.Arrays;
 
 
@@ -38,7 +39,22 @@ public class JFile extends Object{
 		return "JFile [path=" + path + ", name=" + name + ", extension=" + extension + "]";
 	}
 
-
+	public static JFile of(String path) {
+		File file = new File(path);
+		String extension = "";
+		String name = "";
+		int i = path.lastIndexOf('.');
+		if (i > 0) {
+		    extension = file.getName().substring(i+1);
+		    name = file.getName().substring(0, i);
+		}
+		return new JFile.Builder()
+				.all(path)
+				.path(file.getParent())
+				.name(name)
+				.extension(JExtension.fromString(extension))
+				.build();
+	}
 	public static class Builder {
 		private String path;
 		private String name;
@@ -64,7 +80,8 @@ public class JFile extends Object{
 			this.all = all;
 			return this;
 		}
-
+		
+		
 		public Builder fromString(String string) {
 			System.out.println("File: "+string);
 			String[] parts = string.split("/");

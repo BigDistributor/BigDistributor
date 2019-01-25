@@ -13,7 +13,8 @@ import net.imglib2.type.numeric.real.FloatType;
 public enum Config {
 	INSTANCE;
 	
-	public static final int BUFFER_SIZE = 64 * 1024;
+	
+	public static final int BUFFER_SIZE = 1024 * 1024;
 	public static final int MINIMUM_BOX_SIZE = 50;
 	public static final int PREVIEW_PANEL_WIDTH = 800;
 	public static final int PREIVIEW_PANEL_HEIGHT = 500;

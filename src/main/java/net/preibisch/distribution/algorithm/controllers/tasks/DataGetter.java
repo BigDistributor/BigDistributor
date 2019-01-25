@@ -9,7 +9,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workfl
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
-import mpicbg.spim.io.IOFunctions;
 
 public class DataGetter {
 
@@ -23,7 +22,7 @@ public class DataGetter {
 					throw new Error("Cluster blocks get not implimented yet");
 				} else if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
 					Boolean valid = true;
-					System.out.println("Get Data back..");
+					callBack.log("Get Data back..");
 					Workflow.progressBarPanel.updateBar(0);
 					// ArrayList<String> files = Config.getBlocksFilesNames();
 					// int key = 0;
@@ -33,7 +32,7 @@ public class DataGetter {
 							SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath() + "//" + file,
 									Config.getTempFolderPath() + "//" + file, i - 1);
 
-							IOFunctions.println("block " + i + " got with success !");
+							callBack.log("block " + i + " got with success !");
 							Workflow.progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
 						} catch (IOException e) {
 							valid = false;

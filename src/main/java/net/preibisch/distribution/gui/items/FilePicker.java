@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JExtension;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.tools.Config;
 
 public class FilePicker extends JPanel {
@@ -21,7 +19,6 @@ public class FilePicker extends JPanel {
 	private JLabel label;
 	private JTextField textField;
 	private JButton button;
-	private JFile file;
 	private JFileChooser fileChooser;
 
 	public FilePicker(String textFieldLabel, String buttonLabel) {
@@ -43,25 +40,7 @@ public class FilePicker extends JPanel {
 
 	private void buttonActionPerformed(ActionEvent evt) {
 		if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-			String extension = "";
-			String name = "";
-			int i = fileChooser.getSelectedFile().getName().lastIndexOf('.');
-			if (i > 0) {
-			    extension = fileChooser.getSelectedFile().getName().substring(i+1);
-			    name = fileChooser.getSelectedFile().getName().substring(0, i);
-			}
-			file = new JFile.Builder()
-					.all(fileChooser.getSelectedFile().getAbsolutePath())
-					.path(fileChooser.getSelectedFile().getParent())
-					.name(name)
-					.extension(JExtension.fromString(extension))
-					.build();
-			
-			System.out.println(file.toString());
-			
-			
-			
+			textField.setText(fileChooser.getSelectedFile().getAbsolutePath());	
 		}
 	}
 
@@ -70,12 +49,8 @@ public class FilePicker extends JPanel {
 		fileChooser.addChoosableFileFilter(filter);
 	}
 
-	public String getSelectedFilePath() {
+	public String getFile() {
 		return textField.getText();
-	}
-	
-	public JFile getFile() {
-		return file;
 	}
 
 	public JFileChooser getFileChooser() {

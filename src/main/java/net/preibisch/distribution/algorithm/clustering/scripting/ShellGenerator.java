@@ -5,41 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
 
 public class ShellGenerator {
+	public static final String TASK_SHELL_NAME = "task.sh";
 
-//	public static String generateShell(String jar, String[] input, int key) throws FileNotFoundException {
-//
-//		File file = new File(Config.getTempFolderPath());
-//		String filePath = file.getAbsolutePath() + "/run" + key + ".sh";
-//
-//		try (PrintWriter out = new PrintWriter(filePath)) {
-//			out.println("#!/bin/sh");
-//			out.println("# This is my job script with qsub-options ");
-//			out.println("#$ -pe smp 8");
-//			out.println("##$ -pe orte 32");
-//			out.println("#$ -V -N \"Task " + key + " runner\"");
-//			out.println("#$ -l h_rt=0:0:30 -l h_vmem=4G -l h_stack=128M -cwd");
-//			out.println("#$ -o data/test_results-$JOB_ID.txt");
-//			out.println("#$ -e data/test_results-$JOB_ID.txt");
-//			out.println("# export NSLOTS=8");
-//			out.println("# neccessary to prevent python error ");
-//			out.println("#export OPENBLAS_NUM_THREADS=4");
-//			out.println("# export NUM_THREADS=8");
-//			out.println("java -jar " + jar + " " + String.join(" ", input));
-//			return filePath;
-//		}
-//	}
+	public static final String PREPROCESS_SHELL_NAME = "preprocess.sh";
+	public static final String LOG_PROVIDER_SHELL_NAME = "logProvider.sh";
+	public static void generateTaskShell(int pos,AbstractCallBack callback)  {
 
-	// job.sh
-	public static String generateTaskShell(int pos,AbstractCallBack callback)  {
-
-		File file = new File(Config.getTempFolderPath());
-		String filePath = file.getAbsolutePath() + "/task.sh";
-	
-		try (PrintWriter out = new PrintWriter(filePath)) {
+		File file = new File(Config.getTempFolderPath(),TASK_SHELL_NAME);
+		
+		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
 			out.println("# This is my job script with qsub-options ");
 			out.println("#$ -pe smp 8");
@@ -51,19 +30,36 @@ public class ShellGenerator {
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
-			if(AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
-			out.println("java -jar task.jar "+"$SGE_TASK_ID" + Config.getInputPrefix());}
-			else if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
-				out.println("java -jar task.jar " + Config.getJob().getInput().getFile().getAll());
-			}
+			out.println(getTaskLine());
 			out.flush();
 			out.close();
+			Config.getJob().setTaskShellPath(file.getAbsolutePath());
 			callback.onSuccess(pos);
-			return filePath;
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
-			return null;
 		}
+	}
+
+	private static String getTaskLine() {
+		String taskLine  = "";
+		if(AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
+			taskLine = getLocalInputTaskLine();
+		}
+			else if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
+				taskLine = getCloudInputTaskLine();
+			}
+		return taskLine;
+	}
+
+	private static String getCloudInputTaskLine() {
+		return "java -jar task.jar"
+				+" -i " + Config.getJob().getInput().getFile().getAll()
+				+" -x $SGE_TASK_ID" ;
+	}
+
+	private static String getLocalInputTaskLine() {
+		return "java -jar "+Job.TASK_CLUSTER_NAME+" $SGE_TASK_ID" + Config.getInputPrefix();
+		
 	}
 
 	// provider.sh

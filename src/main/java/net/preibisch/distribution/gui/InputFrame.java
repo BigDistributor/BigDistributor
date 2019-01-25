@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Account;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
@@ -36,11 +37,20 @@ public class InputFrame extends Frame implements ActionListener {
 	public InputFrame(String arg0) {
 		super(arg0);
 		MyLogger.log.info("Hello");
+		initConfig();
+		
+		initGui();
+
+	}
+
+	private static void initConfig() {
 		Account account = new Account.Builder().build();
 		ServerConfiguration server = new ServerConfiguration.Builder().build();
 		Login login = new Login.Builder().id().server(server).account(account).build();
 		Config.setLogin(login);
-		
+	}
+
+	private void initGui() {
 		localInputButton = new JRadioButton("Local Input");
 		localInputButton.setMnemonic(KeyEvent.VK_L);
 		localInputButton.setSelected(true);
@@ -81,7 +91,6 @@ public class InputFrame extends Frame implements ActionListener {
 		panel.add(nextButton);
 		panel.add(configButton);
 		add(panel);
-
 	}
 
 	@Override
@@ -92,13 +101,13 @@ public class InputFrame extends Frame implements ActionListener {
 				  
 			}
 //			else 
-			if ((!taskPicker.getSelectedFilePath().isEmpty()) && (!inputPicker.getSelectedFilePath().isEmpty())) {
+			if ((!taskPicker.getFile().isEmpty()) && (!inputPicker.getFile().isEmpty())) {
 
 				setVisible(false);
 				
 				
 				JDataFile inputData = new JDataFile.Builder()
-													.file(inputPicker.getFile())
+													.file(JFile.of(inputPicker.getFile()))
 													.load()
 													.getDataInfos()
 													.build();
@@ -109,8 +118,8 @@ public class InputFrame extends Frame implements ActionListener {
 				
 				Job job = new Job.Builder()
 							     .appMode(appMode)
-							     .task(taskPicker.getFile())
-							     .extra(extraPicker.getFile())
+							     .task(JFile.of(taskPicker.getFile()))
+							     .extra(JFile.of(extraPicker.getFile()))
 							     .input(inputData)
 							     .createTempDir()
 							     .buid();
@@ -149,11 +158,4 @@ public class InputFrame extends Frame implements ActionListener {
 		}
 	}
 	
-//	public static void main(String[] args) {
-//		InputFrame inputFrame = new InputFrame("Input");
-//		inputFrame.taskPicker.setText("/home/mzouink/Desktop/Task/gaussian.jar");
-//		inputFrame.inputPicker.setText( "/home/mzouink/Desktop/example_dataset/dataset.xml" );
-//		inputFrame.nextButton.doClick();
-//	}
-
 }

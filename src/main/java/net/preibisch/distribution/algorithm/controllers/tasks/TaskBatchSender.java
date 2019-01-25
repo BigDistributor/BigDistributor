@@ -8,7 +8,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCP;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.tools.Config;
-import mpicbg.spim.io.IOFunctions;
 
 public class TaskBatchSender implements AbstractTask {
 
@@ -16,7 +15,7 @@ public class TaskBatchSender implements AbstractTask {
 	public void start(int pos, AbstractCallBack callback) {
 
 		Boolean valid = true;
-		IOFunctions.println("Send submit..");
+		callback.log("Send submit..");
 		try {
 			SCP.send(Config.getLogin(), Config.getTempFolderPath() + "//submit.cmd",
 					Config.getLogin().getServer().getPath() + "submit.cmd", -1);
@@ -27,7 +26,7 @@ public class TaskBatchSender implements AbstractTask {
 			try {
 				SCP.connect(Config.getLogin());
 			} catch (JSchException e1) {
-				IOFunctions.println("Invalide Host");
+				callback.log("Invalide Host");
 				e1.printStackTrace();
 			}
 		} catch (IOException e) {

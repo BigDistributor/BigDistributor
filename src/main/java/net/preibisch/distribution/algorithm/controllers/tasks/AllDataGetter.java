@@ -9,8 +9,8 @@ import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workfl
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.tools.Config;
-import mpicbg.spim.io.IOFunctions;
 
 public class AllDataGetter implements AbstractTask{
 
@@ -25,7 +25,7 @@ public class AllDataGetter implements AbstractTask{
 
 				SCP.get(Config.getLogin(), Config.getJob().getInput().getFile().getAll(),
 						Config.getTempFolderPath() + "//file.tif", 0);
-				IOFunctions.println("file got with success !");
+				MyLogger.log.info("file got with success !");
 				Workflow.progressBarPanel.updateBar(1);
 
 			} catch (IOException e) {
@@ -61,7 +61,7 @@ public class AllDataGetter implements AbstractTask{
 					SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath()+ "//" + file,
 							Config.getTempFolderPath() + "//" + file, i - 1);
 
-					IOFunctions.println("block " + i + " got with success !");
+					MyLogger.log.info("block " + i + " got with success !");
 					Workflow.progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
 				} catch (IOException e) {
 					valid = false;

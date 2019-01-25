@@ -21,7 +21,7 @@ public class Workflow {
 
 	public Workflow() {
 		progressBarPanel = new ProgressBarPanel(0, 100);
-		runFunction(new StatusListenerManager());
+		Workflow.runFunction(new StatusListenerManager());
 	}
 
 	public static void startWorkflow() {
