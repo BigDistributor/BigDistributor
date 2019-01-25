@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.google.common.io.Files;
 
@@ -101,6 +102,16 @@ public class Job extends Object{
 
 		public Job buid() {
 			return new Job(this);
+		}
+	}
+
+
+	public void openTempFolder()  {
+		try {
+			Runtime.getRuntime().exec("open "+tmpDir);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -32,7 +32,7 @@ public class MainFrame implements Command {
 		final Context context = new Context( OpService.class, LogService.class );
 		opService = context.getService( OpService.class );
 		logService = context.getService( LogService.class );
-		LogFrame logFrame = new LogFrame();
+		LogFrame logFrame = new LogFrame(opService.getContext());
 		logFrame.setVisible(true);
 		new MainFrame().run();
 		
@@ -41,7 +41,7 @@ public class MainFrame implements Command {
 	@Override
 	public void run() {
 		System.out.println("Hello");
-		MyLogger.SubLogger();
+		MyLogger.SubLogger(logService);
 		InputFrame inputFrame = new InputFrame("Input");
 		inputFrame.setVisible(true);
 		

@@ -40,14 +40,17 @@ public class JFile extends Object{
 	}
 
 	public static JFile of(String path) {
+	System.out.println("File to read: "+path);
 		File file = new File(path);
 		String extension = "";
 		String name = "";
-		int i = path.lastIndexOf('.');
-		if (i > 0) {
-		    extension = file.getName().substring(i+1);
-		    name = file.getName().substring(0, i);
+		int i = path.lastIndexOf('/');
+		int j = path.lastIndexOf('.');
+		if ((j > 0)&&(i>0)) {
+		    extension = path.substring(j+1);
+		    name = path.substring(i,j);
 		}
+
 		return new JFile.Builder()
 				.all(path)
 				.path(file.getParent())
