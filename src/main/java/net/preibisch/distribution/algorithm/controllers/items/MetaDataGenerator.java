@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,7 +29,7 @@ public class MetaDataGenerator implements AbstractTask {
 		callback.onSuccess(pos);
 	}
 
-	private static String createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
+	public static String createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
 		File file = new File(folder,METADATA_FILE_NAME);
 		try (Writer writer = new FileWriter(file)) {
 			Gson gson = new GsonBuilder().create();
@@ -43,12 +43,17 @@ public class MetaDataGenerator implements AbstractTask {
 		return file.getAbsolutePath();
 	}
 
-	private static <T> List<BlockInfos> generateBlocks(AbstractCallBack callback) {
-
+	public static <T> Map<Integer,BlockInfos> generateBlocks(AbstractCallBack callback) {
 		final DataPreview data = Config.getDataPreview();
 		final long[] blockSize = data.getBlocksSizes();
 		final long[] dims = data.getFile().getDimensions();
-		final double[] sigmas = Util.getArrayFromValue((double) data.getOverlap(), dims.length);
+		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
+		Config.setTotalInputFiles(blocks.size());
+		return blocks;
+	}
+	
+	public static <T> Map<Integer,BlockInfos> generateBlocks(long blockSize[], long[] dims, long overlap, AbstractCallBack callback) {
+		final double[] sigmas = Util.getArrayFromValue((double)overlap, dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);
 		final long[] kernelSize = new long[dims.length];
 		final long[] imgSize = new long[dims.length];
@@ -57,12 +62,12 @@ public class MetaDataGenerator implements AbstractTask {
 			imgSize[d] = dims[d];
 		}
 
-		final List<BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
+		final Map<Integer,BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
 		Config.setTotalInputFiles(blocks.size());
 		return blocks;
 	}
 
-	private static ArrayList<BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
+	private static Map<Integer,BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
 			final long[] kernelSize, AbstractCallBack callback) {
 		final int numDimensions = imgSize.length;
 
@@ -105,10 +110,10 @@ public class MetaDataGenerator implements AbstractTask {
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final ArrayList<BlockInfos> blockinfosList = new ArrayList<BlockInfos>();
+		final Map<Integer,BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
 
 		final int[] currentBlock = new int[numDimensions];
-
+		int i = 1;
 		while (cursor.hasNext()) {
 			cursor.fwd();
 			cursor.localize(currentBlock);
@@ -126,8 +131,11 @@ public class MetaDataGenerator implements AbstractTask {
 					effectiveSize[d] = imgSize[d] - effectiveOffset[d];
 			}
 
-			blockinfosList
-					.add(new BlockInfos(blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true));
+			blockinfosList.put(
+					i,
+					new BlockInfos(blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true)
+					);
+			i++;
 			// System.out.println( "block " + Util.printCoordinates( currentBlock ) + "
 			// effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + "
 			// effectiveSize: " + Util.printCoordinates( effectiveSize ) + " offset: " +

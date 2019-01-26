@@ -16,10 +16,11 @@ public class InputGenerator implements AbstractTask {
 		callback.log("Generate input blocks..");
 		Workflow.progressBarPanel.updateBar(0);
 		Workflow.blocks = BlocksManager.generateBlocks(Config.getDataPreview(), callback);
+
 		//TODO create object to send ProcessData
 		Config.setTotalInputFiles(Workflow.blocks.size());
 		try {
-			Workflow.blockMap = BlocksManager.saveBlocks(
+			BlocksManager.saveBlocks(
 //				IOFunctions.openAs32Bit(new File(Config.getJob().getInput().getFile().getAll())), 
 					Config.getJob().getInput().getLoader().fuse(),
 					Config.getDataPreview().getBlocksSizes(),
@@ -48,7 +49,6 @@ public class InputGenerator implements AbstractTask {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Config.setBlocks(Workflow.blockMap.size());
 		if (valid)
 			callback.onSuccess(pos);
 	

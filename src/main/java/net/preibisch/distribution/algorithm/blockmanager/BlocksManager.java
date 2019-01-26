@@ -27,10 +27,11 @@ import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 
 public class BlocksManager {
-	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,AbstractCallBack callback) {
+	public static Img<FloatType> generateResult(HashMap<Integer, Block> blockMap, String blocksDir,
+			AbstractCallBack callback) {
 
-		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(Config.getJob().getInput().getDimensions(),
-				new FloatType());
+		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64)
+				.create(Config.getJob().getInput().getDimensions(), new FloatType());
 		for (final Integer key : blockMap.keySet()) {
 			String string = blocksDir + "/" + key + ".tif";
 			Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
@@ -38,28 +39,33 @@ public class BlocksManager {
 		}
 		return resultImage;
 	}
-	
-	
-	
 
-	public static HashMap<Integer, Block> saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,AbstractCallBack callBack) {
+	public static void saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,
+			AbstractCallBack callBack) {
 		final long[] blockSizeDim = blockSize;
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		int i = 0;
-		final HashMap<Integer, Block> blockMap = new HashMap<>();
 		String tempDir = Config.getJob().getTmpDir();
 		callBack.log("Temp Dir: " + tempDir);
 		for (final Block block : blocks) {
 			++i;
 			block.copyBlock(infiniteImg, tmp, callBack);
-			blockMap.put(i, block);
-			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp),
-					tempDir + "/" + i + ".tif", callBack);
-//TODO
-//			Config.progressValue = (i * 100) / blocks.size();
+			IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp), tempDir + "/" + i + ".tif", callBack);
 		}
-		return blockMap;
+	}
+
+	public static void saveBlock(RandomAccessibleInterval<FloatType> image, long[] blockSize, String path, int id, Block block,
+			AbstractCallBack callBack) {
+
+		final long[] blockSizeDim = blockSize;
+		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
+		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
+
+		block.copyBlock(infiniteImg, tmp, callBack);
+
+		IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp), new File(path , id + ".tif").getAbsolutePath(), callBack);
+
 	}
 
 	public static double imageDifference(final RandomAccessibleInterval<FloatType> img1,
@@ -75,7 +81,7 @@ public class BlocksManager {
 		return sumChange;
 	}
 
-	public static <T> List<Block> generateBlocks(DataPreview data,AbstractCallBack callback) {
+	public static <T> List<Block> generateBlocks(DataPreview data, AbstractCallBack callback) {
 		final ExecutorService service = Threads.createExService(1);
 		long[] dims = data.getFile().getDimensions();
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, data.getBlocksSizes());

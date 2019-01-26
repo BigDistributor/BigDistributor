@@ -28,7 +28,6 @@ public enum Config {
 	
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
 
-	private static int blocks;
 	
 
 	private static Session currentSession;
@@ -47,13 +46,6 @@ public enum Config {
 	public static int parallelJobs;
 	public static Img<FloatType> resultImage;
 
-	public static int getBlocks() {
-		return blocks;
-	}
-
-	public static void setBlocks(int blocks) {
-		Config.blocks = blocks;
-	}
 
 	public static int[] getBlocksStatus() {
 		return blocksStatus;

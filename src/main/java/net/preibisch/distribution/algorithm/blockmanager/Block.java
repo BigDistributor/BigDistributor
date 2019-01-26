@@ -109,6 +109,10 @@ public class Block extends AbstractInterval
 	final ExecutorService taskExecutor;
 	final boolean executorServiceProvided;
 
+	public Block(ExecutorService service,BlockInfos infos) {
+		this(service,infos.getBlockSize(),infos.getOffset(),infos.getEffectiveSize(),infos.getEffectiveOffset(),infos.getEffectiveLocalOffset(),infos.isPrecise());
+	}
+	
 	public Block(
 			final ExecutorService service,
 			final long[] blockSize,

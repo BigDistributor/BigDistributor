@@ -19,6 +19,38 @@ public class BlockInfos {
 		this.effectiveLocalOffset = effectiveLocalOffset;
 		this.isPrecise = isPrecise;
 	}
+
+
+	public long[] getBlockSize() {
+		return blockSize;
+	}
+
+
+	public long[] getOffset() {
+		return offset;
+	}
+
+
+	public long[] getEffectiveSize() {
+		return effectiveSize;
+	}
+
+
+	public long[] getEffectiveOffset() {
+		return effectiveOffset;
+	}
+
+
+	public long[] getEffectiveLocalOffset() {
+		return effectiveLocalOffset;
+	}
+
+
+	public boolean isPrecise() {
+		return isPrecise;
+	}
+	
+	
 	
 	
 }
