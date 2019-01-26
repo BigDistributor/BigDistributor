@@ -36,7 +36,7 @@ BlockExtractorUsingMetaBlocks -d=<DATAPATH> -id=<BLOCK_ID> -m=<METABLOCKS_PATH> 
 ```
 - Example:
 ```sh
-$ java BlockExtractorUsingMetaBlocks -d /Users/Marwan/Desktop/Task/newdata/dataset.xml -m /Users/Marwan/Desktop/Task/newdata/METADATA.json -id 3 -path /Users/Marwan/Desktop/Task/newdata/
+$ java BlockExtractorUsingMetaBlocks -d /Users/Marwan/Desktop/dataset.xml -m /Users/Marwan/Desktop/METADATA.json -id 3 -path /Users/Marwan/Desktop/
 ```
 
 
