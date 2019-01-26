@@ -7,6 +7,7 @@ import main.java.net.preibisch.distribution.algorithm.blockmanager.GraphicBlocks
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
 
 public class DataPreview extends Object{
+	//TODO use BlockInfos 
 	private final JDataFile file;
 	private long[] blocksSizes;
 	private long overlap;

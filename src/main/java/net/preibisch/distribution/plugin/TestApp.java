@@ -47,14 +47,10 @@ public class TestApp {
 	public static void main(String[] args) {
 		new ImageJ();
 		initLogger();
-		
 		initConfig();
-		
 		Job job = initJob();
 		job.openTempFolder();
-	
 		Config.setJob(job);
-		
 		long blockSize = 200;
 		final long[] blockSizes  = new long[job.getInput().getDimensions().length];
 		Arrays.fill(blockSizes , blockSize);

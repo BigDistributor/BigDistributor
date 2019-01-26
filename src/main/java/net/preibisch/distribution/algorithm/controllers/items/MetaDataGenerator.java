@@ -58,6 +58,7 @@ public class MetaDataGenerator implements AbstractTask {
 		}
 
 		final List<BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
+		Config.setTotalInputFiles(blocks.size());
 		return blocks;
 	}
 

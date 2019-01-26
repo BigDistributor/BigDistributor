@@ -101,7 +101,9 @@ public class BatchGenerator {
 		File file = new File(Config.getTempFolderPath(),BATCH_CLUSTER_NAME);
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/bash");
-			out.println("cd " + path);
+			File f = new File(path,Config.getLogin().getId());
+			out.print("mkdir "+ f.getAbsolutePath());
+			out.println("cd " + f.getAbsolutePath());
             for (int i = 1;i<= totalBlocks;i++ ) {
             	out.println(getPreProcessLine(i));	
             	out.println(getTaskLine(i));
