@@ -27,7 +27,7 @@ import picocli.CommandLine.Option;
 		+ "This generator take as parameter the data, the metadata and the id of the block needed "
 		+ "and the generate a block as tif file", version = "generator 0.1")
 
-public class GenerateBlockFromDataAndMetaInfos implements Callable<Void> {
+public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 
 	@Option(names = { "-d", "--data" }, required = true, description = "The path of the Data")
 	private String dataPath;
@@ -42,7 +42,7 @@ public class GenerateBlockFromDataAndMetaInfos implements Callable<Void> {
 	private String path;
 
 	public static void main(String[] args) {
-		CommandLine.call(new GenerateBlockFromDataAndMetaInfos(), args);
+		CommandLine.call(new BlockExtractorUsingMetaBlocks(), args);
 		System.exit(0);
 	}
 
