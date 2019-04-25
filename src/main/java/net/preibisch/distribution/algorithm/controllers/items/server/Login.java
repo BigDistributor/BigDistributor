@@ -2,6 +2,9 @@ package main.java.net.preibisch.distribution.algorithm.controllers.items.server;
 
 import java.util.UUID;
 
+import main.java.net.preibisch.distribution.tools.config.server.Account;
+import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
+
 public class Login {
 
 	private final String id;

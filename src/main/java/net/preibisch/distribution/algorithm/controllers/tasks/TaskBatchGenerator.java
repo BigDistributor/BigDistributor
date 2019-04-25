@@ -4,7 +4,7 @@ import main.java.net.preibisch.distribution.algorithm.clustering.scripting.Batch
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class TaskBatchGenerator implements AbstractTask{
 

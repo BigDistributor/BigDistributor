@@ -8,7 +8,7 @@ import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCP;
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class DataGetter {
 

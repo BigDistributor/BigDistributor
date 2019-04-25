@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class FilePicker extends JPanel {
 	private static final long serialVersionUID = 8143576502972745045L;

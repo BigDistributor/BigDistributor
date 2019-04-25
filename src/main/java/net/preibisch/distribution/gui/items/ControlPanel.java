@@ -12,8 +12,8 @@ import javax.swing.SwingConstants;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.Helper;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class ControlPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5489935889866505715L;

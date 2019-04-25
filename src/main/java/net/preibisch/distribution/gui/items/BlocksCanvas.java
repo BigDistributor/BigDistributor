@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 
 public class BlocksCanvas extends JComponent {

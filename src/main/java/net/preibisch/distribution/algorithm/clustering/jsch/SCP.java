@@ -27,7 +27,8 @@ import com.jcraft.jsch.UserInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.gui.items.Colors;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.tools.config.TCPProperties;
 
 public class SCP {
 
@@ -95,7 +96,7 @@ public class SCP {
 
 		channel.connect();
 
-		byte[] buf = new byte[Config.BUFFER_SIZE];
+		byte[] buf = new byte[TCPProperties.BUFFER_SIZE];
 
 		// send '\0'
 		buf[0] = 0;
@@ -229,7 +230,7 @@ public class SCP {
 
 		// send a content of lfile
 		fis = new FileInputStream(localFile);
-		byte[] buf = new byte[Config.BUFFER_SIZE];
+		byte[] buf = new byte[TCPProperties.BUFFER_SIZE];
 		while (true) {
 			int len = fis.read(buf, 0, buf.length);
 			if (len <= 0)

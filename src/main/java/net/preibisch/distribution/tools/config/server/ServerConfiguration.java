@@ -1,4 +1,6 @@
-package main.java.net.preibisch.distribution.algorithm.controllers.items.server;
+package main.java.net.preibisch.distribution.tools.config.server;
+
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 
 public class ServerConfiguration {
 
@@ -45,11 +47,11 @@ public class ServerConfiguration {
 		}
 		@Override
 		public String toString() {
-			return "Host:"+host+" |Port:"+port+" |ClusterPath:"+path;
+			return "Host: "+host+" |Port:"+port+" | ClusterPath:"+path;
 		}
 		
 		public ServerConfiguration build() {
-			System.out.println(this.toString());
+			MyLogger.log.info(this.toString());
 			return new ServerConfiguration(this);
 		}
 

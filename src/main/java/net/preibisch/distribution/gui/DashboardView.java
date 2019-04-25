@@ -14,7 +14,7 @@ import main.java.net.preibisch.distribution.gui.items.Frame;
 import main.java.net.preibisch.distribution.gui.items.PreviewPanel;
 import main.java.net.preibisch.distribution.gui.items.SliderPanel;
 import main.java.net.preibisch.distribution.gui.items.UpbarPanel;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class DashboardView extends Frame {
 	private static final long serialVersionUID = -667700225183799945L;

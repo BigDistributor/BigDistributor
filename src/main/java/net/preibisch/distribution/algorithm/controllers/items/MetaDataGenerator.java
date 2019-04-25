@@ -13,7 +13,7 @@ import com.google.gson.GsonBuilder;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.algorithm.gauss3.Gauss3;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;

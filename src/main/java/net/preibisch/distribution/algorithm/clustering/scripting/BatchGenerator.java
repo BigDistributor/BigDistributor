@@ -5,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class BatchGenerator {
 
@@ -16,6 +17,7 @@ public class BatchGenerator {
 	public static final String LOG_JOB_NAME = "provider_";
 	
 	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles,AbstractCallBack  callback,int taskPos) {
+	MyLogger.log.info("Start Generate batch for Local file.. " );
 		String id = Config.getLogin().getId();
 		String path = Config.getLogin().getServer().getPath();
 		boolean error = false;
@@ -66,8 +68,10 @@ public class BatchGenerator {
 			error = true;
 		}
 		if (!error) {
+			MyLogger.log.info("Finish Generate batch for Local file" );
 			callback.onSuccess(taskPos);
 		}
+		
 	}
 	
 	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int taskPos) {
@@ -97,6 +101,7 @@ public class BatchGenerator {
 
 	
 	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int totalBlocks, int taskPos) {
+		MyLogger.log.info("Start Generate batch for Cluster file.. " );
 		String path = Config.getLogin().getServer().getPath();
 		File file = new File(Config.getTempFolderPath(),BATCH_CLUSTER_NAME);
 		try (PrintWriter out = new PrintWriter(file)) {
@@ -112,10 +117,12 @@ public class BatchGenerator {
             out.flush();
 			out.close();
 			callback.onSuccess(taskPos);
+			System.out.println("Called next from "+taskPos);
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
 			e.printStackTrace();
 		}
+		MyLogger.log.info("Finish Generate batch for Cluster file" );
 	}
 
 	private static String getLogProviderLine(int i) {

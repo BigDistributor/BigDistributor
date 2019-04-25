@@ -7,7 +7,7 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class ProgressBlocksPanel extends JPanel {
 	private static final long serialVersionUID = 4015834098705314055L;

@@ -19,7 +19,7 @@ import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskLaun
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellSender;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public final class FunctionSequenceManager {
 	List<AbstractTask> functionsFlow ;

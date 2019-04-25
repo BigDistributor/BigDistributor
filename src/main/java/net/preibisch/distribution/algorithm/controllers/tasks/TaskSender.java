@@ -9,12 +9,14 @@ import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workfl
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class TaskSender implements AbstractTask {
 
 	@Override
 	public void start(int pos,AbstractCallBack callback) {
+		MyLogger.log.info("Start task sending ..");
 		Boolean valid = true;
 		callback.log("Send Task..");
 		Workflow.progressBarPanel.updateBar(0);
@@ -36,8 +38,9 @@ public class TaskSender implements AbstractTask {
 			callback.onError(e.toString());
 		}
 		Workflow.progressBarPanel.updateBar(100);
-		if (valid)
-			callback.onSuccess(pos);
+		if (valid) {
+			MyLogger.log.info("Finish task sending");
+			callback.onSuccess(pos);}
 		
 	}
 

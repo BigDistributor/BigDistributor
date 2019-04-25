@@ -4,7 +4,7 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.callback
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.DataGetter;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.ResultManager;
 import main.java.net.preibisch.distribution.gui.items.Colors;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import mpicbg.spim.io.IOFunctions;
 
 public class LogProcessingManager {

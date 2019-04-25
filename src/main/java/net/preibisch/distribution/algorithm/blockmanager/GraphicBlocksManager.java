@@ -4,8 +4,9 @@ import java.util.ArrayList;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
-import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.Helper;
+import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.tools.config.GUIConfig;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -34,7 +35,7 @@ public class GraphicBlocksManager {
 	
 	public static double computeRationView(long[] numberBlocks, long[] blocksSize) {
 //		callback.log("Panel Width:"+Config.PREVIEW_PANEL_WIDTH+" NumberBlocks:"+numberBlocks/[0]+" BlocksSize:"+blocksSize[0]);
-		return Config.PREVIEW_PANEL_WIDTH / (1.0* numberBlocks[0] * blocksSize[0]);
+		return GUIConfig.PREVIEW_PANEL_WIDTH / (1.0* numberBlocks[0] * blocksSize[0]);
 	}
 
 	public static long[] computeBlocksPerDimension(long[] dimensions, long[] blocksDimensions) {
@@ -59,10 +60,10 @@ public class GraphicBlocksManager {
 		long[] numberBlocksPerDimension = computeBlocksPerDimension(dimensions, blocksDimensions);
 		long totalBlocks = countTotalBlocks(numberBlocksPerDimension);
 		long sqrt = (long) Math.sqrt(totalBlocks);
-		if (sqrt * Config.MINIMUM_BOX_SIZE < Config.PREVIEW_PANEL_WIDTH) {
+		if (sqrt * GUIConfig.MINIMUM_BOX_SIZE < GUIConfig.PREVIEW_PANEL_WIDTH) {
 			return new long[] { sqrt, sqrt, totalBlocks % sqrt };
 		} else {
-			long columns = Config.PREIVIEW_PANEL_HEIGHT / Config.MINIMUM_BOX_SIZE;
+			long columns = GUIConfig.PREIVIEW_PANEL_HEIGHT / GUIConfig.MINIMUM_BOX_SIZE;
 			long rows = totalBlocks / columns;
 			long rest = totalBlocks % columns;
 			return new long[] { columns, rows, rest };
@@ -70,7 +71,7 @@ public class GraphicBlocksManager {
 	}
 
 	public static int computeSizePreviewBox(long[] numberPreviewBlocks) {
-		return (int) (Config.PREIVIEW_PANEL_HEIGHT / numberPreviewBlocks[0]);
+		return (int) (GUIConfig.PREIVIEW_PANEL_HEIGHT / numberPreviewBlocks[0]);
 	}
 
 	public static long[] get2DDimensions(Img<FloatType> file,AbstractCallBack callback) {

@@ -9,7 +9,6 @@ import ij.ImagePlus;
 import loci.formats.IFormatReader;
 import loci.formats.ImageReader;
 import loci.formats.Memoizer;
-//import loci.formats.Memoizer;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -33,7 +32,8 @@ public class LoadTIFF
 
 		// loads the first timepoint, first channel, first series of the image
 		return new VirtualRAIFactoryLOCI().createVirtualCached(
-				reader,
+//				reader,
+				null,
 				file,
 				0,
 				0,

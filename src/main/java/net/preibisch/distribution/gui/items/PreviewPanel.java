@@ -6,7 +6,8 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.tools.config.GUIConfig;
 
 public class PreviewPanel extends JPanel {
 	private static final long serialVersionUID = -5153593379781883390L;
@@ -17,11 +18,11 @@ public class PreviewPanel extends JPanel {
 		super();
 		setLayout(new GridLayout());
 		canvas = new BlocksCanvas();
-		canvas.setSize(new Dimension(Config.PREVIEW_PANEL_WIDTH + 50, Config.PREIVIEW_PANEL_HEIGHT + 50));
-		canvas.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.previewPreferedHeight + 50));
+		canvas.setSize(new Dimension(GUIConfig.PREVIEW_PANEL_WIDTH + 50, GUIConfig.PREIVIEW_PANEL_HEIGHT + 50));
+		canvas.setPreferredSize(new Dimension(GUIConfig.PREVIEW_PANEL_WIDTH, GUIConfig.previewPreferedHeight + 50));
 		JScrollPane scrollFrame = new JScrollPane(canvas);
 		canvas.setAutoscrolls(true);
-		scrollFrame.setPreferredSize(new Dimension(Config.PREVIEW_PANEL_WIDTH, Config.PREIVIEW_PANEL_HEIGHT));
+		scrollFrame.setPreferredSize(new Dimension(GUIConfig.PREVIEW_PANEL_WIDTH, GUIConfig.PREIVIEW_PANEL_HEIGHT));
 		add(scrollFrame);
 	}
 

@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.tools;
+package main.java.net.preibisch.distribution.tools.config;
 
 import java.util.ArrayList;
 
@@ -12,14 +12,6 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public enum Config {
 	INSTANCE;
-	
-	
-	public static final int BUFFER_SIZE = 1024 * 1024;
-	public static final int MINIMUM_BOX_SIZE = 50;
-	public static final int PREVIEW_PANEL_WIDTH = 800;
-	public static final int PREIVIEW_PANEL_HEIGHT = 500;
-
-	public static int previewPreferedHeight = 500;
 
 	private static Login login;
 	private static Job job;

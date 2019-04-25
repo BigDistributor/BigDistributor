@@ -4,7 +4,7 @@ import main.java.net.preibisch.distribution.algorithm.blockmanager.BlocksManager
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.exception.IncompatibleTypeException;
 
 public class InputGenerator implements AbstractTask {

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
 
@@ -85,12 +86,12 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 				++numBlocks[ d ];
 		}
 		
-		System.out.println( "imgSize " + Util.printCoordinates( imgSize ) );
-		System.out.println( "kernelSize " + Util.printCoordinates( kernelSize ) );
-		System.out.println( "blockSize " + Util.printCoordinates( blockSize ) );
-		System.out.println( "numBlocks " + Util.printCoordinates( numBlocks ) );
-		System.out.println( "effectiveSize of blocks" + Util.printCoordinates( effectiveSizeGeneral ) );
-		System.out.println( "effectiveLocalOffset " + Util.printCoordinates( effectiveLocalOffset ) );
+		MyLogger.log.info( "imgSize " + Util.printCoordinates( imgSize ) );
+		MyLogger.log.info( "kernelSize " + Util.printCoordinates( kernelSize ) );
+		MyLogger.log.info( "blockSize " + Util.printCoordinates( blockSize ) );
+		MyLogger.log.info( "numBlocks " + Util.printCoordinates( numBlocks ) );
+		MyLogger.log.info( "effectiveSize of blocks" + Util.printCoordinates( effectiveSizeGeneral ) );
+		MyLogger.log.info( "effectiveLocalOffset " + Util.printCoordinates( effectiveLocalOffset ) );
 				
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
@@ -119,7 +120,7 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 			}
 
 			blockList.add( new Block( service, blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true ) );
-			//System.out.println( "block " + Util.printCoordinates( currentBlock ) + " effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + " effectiveSize: " + Util.printCoordinates( effectiveSize )  + " offset: " + Util.printCoordinates( offset ) + " inside: " + inside );
+			//MyLogger.log.info( "block " + Util.printCoordinates( currentBlock ) + " effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + " effectiveSize: " + Util.printCoordinates( effectiveSize )  + " offset: " + Util.printCoordinates( offset ) + " inside: " + inside );
 		}
 
 		return blockList;
@@ -141,7 +142,7 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 			
 			if ( effectiveSizeGeneral[ d ] <= 0 )
 			{
-				System.out.println( "Blocksize in dimension " + d + " (" + blockSize[ d ] + ") is smaller than the kernel (" + kernelSize[ d ] + ") which results in an negative effective size: " + effectiveSizeGeneral[ d ] + ". Quitting." );
+				MyLogger.log.info( "Blocksize in dimension " + d + " (" + blockSize[ d ] + ") is smaller than the kernel (" + kernelSize[ d ] + ") which results in an negative effective size: " + effectiveSizeGeneral[ d ] + ". Quitting." );
 				return null;
 			}
 			
@@ -160,12 +161,12 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 				++numBlocks[ d ];
 		}
 		
-		System.out.println( "imgSize " + Util.printCoordinates( imgSize ) );
-		System.out.println( "kernelSize " + Util.printCoordinates( kernelSize ) );
-		System.out.println( "blockSize " + Util.printCoordinates( blockSize ) );
-		System.out.println( "numBlocks " + Util.printCoordinates( numBlocks ) );
-		System.out.println( "effectiveSize of blocks" + Util.printCoordinates( effectiveSizeGeneral ) );
-		System.out.println( "effectiveLocalOffset " + Util.printCoordinates( effectiveLocalOffset ) );
+		MyLogger.log.info( "imgSize " + Util.printCoordinates( imgSize ) );
+		MyLogger.log.info( "kernelSize " + Util.printCoordinates( kernelSize ) );
+		MyLogger.log.info( "blockSize " + Util.printCoordinates( blockSize ) );
+		MyLogger.log.info( "numBlocks " + Util.printCoordinates( numBlocks ) );
+		MyLogger.log.info( "effectiveSize of blocks" + Util.printCoordinates( effectiveSizeGeneral ) );
+		MyLogger.log.info( "effectiveLocalOffset " + Util.printCoordinates( effectiveLocalOffset ) );
 				
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
@@ -199,7 +200,7 @@ public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 
 			hashMapList.put(i, new Block( service, blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true ) );
 			i++;
-			//System.out.println( "block " + Util.printCoordinates( currentBlock ) + " effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + " effectiveSize: " + Util.printCoordinates( effectiveSize )  + " offset: " + Util.printCoordinates( offset ) + " inside: " + inside );
+			//MyLogger.log.info( "block " + Util.printCoordinates( currentBlock ) + " effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + " effectiveSize: " + Util.printCoordinates( effectiveSize )  + " offset: " + Util.printCoordinates( offset ) + " inside: " + inside );
 		}
 
 		return hashMapList;

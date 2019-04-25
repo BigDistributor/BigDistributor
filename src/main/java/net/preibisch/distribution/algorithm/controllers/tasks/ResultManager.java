@@ -4,7 +4,7 @@ import java.io.File;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import mpicbg.spim.io.IOFunctions;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;

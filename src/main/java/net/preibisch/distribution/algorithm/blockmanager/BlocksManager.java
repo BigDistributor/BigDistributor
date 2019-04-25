@@ -12,8 +12,8 @@ import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
 import main.java.net.preibisch.distribution.gui.items.Colors;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
-import main.java.net.preibisch.distribution.tools.Config;
 import main.java.net.preibisch.distribution.tools.IOFunctions;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
@@ -39,6 +39,8 @@ public class BlocksManager {
 		}
 		return resultImage;
 	}
+	
+	
 
 	public static void saveBlocks(RandomAccessibleInterval<FloatType> image, long[] blockSize, List<Block> blocks,
 			AbstractCallBack callBack) {
@@ -65,6 +67,18 @@ public class BlocksManager {
 		block.copyBlock(infiniteImg, tmp, callBack);
 
 		IOFunctions.saveTiffStack(IOFunctions.getImagePlusInstance(tmp), new File(path , id + ".tif").getAbsolutePath(), callBack);
+
+	}
+	
+	
+	public static RandomAccessibleInterval<FloatType> getBlock(RandomAccessibleInterval<FloatType> image, Block block,
+			AbstractCallBack callBack) {
+		
+		final Img<FloatType> tmp = ArrayImgs.floats(block.getBlockSize());
+		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
+
+		block.copyBlock(infiniteImg, tmp, callBack);
+		return tmp;
 
 	}
 

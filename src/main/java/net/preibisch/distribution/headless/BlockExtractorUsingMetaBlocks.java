@@ -62,6 +62,23 @@ public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 
 		return null;
 	}
+	
+	public static RandomAccessibleInterval<FloatType> getBlock(String dataPath,Block block, AbstractCallBack callback) throws FileNotFoundException, IncompatibleTypeException{
+
+		JDataFile inputData = new JDataFile.Builder().file(JFile.of(dataPath)).load().getDataInfos().build();
+		RandomAccessibleInterval<FloatType> image = inputData.getLoader().fuse();
+	
+		return BlocksManager.getBlock(image, block, callback);
+	}
+	
+	
+	
+	
+	public static void setBlock(RandomAccessibleInterval<FloatType> resultImage, RandomAccessibleInterval<FloatType> tmp, Block block, AbstractCallBack callback) {
+
+			block.pasteBlock(resultImage, tmp, callback);
+	
+	}
 
 	private static AbstractCallBack createCallBack() {
 		AbstractCallBack callback = new AbstractCallBack() {

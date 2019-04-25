@@ -16,14 +16,14 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Account;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.server.ServerConfiguration;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.gui.items.FilePicker;
 import main.java.net.preibisch.distribution.gui.items.Frame;
-import main.java.net.preibisch.distribution.tools.Config;
+import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.tools.config.server.Account;
+import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
 
 public class InputFrame extends Frame implements ActionListener {
