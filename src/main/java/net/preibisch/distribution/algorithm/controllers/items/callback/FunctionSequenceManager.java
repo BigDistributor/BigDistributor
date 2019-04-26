@@ -43,7 +43,7 @@ public final class FunctionSequenceManager {
 					new MetaDataGenerator(),
 					new TaskShellGenerator(),
 					new TaskBatchGenerator(),
-					new PreprocessTaskSender(),
+//					new PreprocessTaskSender(),
 					new TaskSender(),
 					new TaskShellSender(),
 					new TaskBatchSender(),

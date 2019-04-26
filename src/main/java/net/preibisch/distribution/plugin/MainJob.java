@@ -72,6 +72,7 @@ public class MainJob<T, R, K, V> implements Callable<Void> {
 		task.start(inputData.getLoader().fuse(), outputData.getLoader().fuse(), params , new Callback());
 		
 		block.pasteBlock(outputData.getLoader().fuse(), tmp, new Callback());
+		
 		return null;
 	}
 
