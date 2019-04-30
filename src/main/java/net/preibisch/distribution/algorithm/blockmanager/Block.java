@@ -251,6 +251,8 @@ public class Block extends AbstractInterval
 			return;
 		}
 	}
+	
+	
 
 	private static final void copy( final long start, final long loopSize, final RandomAccessible< FloatType > source, final RandomAccessibleInterval< FloatType > block, final long[] offset )
 	{

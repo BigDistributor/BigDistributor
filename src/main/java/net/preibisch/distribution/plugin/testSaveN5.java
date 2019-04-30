@@ -10,7 +10,7 @@ import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.io.BdvRaiVolumeExport;
+import main.java.net.preibisch.distribution.input.imageaccess.LoadN5;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
@@ -23,7 +23,22 @@ import net.preibisch.simulation.imgloader.SimulatedBeadsImgLoader;
 
 public class testSaveN5 {
 	public static void main(String[] args) throws IOException {
+		load();
+//	save();
+	}
 
+	private static void load() {
+		String in = "/home/mzouink/Desktop/test/in.n5";
+
+		String out = "/home/mzouink/Desktop/test/out.n5";
+		
+		LoadN5 loader = new LoadN5(out);
+		RandomAccessibleInterval<FloatType> virtual = loader.fuse();
+		new ImageJ();
+		ImageJFunctions.show(virtual);
+	}
+
+	private static void save() throws IOException {
 		// generate 4 views with 1000 corresponding beads, single timepoint
 		SpimData2 spimData = SpimData2.convert(SimulatedBeadsImgLoader.spimdataExample(new int[] { 0, 90, 135 }));
 
@@ -53,10 +68,10 @@ public class testSaveN5 {
 		new ImageJ();
 		ImageJFunctions.show(virtual);
 
-		String basePath = "/home/mzouink/Desktop/test/example.n5" ;
+		String basePath = "/home/mzouink/Desktop/test/example.n5";
 		String dataset = "/volumes/raw";
-		N5Writer writer = new N5FSWriter(basePath );
-		
-		N5Utils.save(virtual, writer , dataset, new int[] { 50, 50, 50 }, new GzipCompression());
+		N5Writer writer = new N5FSWriter(basePath);
+
+		N5Utils.save(virtual, writer, dataset, new int[] { 50, 50, 50 }, new GzipCompression());
 	}
 }

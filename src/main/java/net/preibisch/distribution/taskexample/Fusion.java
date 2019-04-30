@@ -18,7 +18,7 @@ import net.preibisch.simulation.imgloader.SimulatedBeadsImgLoader;
 
 public class Fusion {
 
-	public class FusionParameters
+	public class FusionParameters 
 	{
 		// imput: spimdata (xml)
 		// which views (list of viewid, which is two integers - timepointid, setupid)

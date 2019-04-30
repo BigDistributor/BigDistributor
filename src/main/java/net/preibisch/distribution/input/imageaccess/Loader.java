@@ -59,7 +59,8 @@ public class Loader {
 			final List<ViewId> viewIds = new ArrayList<>(spimData.getSequenceDescription().getViewDescriptions().values()); 
 			final BoundingBox bb = new BoundingBoxMaximal( viewIds,spimData ).estimate( "Full Bounding Box" );
 			return LoadXML.fuse(spimData, viewIds, bb);
-
+		case N5:
+			return LoadN5.fuse(jfile.getAll());
 		default:
 			break;
 		}

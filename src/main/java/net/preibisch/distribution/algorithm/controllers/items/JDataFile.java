@@ -43,6 +43,7 @@ public class JDataFile extends Object{
 		
 		public Builder getDataInfos() {
 			System.out.println("File to open:"+file.getAll());
+			
 //			Img<FloatType> image = IOFunctions.openAs32Bit(new File(file.getAll()));
 //			resultImage = new CellImgFactory<FloatType>(64).create(Helper.getDimensions(image),new FloatType());
 			RandomAccessibleInterval<FloatType> data;

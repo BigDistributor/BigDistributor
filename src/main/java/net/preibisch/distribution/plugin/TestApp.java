@@ -28,7 +28,8 @@ public class TestApp {
 	
 	//Identify the path of the task and the input file
 	private final static String TASK_PATH = "/home/mzouink/Desktop/Task/GaussianTask.jar";
-	private final static String INPUT_PATH = "/home/mzouink/Desktop/Task/data/dataset.xml" ;
+//	private final static String INPUT_PATH = "/home/mzouink/Desktop/Task/data/dataset.xml" ;
+	private final static String INPUT_PATH = "/home/mzouink/Desktop/test/in.n5";
 //	private final static String EXTRA_FILE_PATH = "" ;
 	
 	
@@ -51,7 +52,7 @@ public class TestApp {
 		Job job = initJob();
 		job.openTempFolder();
 		Config.setJob(job);
-		long blockSize = 200;
+		long blockSize = 80;
 		final long[] blockSizes  = new long[job.getInput().getDimensions().length];
 		Arrays.fill(blockSizes , blockSize);
 		final long overlap = 10;

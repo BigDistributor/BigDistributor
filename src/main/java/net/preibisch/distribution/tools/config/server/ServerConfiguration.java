@@ -27,7 +27,7 @@ public class ServerConfiguration {
 	}
 
 	public static class Builder {
-		private String host = "maxlogin2.mdc-berlin.net";
+		private String host = "max-login.mdc-berlin.net";
 		private int port = 22;
 		private String path = "/fast/AG_Preibisch/Marwan/clustering/";
 

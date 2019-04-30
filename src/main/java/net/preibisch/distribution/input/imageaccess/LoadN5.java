@@ -11,6 +11,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class LoadN5 {
+	private final static String IN_PATH = "volumes/raw/";
 	final File file;
 	final N5FSReader n5Reader;
 
@@ -20,7 +21,7 @@ public class LoadN5 {
 		if (!file.exists())
 			throw new RuntimeException("File " + n5path + " does not exist.");
 		try {
-			n5Reader = new N5FSReader("/home/saalfeld/projects/lauritzen/02/workspace.n5");
+			n5Reader = new N5FSReader(n5path);
 			System.out.println(Arrays.toString(n5Reader.list("/")));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -34,7 +35,7 @@ public class LoadN5 {
 	public RandomAccessibleInterval<FloatType> fuse() {
 		RandomAccessibleInterval<FloatType> virtual = null;
 		try {
-			virtual = N5Utils.open(n5Reader, "volumes/raw/s0");
+			virtual = N5Utils.open(n5Reader, IN_PATH);
 			return virtual;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -42,6 +43,10 @@ public class LoadN5 {
 		}
 		return virtual;
 
+	}
+	
+	public static RandomAccessibleInterval<FloatType> fuse(String uri){
+		return new LoadN5(uri).fuse();
 	}
 
 }

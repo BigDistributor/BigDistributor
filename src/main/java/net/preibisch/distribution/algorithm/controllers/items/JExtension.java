@@ -5,7 +5,7 @@ public enum JExtension {
 	
 	  public static JExtension fromString(String string) {
 		switch (string) {
-		case "N5":
+		case "n5":
 			return JExtension.N5;
 		case "tif":
 
