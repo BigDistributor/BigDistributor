@@ -65,32 +65,32 @@ public class MainJob<T, R, K, V> implements Callable<Void> {
 	}
 
 
-	public void test() throws Exception {
-		new ImageJ();
-		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
-		BlockInfos binfo = blocksMetadata.get().get(id);
-		
-		final ExecutorService service = Threads.createExService(1);
-		Block block = new Block(service, binfo);
-		
-		JDataFile inputData = new JDataFile.Builder().file(JFile.of(input)).load().getDataInfos().build();
-
-		JDataFile outputData = new JDataFile.Builder().file(JFile.of(output)).load().getDataInfos().build();
-
-
-		
-		RandomAccessibleInterval<FloatType> tmp =  BlocksManager.getBlock(inputData.getLoader().fuse(), block, new Callback());
-		ImageJFunctions.show(tmp,"before");
-		Integer params = 10;
-		task.start(tmp, tmp, params , new Callback());
-		ImageJFunctions.show(tmp,"after");
-		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
-		block.pasteBlock(outImage , tmp, new Callback());
-		ImageJFunctions.show(outImage,"after-out");
-		
-		System.out.println("Exit!");
-	}
-	
+//	public void test() throws Exception {
+//		new ImageJ();
+//		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
+//		BlockInfos binfo = blocksMetadata.get().get(id);
+//		
+//		final ExecutorService service = Threads.createExService(1);
+//		Block block = new Block(service, binfo);
+//		
+//		JDataFile inputData = new JDataFile.Builder().file(JFile.of(input)).load().getDataInfos().build();
+//
+//		JDataFile outputData = new JDataFile.Builder().file(JFile.of(output)).load().getDataInfos().build();
+//
+//
+//		
+//		RandomAccessibleInterval<FloatType> tmp =  BlocksManager.getBlock(inputData.getLoader().fuse(), block, new Callback());
+//		ImageJFunctions.show(tmp,"before");
+//		Integer params = 10;
+//		task.start(tmp, tmp, params , new Callback());
+//		ImageJFunctions.show(tmp,"after");
+//		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
+//		block.pasteBlock(outImage , tmp, new Callback());
+//		ImageJFunctions.show(outImage,"after-out");
+//		
+//		System.out.println("Exit!");
+//	}
+//	
 
 
 	@Override
