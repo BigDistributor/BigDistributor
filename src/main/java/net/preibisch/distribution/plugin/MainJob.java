@@ -87,6 +87,7 @@ public class MainJob<T, R, K, V> implements Callable<Void> {
 		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
 		block.pasteBlock(outImage , tmp, new Callback());
 		ImageJFunctions.show(outImage,"after-out");
+		
 		System.out.println("Exit!");
 	}
 	

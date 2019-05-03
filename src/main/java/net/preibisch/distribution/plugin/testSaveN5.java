@@ -23,8 +23,8 @@ import net.preibisch.simulation.imgloader.SimulatedBeadsImgLoader;
 
 public class testSaveN5 {
 	public static void main(String[] args) throws IOException {
-		load();
-//	save();
+//		load();
+	save();
 	}
 
 	private static void load() {
@@ -72,6 +72,6 @@ public class testSaveN5 {
 		String dataset = "/volumes/raw";
 		N5Writer writer = new N5FSWriter(basePath);
 
-		N5Utils.save(virtual, writer, dataset, new int[] { 50, 50, 50 }, new GzipCompression());
+		N5Utils.save(virtual, writer, dataset, new int[] { 80, 80, 80 }, new GzipCompression());
 	}
 }
