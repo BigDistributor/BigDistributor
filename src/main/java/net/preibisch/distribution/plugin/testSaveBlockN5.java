@@ -54,9 +54,7 @@ private static long[] getDimension(RandomAccessibleInterval<FloatType> block) {
 private static void save(String out, RandomAccessibleInterval<FloatType> block, long[] position) throws IOException {
 	String dataset = "/volumes/raw";
 	N5Writer writer = new N5FSWriter(out);
-	N5Utils.saveBlock(block, writer, dataset, position);
-
-	
+	N5Utils.saveBlock(block, writer, dataset, position);	
 }
 
 private static File file(String path) {

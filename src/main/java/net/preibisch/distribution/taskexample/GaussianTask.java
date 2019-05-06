@@ -18,13 +18,6 @@ import net.imglib2.view.Views;
 
 public class  GaussianTask implements AbstractTask2< RandomAccessibleInterval<FloatType>,  RandomAccessibleInterval<FloatType>, Integer> {
 
-	@Override
-	public void start(RandomAccessibleInterval<FloatType> input, RandomAccessibleInterval<FloatType> output,
-			Integer params, AbstractCallBack callback) throws IncompatibleTypeException {
-			final ExecutorService service = Threads.createExService(1);
-			final double[] sigmas = Util.getArrayFromValue(30.0, input.numDimensions());
-			Gauss3.gauss(sigmas, Views.extendMirrorSingle(input), output, service);
-	}
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -53,9 +46,18 @@ public class  GaussianTask implements AbstractTask2< RandomAccessibleInterval<Fl
 		String meta = "/home/mzouink/Desktop/test/METADATA.json";;
 		int id = 4;
 		String args = "-in "+in+" -out "+out+" -m "+meta+" -id "+id;
-		new MainJob(out, in, meta, id, new GaussianTask()).test();
+
 		System.out.println(args);
 		return args.split(" ");
+	}
+
+	@Override
+	public RandomAccessibleInterval<FloatType> start(RandomAccessibleInterval<FloatType> input, Integer params,
+			AbstractCallBack callback) throws Exception {
+		final ExecutorService service = Threads.createExService(1);
+		final double[] sigmas = Util.getArrayFromValue(30.0, input.numDimensions());
+		Gauss3.gauss(sigmas, Views.extendMirrorSingle(input), input, service);
+		return input;
 	}
 
 

@@ -46,7 +46,7 @@ public class GenerateMetaBlocksFile implements Callable<Void> {
 		final long[] bsizes  = new long[dims.length];
 		Arrays.fill(bsizes , blockSize);
 		Map<Integer, BlockInfos> metainfo = MetaDataGenerator.generateBlocks(bsizes, dims,overlap, callback);
-		BlocksMetaData md = new BlocksMetaData(metainfo);
+		BlocksMetaData md = new BlocksMetaData(metainfo,bsizes,dims);
 		String metaPath = MetaDataGenerator.createJSon(md,outpath, callback);
 		callback.log("Success: Metablocks created !");
 		callback.log("Metablocks path: "+metaPath);

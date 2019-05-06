@@ -52,7 +52,7 @@ public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 
 		br = new BufferedReader(new FileReader(metadataPath));
 		BlocksMetaData blocksMetadata = new Gson().fromJson(br, BlocksMetaData.class);
-		BlockInfos binfo = blocksMetadata.get().get(id);
+		BlockInfos binfo = blocksMetadata.getBlocksInfo().get(id);
 		final ExecutorService service = Threads.createExService(1);
 		Block block = new Block(service, binfo);
 		JDataFile inputData = new JDataFile.Builder().file(JFile.of(dataPath)).load().getDataInfos().build();

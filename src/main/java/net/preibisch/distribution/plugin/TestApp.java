@@ -11,6 +11,8 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.StatusListenerManager;
@@ -59,6 +61,9 @@ public class TestApp {
 		
 		DataPreview dataPreview =  DataPreview.of(job.getInput(),blockSizes,overlap);
 		dataPreview.generateBlocks();
+//		String folder = "/home/mzouink/Desktop/test/";
+//		String mp= MetaDataGenerator.genarateMetaDataFile(dataPreview, folder, new Callback());
+//		System.out.println("Metadata = ");
 		Config.setDataPreview(dataPreview);
 		
 		new Workflow();

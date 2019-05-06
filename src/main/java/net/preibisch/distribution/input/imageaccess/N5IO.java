@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.input.imageaccess;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSReader;
@@ -17,33 +18,33 @@ import net.imglib2.type.numeric.real.FloatType;
 public class N5IO {
 	private final static String DATASET = "/volumes/raw";
 
+	public static void saveBlock(String out, RandomAccessibleInterval<FloatType> block, long[] position)
+			throws IOException {
+		N5Writer writer = new N5FSWriter(out);
+		N5Utils.saveBlock(block, writer, DATASET, position);
+	}
 
-public static void saveBlock(String out, RandomAccessibleInterval<FloatType> block, long[] position) throws IOException {
 	
-	N5Writer writer = new N5FSWriter(out);
-	N5Utils.saveBlock(block, writer, DATASET, position);	
-}
+	public static void createBackResult(String path, long[] dimensions, int[] blocks) throws IOException {
+		// make a physical copy of the virtual randomaccessibleinterval
+		ImgFactory<FloatType> imgFactory = new CellImgFactory<>(new FloatType(), 5);
+		final RandomAccessibleInterval<FloatType> img = imgFactory.create(dimensions);
+		N5Writer writer = new N5FSWriter(path);
+		N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
+	}
 
-public static void createBackResult(String path, long[] dimensions, int[] blocks) throws IOException {
-
-			// make a physical copy of the virtual randomaccessibleinterval
-//			 
-			 ImgFactory<FloatType> imgFactory = new CellImgFactory<>(new FloatType(), 5);
-			 final RandomAccessibleInterval< FloatType > img = imgFactory.create(dimensions);
-
-		
-			N5Writer writer = new N5FSWriter(path);
-
-			N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
-
-}
-
-public static RandomAccessibleInterval<FloatType> read(String path) throws IOException{
 	
-	N5Reader reader = new N5FSReader(path);
-	RandomAccessibleInterval<FloatType> virtual = N5Utils.open(reader, DATASET);
-	return virtual;
+	public static RandomAccessibleInterval<FloatType> read(String path) throws IOException {
+		N5Reader reader = new N5FSReader(path);
+		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(reader, DATASET);
+		return virtual;
+	}
 	
-}
+
+	public static void save(String path, RandomAccessibleInterval<FloatType> img, int[] blocks) throws IOException {
+		N5Writer writer = new N5FSWriter(path);
+		N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
+	}
+	
 
 }

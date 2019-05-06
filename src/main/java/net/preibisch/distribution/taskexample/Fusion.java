@@ -13,6 +13,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
+import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.process.fusion.FusionTools;
 import net.preibisch.simulation.imgloader.SimulatedBeadsImgLoader;
 
@@ -72,5 +73,24 @@ public class Fusion {
 		// perforn the fusion virtually
 		final RandomAccessibleInterval< FloatType > virtual2 = FusionTools.fuseVirtual( spimData, viewIds, bb, downsampling );
 		ImageJFunctions.show( virtual2 );
+	}
+	
+	public static RandomAccessibleInterval<FloatType> Fusion(String xml,long[] offset, long[] blocksize) throws SpimDataException{
+		
+		Interval bb = new FinalInterval(offset, sum(offset,blocksize));
+		SpimData2 spimData = new XmlIoSpimData2( "" ).load(xml);
+		final List< ViewId > viewIds = new ArrayList< ViewId >();
+		viewIds.addAll( spimData.getSequenceDescription().getViewDescriptions().values() );
+		
+		double downsampling = Double.NaN; 
+		final RandomAccessibleInterval< FloatType > virtual = FusionTools.fuseVirtual( spimData, viewIds, bb, downsampling );
+		
+		return virtual;
+	}
+
+	private static long[] sum(long[] offset, long[] blocksize) {
+		for(int i=0; i<offset.length;i++) offset[i]+=blocksize[i];
+		// TODO Auto-generated method stub
+		return offset;
 	}
 }

@@ -24,9 +24,17 @@ public class MetaDataGenerator implements AbstractTask {
 	@Override
 	public void start(int pos, AbstractCallBack callback) {
 		callback.log("Creating metadata..");
-		BlocksMetaData md = new BlocksMetaData(generateBlocks(callback));
+		final DataPreview data = Config.getDataPreview();
+		BlocksMetaData md = genarateMetaData(data,callback);
 		Config.getJob().setMetaDataPath(createJSon(md,Config.getJob().getTmpDir(), callback));
 		callback.onSuccess(pos);
+	}
+	
+	public static String genarateMetaDataFile(DataPreview data, String folder,AbstractCallBack callback) {
+		
+		callback.log("Creating metadata..");
+		BlocksMetaData md = genarateMetaData(data,callback);
+		return createJSon(md,folder, callback);
 	}
 
 	public static String createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
@@ -43,13 +51,14 @@ public class MetaDataGenerator implements AbstractTask {
 		return file.getAbsolutePath();
 	}
 
-	public static <T> Map<Integer,BlockInfos> generateBlocks(AbstractCallBack callback) {
-		final DataPreview data = Config.getDataPreview();
+	public static <T> BlocksMetaData genarateMetaData(DataPreview data,AbstractCallBack callback) {
+		
 		final long[] blockSize = data.getBlocksSizes();
 		final long[] dims = data.getFile().getDimensions();
 		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
 		Config.setTotalInputFiles(blocks.size());
-		return blocks;
+		
+		return new BlocksMetaData(blocks,blockSize,dims);
 	}
 	
 	public static <T> Map<Integer,BlockInfos> generateBlocks(long blockSize[], long[] dims, long overlap, AbstractCallBack callback) {
