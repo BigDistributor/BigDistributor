@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.plugin;
+package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,7 @@ import org.janelia.saalfeldlab.n5.N5FSWriter;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
-import main.java.net.preibisch.distribution.input.imageaccess.LoadN5;
-import main.java.net.preibisch.distribution.tools.IOFunctions;
+import main.java.net.preibisch.distribution.io.IOFunctions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;

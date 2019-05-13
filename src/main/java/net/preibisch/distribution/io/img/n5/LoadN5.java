@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.input.imageaccess;
+package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.File;
 import java.io.IOException;

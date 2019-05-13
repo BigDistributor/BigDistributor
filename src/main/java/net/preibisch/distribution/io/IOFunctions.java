@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.tools;
+package main.java.net.preibisch.distribution.io;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;

@@ -2,6 +2,8 @@ package main.java.net.preibisch.distribution.algorithm.controllers.items.server;
 
 import java.util.UUID;
 
+import main.java.net.preibisch.distribution.gui.LoginUI;
+import main.java.net.preibisch.distribution.tools.config.Config;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
 import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
@@ -59,6 +61,14 @@ public class Login {
 			return new Login(this);
 		}
 
+	}
+
+	public static void login() {
+		LoginUI.show();
+		Account account = new Account.Builder().getDefault();
+		ServerConfiguration server = new ServerConfiguration.Builder().getDefault();
+		Login login = new Login.Builder().id().server(server).account(account).build();
+		Config.setLogin(login);
 	}
 
 }

@@ -1,5 +1,10 @@
 package main.java.net.preibisch.distribution.algorithm.blockmanager;
 
+import java.util.Arrays;
+
+import net.imglib2.util.Util;
+
+
 public class BlockInfos {
 	private long[] blockSize;
 	private long[] offset;
@@ -51,6 +56,15 @@ public class BlockInfos {
 	}
 	
 	
-	
+	@Override
+	public String toString() {
+		String str = "BS:"+Util.printCoordinates(blockSize)+
+				" Offset:"+Arrays.toString(offset)+
+				" Eff_Size:"+Arrays.toString(effectiveSize)+
+				" Eff_Off:"+Arrays.toString(effectiveOffset)+
+				" Eff_local_off:"+Arrays.toString(effectiveLocalOffset)+
+				" Pres: "+isPrecise; 
+		return  str;
+	}
 	
 }

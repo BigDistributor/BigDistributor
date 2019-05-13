@@ -31,7 +31,7 @@ public class InputFrame extends Frame implements ActionListener {
 	private FilePicker taskPicker, inputPicker,extraPicker;
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
-	private AppMode appMode = AppMode.LocalInputMode;
+	private AppMode appMode = AppMode.LOCAL_INPUT_MODE;
 	private boolean configurated = false;
 
 	public InputFrame(String arg0) {
@@ -149,12 +149,12 @@ public class InputFrame extends Frame implements ActionListener {
 
 		if (e.getSource() == localInputButton) {
 			inputPicker.showButton();
-			appMode = AppMode.LocalInputMode;
+			appMode = AppMode.LOCAL_INPUT_MODE;
 		}
 
 		if (e.getSource() == remoteInputButton) {
 			inputPicker.hideButton();
-			appMode = AppMode.ClusterInputMode;
+			appMode = AppMode.CLUSTER_INPUT_MODE;
 		}
 	}
 	

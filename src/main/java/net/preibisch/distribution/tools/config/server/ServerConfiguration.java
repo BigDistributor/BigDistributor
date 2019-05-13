@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.tools.config.server;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.tools.config.DEFAULT;
 
 public class ServerConfiguration {
 
@@ -27,9 +28,10 @@ public class ServerConfiguration {
 	}
 
 	public static class Builder {
-		private String host = "max-login.mdc-berlin.net";
-		private int port = 22;
-		private String path = "/fast/AG_Preibisch/Marwan/clustering/";
+		
+		private String host;
+		private int port;
+		private String path;
 
 		public Builder host(final String host) {
 			this.host = host;
@@ -48,6 +50,14 @@ public class ServerConfiguration {
 		@Override
 		public String toString() {
 			return "Host: "+host+" |Port:"+port+" | ClusterPath:"+path;
+		}
+		
+		public ServerConfiguration getDefault() {
+			this.host = DEFAULT.HOST;
+			this.path = DEFAULT.CLUSTER_PATH;
+			this.port = DEFAULT.PORT;
+			MyLogger.log.info(this.toString());
+			return new ServerConfiguration(this);
 		}
 		
 		public ServerConfiguration build() {

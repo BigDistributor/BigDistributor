@@ -28,7 +28,7 @@ public enum Config {
 	private static int[] blocksStatus;
 
 
-	private static int totalInputFiles;
+	private static int totalBlocks;
 
 
 	
@@ -111,12 +111,12 @@ public enum Config {
 		Config.inputPrefix = inputPrefix;
 	}
 
-	public static int getTotalInputFiles() {
-		return totalInputFiles;
+	public static int getTotalBlocks() {
+		return totalBlocks;
 	}
 
-	public static void setTotalInputFiles(int totalInputFiles) {
-		Config.totalInputFiles = totalInputFiles;
+	public static void setTotalBlocks(int totalBlocks) {
+		Config.totalBlocks = totalBlocks;
 	}
 
 	public static DataPreview getDataPreview() {

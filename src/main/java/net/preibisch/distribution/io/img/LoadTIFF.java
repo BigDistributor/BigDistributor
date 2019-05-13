@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.input.imageaccess;
+package main.java.net.preibisch.distribution.io.img;
 
 import java.io.File;
 

@@ -51,12 +51,20 @@ public class MetaDataGenerator implements AbstractTask {
 		return file.getAbsolutePath();
 	}
 
+public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap, AbstractCallBack callback) {
+
+		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
+		Config.setTotalBlocks(blocks.size());
+		
+		return new BlocksMetaData(blocks,blockSize,dims);
+	}
+
 	public static <T> BlocksMetaData genarateMetaData(DataPreview data,AbstractCallBack callback) {
 		
 		final long[] blockSize = data.getBlocksSizes();
 		final long[] dims = data.getFile().getDimensions();
 		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
-		Config.setTotalInputFiles(blocks.size());
+		Config.setTotalBlocks(blocks.size());
 		
 		return new BlocksMetaData(blocks,blockSize,dims);
 	}
@@ -67,12 +75,11 @@ public class MetaDataGenerator implements AbstractTask {
 		final long[] kernelSize = new long[dims.length];
 		final long[] imgSize = new long[dims.length];
 		for (int d = 0; d < dims.length; ++d) {
-			kernelSize[d] = halfKernelSizes[d] * 2 - 1;
+			kernelSize[d] = (overlap ==0 ) ? 0 : (halfKernelSizes[d] * 2 - 1);
 			imgSize[d] = dims[d];
 		}
 
 		final Map<Integer,BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
-		Config.setTotalInputFiles(blocks.size());
 		return blocks;
 	}
 
@@ -122,7 +129,7 @@ public class MetaDataGenerator implements AbstractTask {
 		final Map<Integer,BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
 
 		final int[] currentBlock = new int[numDimensions];
-		int i = 1;
+		int i = 0;
 		while (cursor.hasNext()) {
 			cursor.fwd();
 			cursor.localize(currentBlock);
@@ -132,7 +139,7 @@ public class MetaDataGenerator implements AbstractTask {
 			final long[] effectiveOffset = new long[numDimensions];
 			final long[] effectiveSize = effectiveSizeGeneral.clone();
 
-			for (int d = 0; d < numDimensions; ++d) {
+			for (int d = 0; d < numDimensions; d++) {
 				effectiveOffset[d] = currentBlock[d] * effectiveSize[d];
 				offset[d] = effectiveOffset[d] - kernelSize[d] / 2;
 
@@ -140,15 +147,14 @@ public class MetaDataGenerator implements AbstractTask {
 					effectiveSize[d] = imgSize[d] - effectiveOffset[d];
 			}
 
-			blockinfosList.put(
-					i,
+			blockinfosList.put(i,
 					new BlockInfos(blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true)
 					);
 			i++;
-			// System.out.println( "block " + Util.printCoordinates( currentBlock ) + "
-			// effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + "
-			// effectiveSize: " + Util.printCoordinates( effectiveSize ) + " offset: " +
-			// Util.printCoordinates( offset ) + " inside: " + inside );
+			 System.out.println( "block " + Util.printCoordinates( currentBlock ) +
+					 "effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + 
+					 " effectiveSize: " + Util.printCoordinates( effectiveSize ) + 
+					 " offset: " + Util.printCoordinates( offset ) );
 		}
 
 		return blockinfosList;

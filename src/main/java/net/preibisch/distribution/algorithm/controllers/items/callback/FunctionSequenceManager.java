@@ -3,6 +3,7 @@ package main.java.net.preibisch.distribution.algorithm.controllers.items.callbac
 import java.util.Arrays;
 import java.util.List;
 
+import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Flow;
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
@@ -78,17 +79,17 @@ public final class FunctionSequenceManager {
 	}
 	
 	 
-	public FunctionSequenceManager(String task) {
-		if(Workflow.START.equals(task)) {
-		if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
+	public FunctionSequenceManager(Flow flow) {
+		if(Flow.START_FLOW.equals(flow)) {
+		if (AppMode.CLUSTER_INPUT_MODE.equals(Config.getJob().getAppMode())) {
 			starterClusterInputModeWorkflow();
-		} else if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
+		} else if (AppMode.LOCAL_INPUT_MODE.equals(Config.getJob().getAppMode())) {
 			starterLocalInputModeWorkflow();
-		}}else if(Workflow.RESULT.equals(task))
+		}}else if(Flow.RESULT_FLOW.equals(flow))
 		{
-		if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
+		if (AppMode.CLUSTER_INPUT_MODE.equals(Config.getJob().getAppMode())) {
 			resultClusterInputModeWorkflow();
-		} else if (AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
+		} else if (AppMode.LOCAL_INPUT_MODE.equals(Config.getJob().getAppMode())) {
 			resultLocalInputModeWorkflow();
 		}
 		}

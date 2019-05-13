@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Flow;
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.tools.Helper;
@@ -75,10 +76,10 @@ public class ControlPanel extends JPanel implements ActionListener {
 			}
 			
 
-			Workflow.startWorkflow();
+			Workflow.run(Flow.START_FLOW);;
 		}
 		if (e.getSource() == generateResultButton) {
-			Workflow.resultWorkflow();
+			Workflow.run(Flow.RESULT_FLOW);
 		}
 	}
 }

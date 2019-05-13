@@ -1,10 +1,11 @@
-package main.java.net.preibisch.distribution.input.imageaccess;
+package main.java.net.preibisch.distribution.io.img;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
+import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;

@@ -78,7 +78,7 @@ public class ConfigFrame extends Frame {
 				}
 				
 				Account account = new Account.Builder().pseudo(pseudoField.getText())
-						.password(String.valueOf(passwordField.getPassword())).build();
+						.password(passwordField.getPassword()).build();
 
 				int portValue = 22;
 

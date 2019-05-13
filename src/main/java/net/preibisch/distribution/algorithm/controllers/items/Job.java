@@ -19,6 +19,38 @@ public class Job extends Object{
 	private String metaDataPath;
 
 	private String taskShellPath;
+	
+	public static Job initJob(AppMode mode, String task, String input) {
+		JDataFile inputData = new JDataFile.Builder()
+				.file(JFile.of(input))
+				.load()
+				.getDataInfos()
+				.build();
+		
+		return new Job.Builder()
+			     .appMode(mode)
+			     .task(JFile.of(task))
+//			     .extra(JFile.of(EXTRA_FILE_PATH))
+			     .input(inputData)
+			     .createTempDir()
+			     .buid();
+	}
+	
+	public static Job initJob(AppMode mode, String task, String input, String tmpDir) {
+		JDataFile inputData = new JDataFile.Builder()
+				.file(JFile.of(input))
+				.load()
+				.getDataInfos()
+				.build();
+		
+		return new Job.Builder()
+			     .appMode(mode)
+			     .task(JFile.of(task))
+//			     .extra(JFile.of(EXTRA_FILE_PATH))
+			     .input(inputData)
+			     .tmp(tmpDir)
+			     .buid();
+	}
 
 	private Job(Builder builder) {
 		this.task = builder.task;
@@ -83,9 +115,14 @@ public class Job extends Object{
 			return this;
 		}
 		
+		public Builder tmp(String dir) {
+			this.tmpDir = dir;
+			return this;
+		}
+		
 		public Builder createTempDir() {
 			File tempDir = Files.createTempDir();
-			tmpDir = tempDir.getAbsolutePath();
+			this.tmpDir = tempDir.getAbsolutePath();
 			System.out.println("TempFolder: "+tmpDir);
 			return this;
 		}

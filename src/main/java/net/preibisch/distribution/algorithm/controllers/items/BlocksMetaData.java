@@ -1,8 +1,10 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import net.imglib2.util.Util;
 
 public class BlocksMetaData {
 	private long[] dimensions;
@@ -42,6 +44,14 @@ public class BlocksMetaData {
 	}
 	
 	
-	
+	@Override
+	public String toString() {
+		String str = "\nMetaData: total:"+blocksInfo.size()+
+				" dims:"+ Util.printCoordinates(dimensions)
+				+" blocks"+Util.printCoordinates(blocksize)+"\n";
+		String elm0 = blocksInfo.get(0).toString()+" \n";
+		String elm1 = blocksInfo.get(1).toString()+" \n";
+		return str+elm0+elm1;
+	}
 	
 }

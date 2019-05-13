@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.input.imageaccess;
+package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,10 +10,14 @@ import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
+import ij.ImageJ;
+import main.java.net.preibisch.distribution.tools.Tools;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Util;
 
 public class N5IO {
 	private final static String DATASET = "/volumes/raw";
@@ -46,5 +50,13 @@ public class N5IO {
 		N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
 	}
 	
-
+	public static void show(String path) throws IOException {
+		RandomAccessibleInterval<FloatType> virtual = read(path);
+		ImageJFunctions.show(virtual);
+	}
+	
+	public static void main(String[] args) throws IOException {
+		new ImageJ();
+		show("/home/mzouink/Desktop/test2/out.n5");
+	}
 }

@@ -1,8 +1,10 @@
 package main.java.net.preibisch.distribution.tools.config.server;
 
+import main.java.net.preibisch.distribution.tools.config.DEFAULT;
+
 public class Account {
 	private final String pseudo;
-	private final String password;
+	private final char[] password;
 
 	private Account(Builder builder) {
 		this.pseudo = builder.pseudo;
@@ -14,23 +16,28 @@ public class Account {
 	}
 
 	public String getPassword() {
-		return password;
+		return String.valueOf(password);
 	}
 
 	public static class Builder {
-		private String pseudo = "mzouink";
-		private String password = "";
+		private String pseudo ;
+		private char[] password ;
 
 		public Builder pseudo(final String pseudo) {
-			this.password = pseudo;
+			this.pseudo = pseudo;
 			return this;
 		}
 
-		public Builder password(final String password) {
+		public Builder password(final char[] password) {
 			this.password = password;
 			return this;
 		}
-
+		
+		public Account getDefault() {
+			this.pseudo = DEFAULT.USER_PSEUDO;
+			this.password = DEFAULT.USER_PASSWORD;
+			return new Account(this);
+		}
 		public Account build() {
 			return new Account(this);
 		}

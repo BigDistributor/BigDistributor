@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.plugin;
+package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.input.imageaccess.LoadN5;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;

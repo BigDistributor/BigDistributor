@@ -1,6 +1,6 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
-import main.java.net.preibisch.distribution.input.imageaccess.Loader;
+import main.java.net.preibisch.distribution.io.img.Loader;
 import main.java.net.preibisch.distribution.tools.Helper;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;

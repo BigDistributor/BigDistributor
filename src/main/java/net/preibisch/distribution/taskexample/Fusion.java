@@ -1,17 +1,24 @@
 package main.java.net.preibisch.distribution.taskexample;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import ij.ImageJ;
+import main.java.net.preibisch.distribution.io.img.n5.N5ImgLoader;
+import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
+import mpicbg.spim.data.generic.sequence.BasicViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
+import net.imglib2.util.Util;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.process.fusion.FusionTools;
@@ -75,22 +82,22 @@ public class Fusion {
 		ImageJFunctions.show( virtual2 );
 	}
 	
-	public static RandomAccessibleInterval<FloatType> Fusion(String xml,long[] offset, long[] blocksize) throws SpimDataException{
-		
-		Interval bb = new FinalInterval(offset, sum(offset,blocksize));
+	public static RandomAccessibleInterval<FloatType> Fusion(String xml, long[] offset, long[] blocksize) throws SpimDataException{
 		SpimData2 spimData = new XmlIoSpimData2( "" ).load(xml);
+//		System.out.println("From : "+Util.printCoordinates(offset)+" To: "+Util.printCoordinates(Tools.sum(offset,blocksize)));
+		Interval bb = new FinalInterval(offset, Tools.sum(offset,blocksize));
+//		System.out.println("BB:" +bb.toString());
 		final List< ViewId > viewIds = new ArrayList< ViewId >();
 		viewIds.addAll( spimData.getSequenceDescription().getViewDescriptions().values() );
 		
 		double downsampling = Double.NaN; 
+		//TODO
+		Map<ViewId, AffineTransform3D> registrations;
+		final Map< ViewId, ? extends BasicViewDescription< ? > > viewDescriptions ;
+
+//		FusionTools.fuseVirtual(loader, registrations, viewDescriptions, viewIds, true, false, 1, bb, downsampling, null)
 		final RandomAccessibleInterval< FloatType > virtual = FusionTools.fuseVirtual( spimData, viewIds, bb, downsampling );
 		
 		return virtual;
-	}
-
-	private static long[] sum(long[] offset, long[] blocksize) {
-		for(int i=0; i<offset.length;i++) offset[i]+=blocksize[i];
-		// TODO Auto-generated method stub
-		return offset;
 	}
 }

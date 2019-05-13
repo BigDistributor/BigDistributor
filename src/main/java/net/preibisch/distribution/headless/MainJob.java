@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.plugin;
+package main.java.net.preibisch.distribution.headless;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,13 +14,15 @@ import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.input.imageaccess.LoadN5;
-import main.java.net.preibisch.distribution.input.imageaccess.N5IO;
+import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
+import main.java.net.preibisch.distribution.io.img.n5.N5IO;
 import main.java.net.preibisch.distribution.taskexample.Fusion;
+import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Util;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
@@ -45,18 +47,18 @@ public class MainJob implements Callable<Void> {
 	
 	
 	public static void main(String[] args) throws Exception {
-		String[] ar = testArgs();
-		CommandLine.call(new MainJob(), ar);
+//		String[] ar = testArgs();
+		CommandLine.call(new MainJob(), args);
 		show();
 		
 	}
 	
 	private static String[] testArgs() throws Exception {
-		String in = "/home/mzouink/Desktop/test/in.n5";
-
+//		String in = "/home/mzouink/Desktop/test/in.n5";
+		String in = "/home/mzouink/Desktop/Task/data/dataset.xml";
 		String out = "/home/mzouink/Desktop/test/out.n5";
 		String meta = "/home/mzouink/Desktop/test/METADATA.json";;
-		int id = 4;
+		int id = 1;
 		String job = "job";
 		String args = "-t "+job+" -in "+in+" -out "+out+" -m "+meta+" -id "+id;
 
@@ -76,29 +78,6 @@ public class MainJob implements Callable<Void> {
 		
 	}
 	
-	public MainJob(String output, String input, String metadataPath, Integer id,
-			AbstractTask2<RandomAccessibleInterval<FloatType>, RandomAccessibleInterval<FloatType>, Object> task) {
-		super();
-		this.output = output;
-		this.input = input;
-		this.metadataPath = metadataPath;
-		this.id = id;
-		this.task = task;
-	}
-	public MainJob(String output, String input, String metadataPath, Integer id) {
-		super();
-		this.output = output;
-		this.input = input;
-		this.metadataPath = metadataPath;
-		this.id = id;
-
-	}
-
-
-	public MainJob(AbstractTask2<RandomAccessibleInterval<FloatType>, RandomAccessibleInterval<FloatType>, Object> task) {
-		this.task = task;
-	}
-
 
 	public MainJob() {
 		// TODO Auto-generated constructor stub
@@ -106,7 +85,6 @@ public class MainJob implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		System.out.println("called");
 		switch (job) {
 		case "pre":
 			System.out.println("Pre process task..");
@@ -127,7 +105,8 @@ public class MainJob implements Callable<Void> {
 	}
 
 
-	private static void blockTask(String input, String metadataPath, String output, int id) throws SpimDataException, JsonSyntaxException, JsonIOException, IOException {
+	public static void blockTask(String input, String metadataPath, String output, int id) throws SpimDataException, JsonSyntaxException, JsonIOException, IOException {
+		System.out.println(id +"- Start");
 		
 		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
 		BlockInfos binfo = blocksMetadata.getBlocksInfo().get(id);
@@ -143,6 +122,7 @@ public class MainJob implements Callable<Void> {
 //		RandomAccessibleInterval<FloatType> tmp =  BlocksManager.getBlock(inputData.getLoader().fuse(), block, new Callback());
 
 		RandomAccessibleInterval<FloatType>  result = Fusion.Fusion(input, binfo.getOffset(),binfo.getBlockSize());
+//		ImageJFunctions.show(result,id+" result");
 		
 //		RandomAccessibleInterval<FloatType>  result = task.start(inputData.getLoader().fuse(), blockId , new Callback());
 //		RandomAccessibleInterval<FloatType>  result = task.start(this.input, params , new Callback());
@@ -150,19 +130,22 @@ public class MainJob implements Callable<Void> {
 //		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
 		
 //		block.pasteBlock(outImage , tmp, new Callback());
+		System.out.println(id+"-save block size = "+Util.printCoordinates(Tools.dimensions(result))+"position: "+Util.printCoordinates(binfo.getOffset()));
+		
 		N5IO.saveBlock(output, result, binfo.getOffset());
-		System.out.println("Exit!");
+		System.out.println(id+ "- Finish!");
 
 		
 	}
 
 
-	private static void prestart(String metadataPath, String output) throws IOException {
-
+	public static void prestart(String metadataPath, String output) throws IOException {
+		System.out.println("Start create output ");
 		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
 		int[] blocks = Arrays.stream(blocksMetadata.getBlocksize()).mapToInt(i -> (int)i).toArray();
 		N5IO.createBackResult(output, blocksMetadata.getDimensions(), blocks);
 		System.out.println("Output created: "+output);
+		System.out.println("Finish create output !");
 	}
 
 }

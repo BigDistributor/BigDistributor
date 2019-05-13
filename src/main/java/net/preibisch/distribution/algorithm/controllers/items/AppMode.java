@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
 public enum AppMode {
-	ClusterInputMode,
-	LocalInputMode
+	CLUSTER_INPUT_MODE,
+	LOCAL_INPUT_MODE,
+	RUN_LOCALLY
 }
