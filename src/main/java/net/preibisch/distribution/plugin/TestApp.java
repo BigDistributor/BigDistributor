@@ -1,6 +1,8 @@
 package main.java.net.preibisch.distribution.plugin;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -18,6 +20,9 @@ import main.java.net.preibisch.distribution.io.img.n5.N5IO;
 import main.java.net.preibisch.distribution.tools.Tools;
 import main.java.net.preibisch.distribution.tools.config.Config;
 import mpicbg.spim.data.SpimDataException;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.real.FloatType;
 
 public class TestApp {
 	
@@ -45,6 +50,8 @@ public class TestApp {
 		Job job = Job.initJob(APP_MODE,TASK_PATH,INPUT_PATH,TMP_DIR);
 //		job.openTempFolder();
 		Config.setJob(job);
+		RandomAccessibleInterval<FloatType> input = job.getInput().getLoader().fuse();
+		ImageJFunctions.show(input,"Input");
 		long blockSize = 80;
 		final long[] blocksSizes  = Tools.fill(blockSize,job.getInput().getDimensions().length);
 		final long overlap = 0;
@@ -60,11 +67,15 @@ public class TestApp {
 		String output = TMP_DIR+OUT_FILE;
 		//Generate black result 
 		MainJob.prestart(metadataPath, output);
-		
-		for(int i =0; i< total; i++) {
-			MainJob.blockTask(INPUT_PATH, metadataPath, output, i);
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		for(int i =0; i< 200; i+=20) {
+			Runnable myTask = new MyTask(INPUT_PATH, metadataPath, output, i);
+			executorService.submit(myTask);
+			
 		}
-		N5IO.show(output);
+		
+
+//		N5IO.show(output);
 		
 		
 //				genarateMetaDataFile(dataPreview, TMP_DIR, new Callback());
@@ -78,8 +89,31 @@ public class TestApp {
 //		Workflow.startWorkflow();
 		
 	}
-
-
+	
+}
+class MyTask implements Runnable{
+	int id;
+	private String input;
+	private String metadata;
+	private String output;
+	
+	public MyTask(String input, String metadata, String output,int id) {
+		this.id = id;
+		this.input = input;
+		this.output = output;
+		this.metadata = metadata;
+	}
+	@Override
+	public void run() {
+		try {
+			MainJob.blockTask(input, metadata, output, id);
+//			N5IO.show(output);
+		} catch (JsonSyntaxException | JsonIOException | SpimDataException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
 
 

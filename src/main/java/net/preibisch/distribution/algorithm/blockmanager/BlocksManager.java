@@ -12,7 +12,7 @@ import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
 import main.java.net.preibisch.distribution.gui.items.Colors;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
-import main.java.net.preibisch.distribution.tools.IOFunctions;
+import main.java.net.preibisch.distribution.io.IOFunctions;
 import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;

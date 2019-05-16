@@ -49,9 +49,12 @@ public class BlocksMetaData {
 		String str = "\nMetaData: total:"+blocksInfo.size()+
 				" dims:"+ Util.printCoordinates(dimensions)
 				+" blocks"+Util.printCoordinates(blocksize)+"\n";
-		String elm0 = blocksInfo.get(0).toString()+" \n";
-		String elm1 = blocksInfo.get(1).toString()+" \n";
-		return str+elm0+elm1;
+		String elms = "";
+		for (int i = 0; i<blocksInfo.size();i++) {
+			elms = elms+ i+"-"+ blocksInfo.get(i).toString()+" \n";
+		}
+//		String elm1 = blocksInfo.get(1).toString()+" \n";
+		return str+elms;
 	}
 	
 }

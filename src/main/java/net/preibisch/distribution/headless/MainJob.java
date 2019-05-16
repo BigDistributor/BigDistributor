@@ -14,6 +14,7 @@ import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
 import main.java.net.preibisch.distribution.io.img.n5.N5IO;
 import main.java.net.preibisch.distribution.taskexample.Fusion;
@@ -121,7 +122,7 @@ public class MainJob implements Callable<Void> {
 	
 //		RandomAccessibleInterval<FloatType> tmp =  BlocksManager.getBlock(inputData.getLoader().fuse(), block, new Callback());
 
-		RandomAccessibleInterval<FloatType>  result = Fusion.Fusion(input, binfo.getOffset(),binfo.getBlockSize());
+		RandomAccessibleInterval<FloatType>  result = Fusion.Fusion(input, binfo.getOffset(),binfo.getEffectiveSize());
 //		ImageJFunctions.show(result,id+" result");
 		
 //		RandomAccessibleInterval<FloatType>  result = task.start(inputData.getLoader().fuse(), blockId , new Callback());
@@ -130,22 +131,22 @@ public class MainJob implements Callable<Void> {
 //		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
 		
 //		block.pasteBlock(outImage , tmp, new Callback());
-		System.out.println(id+"-save block size = "+Util.printCoordinates(Tools.dimensions(result))+"position: "+Util.printCoordinates(binfo.getOffset()));
+		MyLogger.log.info("Process: "+id+"-save block size = "+Util.printCoordinates(Tools.dimensions(result))+"position: "+Util.printCoordinates(binfo.getOffset()));
 		
 		N5IO.saveBlock(output, result, binfo.getOffset());
-		System.out.println(id+ "- Finish!");
+		MyLogger.log.info("Process: "+id+ "- Finish saving!");
 
 		
 	}
 
 
 	public static void prestart(String metadataPath, String output) throws IOException {
-		System.out.println("Start create output ");
+		MyLogger.log.info("Preprocess: Start create output ");
 		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
 		int[] blocks = Arrays.stream(blocksMetadata.getBlocksize()).mapToInt(i -> (int)i).toArray();
 		N5IO.createBackResult(output, blocksMetadata.getDimensions(), blocks);
-		System.out.println("Output created: "+output);
-		System.out.println("Finish create output !");
+		MyLogger.log.info("Output created: "+output);
+		MyLogger.log.info("Preprocess: Finish create output !");
 	}
 
 }

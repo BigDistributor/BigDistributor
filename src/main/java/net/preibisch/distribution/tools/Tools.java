@@ -1,6 +1,10 @@
 package main.java.net.preibisch.distribution.tools;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+
+import org.apache.commons.io.FileUtils;
 
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
@@ -12,6 +16,7 @@ public class Tools {
 		Arrays.fill(arr , val);
 		return arr;
 	}
+
 
 	public static long[] dimensions(RandomAccessibleInterval<FloatType> block) {
 		long[] dims = new long[block.numDimensions()];
@@ -27,6 +32,13 @@ public class Tools {
 			result[i]=offset[i]+blocksize[i];
 		}
 		return result;
+	}
+
+
+	public static void cleanFolder(String dir) throws IOException {
+		File folder = new File(dir);
+		FileUtils.deleteDirectory(folder);
+		folder.mkdir();
 	}
 
 }

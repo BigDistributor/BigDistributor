@@ -12,6 +12,7 @@ import com.google.gson.GsonBuilder;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.algorithm.gauss3.Gauss3;
@@ -25,25 +26,25 @@ public class MetaDataGenerator implements AbstractTask {
 	public void start(int pos, AbstractCallBack callback) {
 		callback.log("Creating metadata..");
 		final DataPreview data = Config.getDataPreview();
-		BlocksMetaData md = genarateMetaData(data,callback);
-		Config.getJob().setMetaDataPath(createJSon(md,Config.getJob().getTmpDir(), callback));
+		BlocksMetaData md = genarateMetaData(data, callback);
+		Config.getJob().setMetaDataPath(createJSon(md, Config.getJob().getTmpDir(), callback));
 		callback.onSuccess(pos);
 	}
-	
-	public static String genarateMetaDataFile(DataPreview data, String folder,AbstractCallBack callback) {
-		
+
+	public static String genarateMetaDataFile(DataPreview data, String folder, AbstractCallBack callback) {
+
 		callback.log("Creating metadata..");
-		BlocksMetaData md = genarateMetaData(data,callback);
-		return createJSon(md,folder, callback);
+		BlocksMetaData md = genarateMetaData(data, callback);
+		return createJSon(md, folder, callback);
 	}
 
 	public static String createJSon(BlocksMetaData md, String folder, AbstractCallBack callback) {
-		File file = new File(folder,METADATA_FILE_NAME);
+		File file = new File(folder, METADATA_FILE_NAME);
 		try (Writer writer = new FileWriter(file)) {
 			Gson gson = new GsonBuilder().create();
 			gson.toJson(md, writer);
-			
-			callback.log("Metadata created: "+file.getAbsolutePath());
+
+			callback.log("Metadata created: " + file.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			callback.onError(e.toString());
@@ -51,39 +52,41 @@ public class MetaDataGenerator implements AbstractTask {
 		return file.getAbsolutePath();
 	}
 
-public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap, AbstractCallBack callback) {
+	public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap,
+			AbstractCallBack callback) {
 
-		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
+		final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
 		Config.setTotalBlocks(blocks.size());
-		
-		return new BlocksMetaData(blocks,blockSize,dims);
+
+		return new BlocksMetaData(blocks, blockSize, dims);
 	}
 
-	public static <T> BlocksMetaData genarateMetaData(DataPreview data,AbstractCallBack callback) {
-		
+	public static <T> BlocksMetaData genarateMetaData(DataPreview data, AbstractCallBack callback) {
+
 		final long[] blockSize = data.getBlocksSizes();
 		final long[] dims = data.getFile().getDimensions();
-		final Map<Integer,BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
+		final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
 		Config.setTotalBlocks(blocks.size());
-		
-		return new BlocksMetaData(blocks,blockSize,dims);
+
+		return new BlocksMetaData(blocks, blockSize, dims);
 	}
-	
-	public static <T> Map<Integer,BlockInfos> generateBlocks(long blockSize[], long[] dims, long overlap, AbstractCallBack callback) {
-		final double[] sigmas = Util.getArrayFromValue((double)overlap, dims.length);
+
+	public static <T> Map<Integer, BlockInfos> generateBlocks(long blockSize[], long[] dims, long overlap,
+			AbstractCallBack callback) {
+		final double[] sigmas = Util.getArrayFromValue((double) overlap, dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);
 		final long[] kernelSize = new long[dims.length];
 		final long[] imgSize = new long[dims.length];
 		for (int d = 0; d < dims.length; ++d) {
-			kernelSize[d] = (overlap ==0 ) ? 0 : (halfKernelSizes[d] * 2 - 1);
+			kernelSize[d] = (overlap == 0) ? 0 : (halfKernelSizes[d] * 2 - 1);
 			imgSize[d] = dims[d];
 		}
 
-		final Map<Integer,BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
+		final Map<Integer, BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
 		return blocks;
 	}
 
-	private static Map<Integer,BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
+	private static Map<Integer, BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
 			final long[] kernelSize, AbstractCallBack callback) {
 		final int numDimensions = imgSize.length;
 
@@ -93,7 +96,11 @@ public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize,
 		final long[] effectiveLocalOffset = new long[numDimensions];
 
 		for (int d = 0; d < numDimensions; ++d) {
-			effectiveSizeGeneral[d] = blockSize[d] - kernelSize[d] + 1;
+//			if (kernelSize[d] > 0) {
+				effectiveSizeGeneral[d] = blockSize[d] - kernelSize[d] + 1;
+//			} else {
+//				effectiveSizeGeneral[d] = blockSize[d];
+//			}
 
 			if (effectiveSizeGeneral[d] <= 0) {
 				callback.log("Blocksize in dimension " + d + " (" + blockSize[d] + ") is smaller than the kernel ("
@@ -116,24 +123,25 @@ public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize,
 				++numBlocks[d];
 		}
 
-		System.out.println("imgSize " + Util.printCoordinates(imgSize));
-		System.out.println("kernelSize " + Util.printCoordinates(kernelSize));
-		System.out.println("blockSize " + Util.printCoordinates(blockSize));
-		System.out.println("numBlocks " + Util.printCoordinates(numBlocks));
-		System.out.println("effectiveSize of blocks" + Util.printCoordinates(effectiveSizeGeneral));
-		System.out.println("effectiveLocalOffset " + Util.printCoordinates(effectiveLocalOffset));
+		MyLogger.log.info("imgSize " + Util.printCoordinates(imgSize));
+		MyLogger.log.info("kernelSize " + Util.printCoordinates(kernelSize));
+		MyLogger.log.info("blockSize " + Util.printCoordinates(blockSize));
+		MyLogger.log.info("numBlocks " + Util.printCoordinates(numBlocks));
+		MyLogger.log.info("effectiveSize of blocks" + Util.printCoordinates(effectiveSizeGeneral));
+		MyLogger.log.info("effectiveLocalOffset " + Util.printCoordinates(effectiveLocalOffset));
 
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final Map<Integer,BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
+		final Map<Integer, BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
 
 		final int[] currentBlock = new int[numDimensions];
 		int i = 0;
 		while (cursor.hasNext()) {
 			cursor.fwd();
 			cursor.localize(currentBlock);
-
+			final long[] gridOffset = Util.int2long(currentBlock);
+			
 			// compute the current offset
 			final long[] offset = new long[numDimensions];
 			final long[] effectiveOffset = new long[numDimensions];
@@ -148,13 +156,14 @@ public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize,
 			}
 
 			blockinfosList.put(i,
-					new BlockInfos(blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true)
-					);
+					new BlockInfos(gridOffset,blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true));
 			i++;
-			 System.out.println( "block " + Util.printCoordinates( currentBlock ) +
-					 "effectiveOffset: " + Util.printCoordinates( effectiveOffset ) + 
-					 " effectiveSize: " + Util.printCoordinates( effectiveSize ) + 
-					 " offset: " + Util.printCoordinates( offset ) );
+//			if (i % 10 == 0) {
+				MyLogger.log.info(
+						i+"- block " + Util.printCoordinates(gridOffset) + "size " + Util.printCoordinates(blockSize)
+								+ "effectiveOffset: " + Util.printCoordinates(effectiveOffset) + " effectiveSize: "
+								+ Util.printCoordinates(effectiveSize) + " offset: " + Util.printCoordinates(offset));
+//			}
 		}
 
 		return blockinfosList;

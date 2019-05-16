@@ -3,6 +3,8 @@ package main.java.net.preibisch.distribution.io.img.n5;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.janelia.saalfeldlab.n5.DataType;
+import org.janelia.saalfeldlab.n5.DatasetAttributes;
 import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
@@ -11,6 +13,7 @@ import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
+import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.tools.Tools;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.ImgFactory;
@@ -22,23 +25,44 @@ import net.imglib2.util.Util;
 public class N5IO {
 	private final static String DATASET = "/volumes/raw";
 
-	public static void saveBlock(String out, RandomAccessibleInterval<FloatType> block, long[] position)
+	public static void saveBlock(String out, RandomAccessibleInterval<FloatType> block, long[] gridOffset)
 			throws IOException {
 		N5Writer writer = new N5FSWriter(out);
-		N5Utils.saveBlock(block, writer, DATASET, position);
+		N5Utils.saveBlock(block, writer, DATASET, gridOffset);
 	}
 
 	
-	public static void createBackResult(String path, long[] dimensions, int[] blocks) throws IOException {
+	public static void createBackResult(String path, long[] dimensions, int[] blockSize) throws IOException {
 		// make a physical copy of the virtual randomaccessibleinterval
 		ImgFactory<FloatType> imgFactory = new CellImgFactory<>(new FloatType(), 5);
 		final RandomAccessibleInterval<FloatType> img = imgFactory.create(dimensions);
 		N5Writer writer = new N5FSWriter(path);
-		N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
+		N5Utils.save(img, writer, DATASET, blockSize, new GzipCompression());
 	}
 
+	public static <T> void createBackResult2(String path, long[] dimensions, int[] blockSize,DataType datatype) throws IOException {
+
+		N5Writer n5 = new N5FSWriter(path);
+		long[] dims = dimensions.clone();
+//		for (int i =0; i< dims.length; i++) dims[i]+=150;
+		
+		final DatasetAttributes attributes = new DatasetAttributes(
+				dims,
+				blockSize,
+				datatype,
+				new GzipCompression());
+
+		n5.createDataset(DATASET, attributes);
+		
+	}
 	
 	public static RandomAccessibleInterval<FloatType> read(String path) throws IOException {
+		N5Reader reader = new N5FSReader(path);
+		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(reader, DATASET);
+		return virtual;
+	}
+	
+	public static RandomAccessibleInterval<FloatType> readBlock(String path, long[] gridPosition) throws IOException {
 		N5Reader reader = new N5FSReader(path);
 		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(reader, DATASET);
 		return virtual;
@@ -50,13 +74,14 @@ public class N5IO {
 		N5Utils.save(img, writer, DATASET, blocks, new GzipCompression());
 	}
 	
-	public static void show(String path) throws IOException {
+	public static void show(String path,String title) throws IOException {
 		RandomAccessibleInterval<FloatType> virtual = read(path);
-		ImageJFunctions.show(virtual);
+		ImageJFunctions.show(virtual,title);
+		MyLogger.log.info(title+"- "+Util.printCoordinates(Tools.dimensions(virtual)));
 	}
 	
 	public static void main(String[] args) throws IOException {
 		new ImageJ();
-		show("/home/mzouink/Desktop/test2/out.n5");
+		show("/home/mzouink/Desktop/test2/out.n5","test");
 	}
 }

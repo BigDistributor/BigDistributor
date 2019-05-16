@@ -36,6 +36,12 @@ public class Fusion {
 		
 	}
 
+	public static void saveSpimToN5() {
+
+		SpimData2 spimData = SpimData2.convert( SimulatedBeadsImgLoader.spimdataExample( new int[]{ 0, 90, 135 } ) );
+		
+		
+	}
 	public static void main( String[] args ) throws SpimDataException
 	{
 		// imput: spimdata (xml)

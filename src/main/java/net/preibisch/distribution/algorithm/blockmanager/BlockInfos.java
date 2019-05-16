@@ -6,6 +6,7 @@ import net.imglib2.util.Util;
 
 
 public class BlockInfos {
+	private long[] gridOffset;
 	private long[] blockSize;
 	private long[] offset;
 	private long[] effectiveSize;
@@ -14,9 +15,10 @@ public class BlockInfos {
 	private boolean isPrecise ;
 	
 	
-	public BlockInfos(long[] blockSize, long[] offset, long[] effectiveSize, long[] effectiveOffset,
+	public BlockInfos(long[] gridOffset,long[] blockSize, long[] offset, long[] effectiveSize, long[] effectiveOffset,
 			long[] effectiveLocalOffset, boolean isPrecise) {
 		super();
+		this.gridOffset = gridOffset;
 		this.blockSize = blockSize;
 		this.offset = offset;
 		this.effectiveSize = effectiveSize;
@@ -25,6 +27,9 @@ public class BlockInfos {
 		this.isPrecise = isPrecise;
 	}
 
+	public long[] getGridOffset() {
+		return gridOffset;
+	}
 
 	public long[] getBlockSize() {
 		return blockSize;
@@ -59,6 +64,7 @@ public class BlockInfos {
 	@Override
 	public String toString() {
 		String str = "BS:"+Util.printCoordinates(blockSize)+
+				"GridOff:"+Util.printCoordinates(gridOffset)+
 				" Offset:"+Arrays.toString(offset)+
 				" Eff_Size:"+Arrays.toString(effectiveSize)+
 				" Eff_Off:"+Arrays.toString(effectiveOffset)+
