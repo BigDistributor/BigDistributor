@@ -14,6 +14,9 @@ import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.io.IOFunctions;
 import main.java.net.preibisch.distribution.tools.Tools;
@@ -29,7 +32,8 @@ public class testSaveBlockN5 {
 	public static void main(String[] args) throws IOException {
 
 		new ImageJ();
-		
+
+		MyLogger.initLogger();
 		final String input_path = "/home/mzouink/Desktop/testn5/inputx4.tif";
 		final String output_path = "/home/mzouink/Desktop/testn5/output2.n5";
 
@@ -65,14 +69,36 @@ public class testSaveBlockN5 {
 //		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
 //		
 //		ImageJFunctions.show(virtual2,"After block0 output");
-		saveBlock(0,source,n5,dataset,output_path,new long[] {1,1,1},new long[] {80,80,80},new long[] {0,0,0});
+		BlocksMetaData md = MetaDataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
+		
+		int total = md.getBlocksInfo().size();
+		
+		
+//		saveBlock(0,source,n5,dataset,output_path,new long[] {1,1,1},new long[] {80,80,80},new long[] {0,0,0});
+//		saveBlock(2,source,n5,dataset,output_path,new long[] {1,81,1},new long[] {80,160,80},new long[] {0,1,0});
+//		saveBlock(3,source,n5,dataset,output_path,new long[] {81,81,1},new long[] {160,160,80},new long[] {1,1,0});
+//	}
 
-		saveBlock(2,source,n5,dataset,output_path,new long[] {1,81,1},new long[] {80,160,80},new long[] {0,1,0});
+		for(int i =0; i< total; i++) {
+			
+			saveBlock(i,source,n5,dataset,output_path,md.getBlocksInfo().get(i));	
+		}
+		
 
-
-		saveBlock(3,source,n5,dataset,output_path,new long[] {81,81,1},new long[] {160,160,80},new long[] {1,1,0});
 	}
+	
+	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
+			String output_path,BlockInfos binfo) throws IOException {
+		RandomAccessibleInterval< FloatType > block = Views.interval( source,binfo.getX1(),binfo.getX2());
+		ImageJFunctions.show(block,"block "+i);
 
+		N5Utils.saveBlock(block, n5, dataset,  binfo.getGridOffset());
+		
+		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
+		
+		ImageJFunctions.show(virtual2,"After block "+i+" output");
+	}
+	
 	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
 			String output_path, long[] ls, long[] ls2, long[] grid) throws IOException {
 		RandomAccessibleInterval< FloatType > block0 = Views.interval( source,ls,ls2);

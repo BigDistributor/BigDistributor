@@ -36,12 +36,7 @@ public class Fusion {
 		
 	}
 
-	public static void saveSpimToN5() {
 
-		SpimData2 spimData = SpimData2.convert( SimulatedBeadsImgLoader.spimdataExample( new int[]{ 0, 90, 135 } ) );
-		
-		
-	}
 	public static void main( String[] args ) throws SpimDataException
 	{
 		// imput: spimdata (xml)
@@ -88,20 +83,17 @@ public class Fusion {
 		ImageJFunctions.show( virtual2 );
 	}
 	
-	public static RandomAccessibleInterval<FloatType> Fusion(String xml, long[] offset, long[] blocksize) throws SpimDataException{
+	
+	public static RandomAccessibleInterval<FloatType> Fusion(String xml, long[] x1, long[] x2) throws SpimDataException{
+		System.out.println(xml);
 		SpimData2 spimData = new XmlIoSpimData2( "" ).load(xml);
-//		System.out.println("From : "+Util.printCoordinates(offset)+" To: "+Util.printCoordinates(Tools.sum(offset,blocksize)));
-		Interval bb = new FinalInterval(offset, Tools.sum(offset,blocksize));
-//		System.out.println("BB:" +bb.toString());
+		Interval bb = new FinalInterval(x1, x2);
+
 		final List< ViewId > viewIds = new ArrayList< ViewId >();
 		viewIds.addAll( spimData.getSequenceDescription().getViewDescriptions().values() );
 		
 		double downsampling = Double.NaN; 
-		//TODO
-		Map<ViewId, AffineTransform3D> registrations;
-		final Map< ViewId, ? extends BasicViewDescription< ? > > viewDescriptions ;
 
-//		FusionTools.fuseVirtual(loader, registrations, viewDescriptions, viewIds, true, false, 1, bb, downsampling, null)
 		final RandomAccessibleInterval< FloatType > virtual = FusionTools.fuseVirtual( spimData, viewIds, bb, downsampling );
 		
 		return virtual;

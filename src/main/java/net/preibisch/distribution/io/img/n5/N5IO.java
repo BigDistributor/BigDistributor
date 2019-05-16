@@ -82,6 +82,6 @@ public class N5IO {
 	
 	public static void main(String[] args) throws IOException {
 		new ImageJ();
-		show("/home/mzouink/Desktop/test2/out.n5","test");
+		show("/home/mzouink/Desktop/testn5/realdata.n5","test");
 	}
 }

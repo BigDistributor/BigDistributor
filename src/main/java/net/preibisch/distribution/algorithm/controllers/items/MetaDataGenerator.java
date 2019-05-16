@@ -54,7 +54,7 @@ public class MetaDataGenerator implements AbstractTask {
 
 	public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap,
 			AbstractCallBack callback) {
-
+		
 		final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
 		Config.setTotalBlocks(blocks.size());
 
@@ -81,6 +81,7 @@ public class MetaDataGenerator implements AbstractTask {
 			kernelSize[d] = (overlap == 0) ? 0 : (halfKernelSizes[d] * 2 - 1);
 			imgSize[d] = dims[d];
 		}
+	
 
 		final Map<Integer, BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
 		return blocks;
@@ -88,6 +89,7 @@ public class MetaDataGenerator implements AbstractTask {
 
 	private static Map<Integer, BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
 			final long[] kernelSize, AbstractCallBack callback) {
+	
 		final int numDimensions = imgSize.length;
 
 		// compute the effective size & local offset of each block
