@@ -97,7 +97,7 @@ public class MetaDataGenerator implements AbstractTask {
 
 		for (int d = 0; d < numDimensions; ++d) {
 //			if (kernelSize[d] > 0) {
-				effectiveSizeGeneral[d] = blockSize[d] - kernelSize[d] + 1;
+				effectiveSizeGeneral[d] = blockSize[d] - kernelSize[d] ;
 //			} else {
 //				effectiveSizeGeneral[d] = blockSize[d];
 //			}
@@ -144,24 +144,26 @@ public class MetaDataGenerator implements AbstractTask {
 			
 			// compute the current offset
 			final long[] offset = new long[numDimensions];
-			final long[] effectiveOffset = new long[numDimensions];
+			final long[] x1 = new long[numDimensions];
+			final long[] x2 = new long[numDimensions];
 			final long[] effectiveSize = effectiveSizeGeneral.clone();
 
 			for (int d = 0; d < numDimensions; d++) {
-				effectiveOffset[d] = currentBlock[d] * effectiveSize[d];
-				offset[d] = effectiveOffset[d] - kernelSize[d] / 2;
+				x1[d] = currentBlock[d] * effectiveSize[d] + 1;
+				offset[d] = x1[d] - kernelSize[d] / 2;
 
-				if (effectiveOffset[d] + effectiveSize[d] > imgSize[d])
-					effectiveSize[d] = imgSize[d] - effectiveOffset[d];
+				if (x1[d] + effectiveSize[d] > imgSize[d])
+					effectiveSize[d] = imgSize[d] - x1[d];
+				x2[d] = x1[d]+effectiveSize[d]-1;
 			}
 
 			blockinfosList.put(i,
-					new BlockInfos(gridOffset,blockSize, offset, effectiveSize, effectiveOffset, effectiveLocalOffset, true));
+					new BlockInfos(gridOffset,blockSize, offset, effectiveSize, x1,x2, effectiveLocalOffset, true));
 			i++;
 //			if (i % 10 == 0) {
 				MyLogger.log.info(
 						i+"- block " + Util.printCoordinates(gridOffset) + "size " + Util.printCoordinates(blockSize)
-								+ "effectiveOffset: " + Util.printCoordinates(effectiveOffset) + " effectiveSize: "
+								+ "x1: " + Util.printCoordinates(x1) + " x2: " + Util.printCoordinates(x2) + " effectiveSize: "
 								+ Util.printCoordinates(effectiveSize) + " offset: " + Util.printCoordinates(offset));
 //			}
 		}

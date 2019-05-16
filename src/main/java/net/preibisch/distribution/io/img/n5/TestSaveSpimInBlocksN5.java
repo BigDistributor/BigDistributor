@@ -78,7 +78,11 @@ public class TestSaveSpimInBlocksN5 {
 		int[] blockSize  = new int[dims.length];
 		Arrays.fill(blockSize , 80);
 		System.out.println("Blocks: " + Util.printCoordinates(blockSize));
-		
+		BlocksMetaData md = MetaDataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
+
+		int total = md.getBlocksInfo().size();
+		System.out.println(md.toString());
+		/*
 		N5Writer n5 = new N5FSWriter(output_path);
 		final DatasetAttributes attributes = new DatasetAttributes(
 				dims,
@@ -89,6 +93,8 @@ public class TestSaveSpimInBlocksN5 {
 		String dataset = "/volumes/raw" ;
 		n5.createDataset(dataset , attributes);
 		System.out.println("dataset created : "+ output_path);
+		
+		
 		
 		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(new N5FSReader(output_path), dataset);
 		ImageJFunctions.show(virtual,"Black output");
