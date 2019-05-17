@@ -55,10 +55,20 @@ public class MetaDataGenerator implements AbstractTask {
 	public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap,
 			AbstractCallBack callback) {
 		
-		final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
-		Config.setTotalBlocks(blocks.size());
-
-		return new BlocksMetaData(blocks, blockSize, dims);
+		if ( overlap == 0 )
+		{
+			final Map<Integer, BlockInfos> blocks = divideIntoBlocks(blockSize, dims, callback);
+			Config.setTotalBlocks(blocks.size());
+	
+			return new BlocksMetaData(blocks, blockSize, dims);
+		}
+		else
+		{
+			final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
+			Config.setTotalBlocks(blocks.size());
+	
+			return new BlocksMetaData(blocks, blockSize, dims);
+		}
 	}
 
 	public static <T> BlocksMetaData genarateMetaData(DataPreview data, AbstractCallBack callback) {
@@ -167,6 +177,66 @@ public class MetaDataGenerator implements AbstractTask {
 						i+"- block " + Util.printCoordinates(gridOffset) + "size " + Util.printCoordinates(blockSize)
 								+ "x1: " + Util.printCoordinates(x1) + " x2: " + Util.printCoordinates(x2) + " effectiveSize: "
 								+ Util.printCoordinates(effectiveSize) + " offset: " + Util.printCoordinates(offset));
+//			}
+		}
+
+		return blockinfosList;
+	}
+
+	private static Map<Integer, BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize, AbstractCallBack callback) {
+	
+		final int numDimensions = imgSize.length;
+
+		// compute the amount of blocks needed
+		final long[] numBlocks = new long[numDimensions];
+
+		for (int d = 0; d < numDimensions; ++d) {
+			numBlocks[d] = imgSize[d] / blockSize[d];
+
+			// if the modulo is not 0 we need one more that is only partially useful
+			if (imgSize[d] % blockSize[d] != 0)
+				++numBlocks[d];
+		}
+
+		MyLogger.log.info("imgSize " + Util.printCoordinates(imgSize));
+		MyLogger.log.info("blockSize " + Util.printCoordinates(blockSize));
+		MyLogger.log.info("numBlocks " + Util.printCoordinates(numBlocks));
+
+		// now we instantiate the individual blocks iterating over all dimensions
+		// we use the well-known ArrayLocalizableCursor for that
+		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
+		final Map<Integer, BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
+
+		final int[] currentBlock = new int[numDimensions];
+		int i = 0;
+		while (cursor.hasNext()) {
+			cursor.fwd();
+			cursor.localize(currentBlock);
+			final long[] gridOffset = Util.int2long(currentBlock);
+			
+			// compute the current offset
+			//final long[] offset = new long[numDimensions];
+			final long[] min = new long[numDimensions];
+			final long[] max = new long[numDimensions];
+			final long[] effectiveBlockSize = blockSize.clone();
+
+			for (int d = 0; d < numDimensions; d++) {
+				min[d] = currentBlock[d] * blockSize[d];
+
+				if (min[d] + blockSize[d] > imgSize[d])
+					effectiveBlockSize[d] = imgSize[d] - min[d];
+
+				max[d] = min[d]+effectiveBlockSize[d]-1;
+			}
+
+			blockinfosList.put(i,
+					new BlockInfos(gridOffset,blockSize, min, effectiveBlockSize, min,max, new long[ numDimensions ], true));
+			i++;
+//			if (i % 10 == 0) {
+				MyLogger.log.info(
+						i+"- block " + Util.printCoordinates(gridOffset) + "size " + Util.printCoordinates(blockSize)
+								+ "x1: " + Util.printCoordinates(min) + " x2: " + Util.printCoordinates(max) + " effectiveSize: "
+								+ Util.printCoordinates(effectiveBlockSize) + " offset: " + Util.printCoordinates(min));
 //			}
 		}
 

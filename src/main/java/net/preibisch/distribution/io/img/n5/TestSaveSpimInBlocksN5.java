@@ -6,28 +6,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import org.janelia.saalfeldlab.n5.AbstractDataBlock;
-import org.janelia.saalfeldlab.n5.BlockReader;
-import org.janelia.saalfeldlab.n5.DataBlock;
 import org.janelia.saalfeldlab.n5.DatasetAttributes;
 import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
-import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import main.java.net.preibisch.distribution.headless.MainJob;
 import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
@@ -41,11 +33,13 @@ import net.imglib2.view.Views;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
+import net.preibisch.mvrecon.process.boundingbox.BoundingBoxBigDataViewer;
+import net.preibisch.mvrecon.process.boundingbox.BoundingBoxEstimation;
+import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 import net.preibisch.mvrecon.process.fusion.FusionTools;
-import net.preibisch.simulation.imgloader.SimulatedBeadsImgLoader;
 
 public class TestSaveSpimInBlocksN5 {
-	public static void main(String[] args) throws InterruptedException, IOException, SpimDataException {
+	public static void main(String[] args) throws IOException, SpimDataException {
 
 		new ImageJ();
 		MyLogger.initLogger();
@@ -62,10 +56,21 @@ public class TestSaveSpimInBlocksN5 {
 		}
 
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
-		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());
+		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());		
+
+		final boolean useBDV = false;
+		BoundingBoxEstimation estimation;
+
+		if ( useBDV )
+			estimation = new BoundingBoxBigDataViewer( spimData, viewIds );
+		else
+			estimation = new BoundingBoxMaximal( viewIds, spimData );
+
+		final BoundingBox bb = estimation.estimate( "Full Bounding Box" );
 
 		// small part of the bounding box\
-		Interval bb = new FinalInterval(new long[] { 0, 0, 0 }, new long[] { 980, 1428, 392 });
+		//Interval bb = new FinalInterval(new long[] { 0, 0, 0 }, new long[] { 980, 1428, 392 });
+
 
 		// downsampling
 		double downsampling = Double.NaN; // 2.0

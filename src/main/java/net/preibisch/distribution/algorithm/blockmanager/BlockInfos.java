@@ -15,6 +15,10 @@ public class BlockInfos {
 	private long[] effectiveLocalOffset;
 	private boolean isPrecise ;
 	
+	public BlockInfos(long[] gridOffset,long[] blockSize,long[] x1,long[] x2 ) 
+	{
+		// TODO: 
+	}
 	
 	public BlockInfos(long[] gridOffset,long[] blockSize, long[] offset, long[] effectiveSize, long[] x1,long[] x2,
 			long[] effectiveLocalOffset, boolean isPrecise) {

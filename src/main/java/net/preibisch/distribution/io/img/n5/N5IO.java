@@ -77,11 +77,13 @@ public class N5IO {
 	public static void show(String path,String title) throws IOException {
 		RandomAccessibleInterval<FloatType> virtual = read(path);
 		ImageJFunctions.show(virtual,title);
-		MyLogger.log.info(title+"- "+Util.printCoordinates(Tools.dimensions(virtual)));
+//		MyLogger.log.info(title+"- "+Util.printCoordinates(Tools.dimensions(virtual)));
 	}
 	
 	public static void main(String[] args) throws IOException {
 		new ImageJ();
-		show("/home/mzouink/Desktop/testn5/realdata.n5","test");
+		show("/home/mzouink/Desktop/testn5/output2.n5","test");
+
+		show("/home/mzouink/Desktop/testn5/output45.n5","test");
 	}
 }

@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -10,8 +11,10 @@ import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
 import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
+import org.janelia.saalfeldlab.n5.RawCompression;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
+import ij.IJ;
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
@@ -20,7 +23,9 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.callback
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.io.IOFunctions;
 import main.java.net.preibisch.distribution.tools.Tools;
+import mpicbg.imglib.multithreading.SimpleMultiThreading;
 import net.imglib2.FinalInterval;
+import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
@@ -34,17 +39,36 @@ public class testSaveBlockN5 {
 		new ImageJ();
 
 		MyLogger.initLogger();
-		final String input_path = "/home/mzouink/Desktop/testn5/inputx4.tif";
-		final String output_path = "/home/mzouink/Desktop/testn5/output2.n5";
+		final String input_path = "/home/mzouink/Desktop/testn5/input.tif";
+		final String output_path = "/home/mzouink/Desktop/testn5/output_big2.n5";
+
+		final File out = new File(output_path);
+		if ( out.exists() )
+		{
+			// delete
+			deleteRecursively( out );
+	
+			if ( out.exists() )
+				throw new RuntimeException("failed to delete: " + out.getAbsolutePath() );
+			else
+				System.out.println( "Deleted '"  + out.getAbsolutePath()  + "'" );
+		}
 
 		RandomAccessibleInterval<FloatType> source = IOFunctions.openAs32Bit(new File(input_path ));
 		ImageJFunctions.show(source, "Input");
 
 		long[] dims = Tools.dimensions(source);
 		System.out.println("Dims: " + Util.printCoordinates(dims));
+		//System.exit( 0 );
 
 		int[] blockSize  = new int[dims.length];
-		Arrays.fill(blockSize , 80);
+		blockSize[ 0 ] = 977;
+		blockSize[ 1 ] = 1000;
+		blockSize[ 2 ] = 388;
+
+		Arrays.fill(blockSize , 32);
+		//blockSize[ 0 ] = 600;
+
 		System.out.println("Blocks: " + Util.printCoordinates(blockSize));
 		
 		N5Writer n5 = new N5FSWriter(output_path);
@@ -52,14 +76,14 @@ public class testSaveBlockN5 {
 				dims,
 				blockSize,
 				N5Utils.dataType(Util.getTypeFromInterval(source)),
-				new GzipCompression());
+				new RawCompression() ); // new GzipCompression());
 
 		String dataset = "/volumes/raw" ;
 		n5.createDataset(dataset , attributes);
 		System.out.println("dataset created : "+ output_path);
 		
-		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(new N5FSReader(output_path), dataset);
-		ImageJFunctions.show(virtual,"Black output");
+		//RandomAccessibleInterval<FloatType> virtual = N5Utils.open(new N5FSReader(output_path), dataset);
+		//ImageJFunctions.show(virtual,"Black output");
 		
 //		RandomAccessibleInterval< FloatType > block0 = Views.interval( source, new long[] {0,0,0},new long[] {80,80,80});
 //		ImageJFunctions.show(block0,"block 0");
@@ -81,35 +105,78 @@ public class testSaveBlockN5 {
 
 		for(int i =0; i< total; i++) {
 			
-			saveBlock(i,source,n5,dataset,output_path,md.getBlocksInfo().get(i));	
+			saveBlock(i,source,n5,dataset,output_path,md.getBlocksInfo().get(i),blockSize);	
+			
+			//SimpleMultiThreading.threadHaltUnClean();
+			IJ.showProgress( i, total );
 		}
 		
+		System.out.println( "Written ... " );
 
+		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
+		ImageJFunctions.show(virtual2,"After");
 	}
 	
 	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
-			String output_path,BlockInfos binfo) throws IOException {
-		RandomAccessibleInterval< FloatType > block = Views.interval( source,binfo.getX1(),binfo.getX2());
-		ImageJFunctions.show(block,"block "+i);
+			String output_path,BlockInfos binfo, final int[] blockSize ) throws IOException {
+
+		/*
+		boolean fits = true;
+
+		for ( int d = 0; d < source.numDimensions(); ++d )
+			if ( binfo.getX2()[ d ] - binfo.getX1()[ d ] + 1 != blockSize[ d ] )
+				fits = false;
+		*/
+		final RandomAccessibleInterval< FloatType > block;
+
+		/*
+		// blocksize of the image doesnt match the N5 blocksize (this is at the end of the image, last block in each dim)
+		if ( fits == false )
+		{
+			RandomAccessible< FloatType> infinite = Views.extendZero(source);
+			
+			long[] x2 = new long[ source.numDimensions() ];
+
+			for ( int d = 0; d < source.numDimensions(); ++d )
+				x2[ d ] = binfo.getX1()[ d ] + blockSize[ d ] - 1;
+
+			block = Views.interval( infinite, binfo.getX1(), x2 );	
+		}
+		else*/
+		{
+			block = Views.interval( source,binfo.getX1(),binfo.getX2());			
+		}
+
+		//ImageJFunctions.show(block,"block "+i);
 
 		N5Utils.saveBlock(block, n5, dataset,  binfo.getGridOffset());
 		
-		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
-		
-		ImageJFunctions.show(virtual2,"After block "+i+" output");
+		//RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
+		//ImageJFunctions.show(virtual2,"After block "+i+" output");
 	}
 	
 	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
 			String output_path, long[] ls, long[] ls2, long[] grid) throws IOException {
 		RandomAccessibleInterval< FloatType > block0 = Views.interval( source,ls,ls2);
-		ImageJFunctions.show(block0,"block "+i);
+		
+		if ( i == 0 )
+			ImageJFunctions.show(block0,"block "+i);
 
 		N5Utils.saveBlock(block0, n5, dataset,  grid);
 		
+		/*
 		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
 		
-		ImageJFunctions.show(virtual2,"After block "+i+" output");
+		ImageJFunctions.show(virtual2,"After block "+i+" output");*/
 	}
 	
+	public static void deleteRecursively(File f) throws IOException {
+		  if (f.isDirectory()) {
+		    for (File c : f.listFiles())
+		    	deleteRecursively(c);
+		  }
+		  if (!f.delete())
+		    throw new FileNotFoundException("Failed to delete file: " + f);
+		}
 
 }
