@@ -15,7 +15,7 @@ import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;

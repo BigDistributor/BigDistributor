@@ -1,37 +1,30 @@
 package main.java.net.preibisch.distribution.io.img.n5;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.janelia.saalfeldlab.n5.DatasetAttributes;
-import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
-import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.RawCompression;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.IJ;
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.io.IOFunctions;
 import main.java.net.preibisch.distribution.tools.Tools;
-import mpicbg.imglib.multithreading.SimpleMultiThreading;
-import net.imglib2.FinalInterval;
-import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
-import net.preibisch.mvrecon.process.fusion.FusionTools;
 
 public class testSaveBlockN5 {
 	public static void main(String[] args) throws IOException {
@@ -39,6 +32,7 @@ public class testSaveBlockN5 {
 		new ImageJ();
 
 		MyLogger.initLogger();
+		
 		final String input_path = "/home/mzouink/Desktop/testn5/input.tif";
 		final String output_path = "/home/mzouink/Desktop/testn5/output_big2.n5";
 
@@ -46,7 +40,7 @@ public class testSaveBlockN5 {
 		if ( out.exists() )
 		{
 			// delete
-			deleteRecursively( out );
+			Tools.deleteRecursively( out );
 	
 			if ( out.exists() )
 				throw new RuntimeException("failed to delete: " + out.getAbsolutePath() );
@@ -80,6 +74,7 @@ public class testSaveBlockN5 {
 
 		String dataset = "/volumes/raw" ;
 		n5.createDataset(dataset , attributes);
+		
 		System.out.println("dataset created : "+ output_path);
 		
 		//RandomAccessibleInterval<FloatType> virtual = N5Utils.open(new N5FSReader(output_path), dataset);
@@ -170,13 +165,6 @@ public class testSaveBlockN5 {
 		ImageJFunctions.show(virtual2,"After block "+i+" output");*/
 	}
 	
-	public static void deleteRecursively(File f) throws IOException {
-		  if (f.isDirectory()) {
-		    for (File c : f.listFiles())
-		    	deleteRecursively(c);
-		  }
-		  if (!f.delete())
-		    throw new FileNotFoundException("Failed to delete file: " + f);
-		}
+
 
 }

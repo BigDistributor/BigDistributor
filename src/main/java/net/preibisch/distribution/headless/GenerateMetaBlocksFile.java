@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;

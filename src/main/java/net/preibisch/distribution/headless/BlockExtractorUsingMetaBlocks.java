@@ -9,8 +9,8 @@ import java.util.concurrent.ExecutorService;
 import com.google.gson.Gson;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.Block;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlocksManager;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;

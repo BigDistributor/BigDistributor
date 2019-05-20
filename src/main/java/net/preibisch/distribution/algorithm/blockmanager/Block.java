@@ -29,6 +29,7 @@ import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.multithreading.ImagePortion;
 import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;

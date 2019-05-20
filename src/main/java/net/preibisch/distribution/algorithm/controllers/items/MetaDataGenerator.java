@@ -10,7 +10,9 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.EffectiveBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
@@ -57,14 +59,14 @@ public class MetaDataGenerator implements AbstractTask {
 		
 		if ( overlap == 0 )
 		{
-			final Map<Integer, BlockInfos> blocks = divideIntoBlocks(blockSize, dims, callback);
+			final Map<Integer, BlockInfo> blocks = divideIntoBlocks(blockSize, dims, callback);
 			Config.setTotalBlocks(blocks.size());
 	
 			return new BlocksMetaData(blocks, blockSize, dims);
 		}
 		else
 		{
-			final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, overlap, callback);
+			final Map<Integer, BlockInfo> blocks = generateBlocks(blockSize, dims, overlap, callback);
 			Config.setTotalBlocks(blocks.size());
 	
 			return new BlocksMetaData(blocks, blockSize, dims);
@@ -75,13 +77,13 @@ public class MetaDataGenerator implements AbstractTask {
 
 		final long[] blockSize = data.getBlocksSizes();
 		final long[] dims = data.getFile().getDimensions();
-		final Map<Integer, BlockInfos> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
+		final Map<Integer, BlockInfo> blocks = generateBlocks(blockSize, dims, data.getOverlap(), callback);
 		Config.setTotalBlocks(blocks.size());
 
 		return new BlocksMetaData(blocks, blockSize, dims);
 	}
 
-	public static <T> Map<Integer, BlockInfos> generateBlocks(long blockSize[], long[] dims, long overlap,
+	public static <T> Map<Integer, BlockInfo> generateBlocks(long blockSize[], long[] dims, long overlap,
 			AbstractCallBack callback) {
 		final double[] sigmas = Util.getArrayFromValue((double) overlap, dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);
@@ -93,11 +95,11 @@ public class MetaDataGenerator implements AbstractTask {
 		}
 	
 
-		final Map<Integer, BlockInfos> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
+		final Map<Integer, BlockInfo> blocks = divideIntoBlocks(blockSize, imgSize, kernelSize, callback);
 		return blocks;
 	}
 
-	private static Map<Integer, BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
+	private static Map<Integer, BlockInfo> divideIntoBlocks(final long[] blockSize, final long[] imgSize,
 			final long[] kernelSize, AbstractCallBack callback) {
 	
 		final int numDimensions = imgSize.length;
@@ -145,7 +147,7 @@ public class MetaDataGenerator implements AbstractTask {
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final Map<Integer, BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
+		final Map<Integer, BlockInfo> blockinfosList = new HashMap<Integer, BlockInfo>();
 
 		final int[] currentBlock = new int[numDimensions];
 		int i = 0;
@@ -170,7 +172,7 @@ public class MetaDataGenerator implements AbstractTask {
 			}
 
 			blockinfosList.put(i,
-					new BlockInfos(gridOffset,blockSize, offset, effectiveSize, x1,x2, effectiveLocalOffset, true));
+					new EffectiveBlockInfo(gridOffset, blockSize, effectiveSize,x1, x2, offset, effectiveLocalOffset, true));
 			i++;
 //			if (i % 10 == 0) {
 				MyLogger.log.info(
@@ -183,7 +185,7 @@ public class MetaDataGenerator implements AbstractTask {
 		return blockinfosList;
 	}
 
-	private static Map<Integer, BlockInfos> divideIntoBlocks(final long[] blockSize, final long[] imgSize, AbstractCallBack callback) {
+	private static Map<Integer, BlockInfo> divideIntoBlocks(final long[] blockSize, final long[] imgSize, AbstractCallBack callback) {
 	
 		final int numDimensions = imgSize.length;
 
@@ -205,7 +207,7 @@ public class MetaDataGenerator implements AbstractTask {
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final Map<Integer, BlockInfos> blockinfosList = new HashMap<Integer, BlockInfos>();
+		final Map<Integer, BlockInfo> blockinfosList = new HashMap<Integer, BlockInfo>();
 
 		final int[] currentBlock = new int[numDimensions];
 		int i = 0;
@@ -230,7 +232,7 @@ public class MetaDataGenerator implements AbstractTask {
 			}
 
 			blockinfosList.put(i,
-					new BlockInfos(gridOffset,blockSize, min, effectiveBlockSize, min,max, new long[ numDimensions ], true));
+					new BasicBlockInfo(gridOffset,blockSize, effectiveBlockSize, min,max));
 			i++;
 //			if (i % 10 == 0) {
 				MyLogger.log.info(

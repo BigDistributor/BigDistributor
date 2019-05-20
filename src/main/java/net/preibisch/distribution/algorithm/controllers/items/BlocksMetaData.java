@@ -1,29 +1,28 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import net.imglib2.util.Util;
 
 public class BlocksMetaData {
 	private long[] dimensions;
 	private long[] blocksize;
-	private Map<Integer,BlockInfos> blocksInfo;
+	private Map<Integer,BlockInfo> blocksInfo;
 	
 
-	public BlocksMetaData(Map<Integer,BlockInfos> blocksInfo,long[] bsizes, long[] dimensions) {
+	public BlocksMetaData(Map<Integer,BlockInfo> blocksInfo,long[] bsizes, long[] dimensions) {
 		super();
 		this.dimensions = dimensions;
 		this.blocksize = bsizes;
 		this.blocksInfo = blocksInfo;
 	}
 	
-	public Map<Integer, BlockInfos> getBlocksInfo() {
+	public Map<Integer, BlockInfo> getBlocksInfo() {
 		return blocksInfo;
 	}
 	
-	public void setBlocksInfo(Map<Integer, BlockInfos> blocksInfo) {
+	public void setBlocksInfo(Map<Integer, BlockInfo> blocksInfo) {
 		this.blocksInfo = blocksInfo;
 	}
 
