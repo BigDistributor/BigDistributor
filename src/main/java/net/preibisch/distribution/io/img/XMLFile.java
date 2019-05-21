@@ -6,7 +6,6 @@ import java.util.List;
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;

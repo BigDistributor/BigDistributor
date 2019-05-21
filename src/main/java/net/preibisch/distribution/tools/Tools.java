@@ -12,6 +12,12 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class Tools {
 
+	public static int[] array(int unit, int size) {
+		int[] array = new int[size];
+		Arrays.fill(array, unit);
+		return array;
+	}
+	
 	public static long[] fill(long val, int length) {
 		long[] arr = new long[length];
 		Arrays.fill(arr, val);
