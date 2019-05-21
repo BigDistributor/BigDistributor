@@ -12,7 +12,7 @@ import com.google.gson.JsonSyntaxException;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.io.img.n5.LoadN5;

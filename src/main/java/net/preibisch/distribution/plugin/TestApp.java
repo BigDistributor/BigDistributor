@@ -27,7 +27,7 @@ import net.imglib2.type.numeric.real.FloatType;
 public class TestApp {
 	
 	//Define the mode of execution of the application
-	private final static AppMode APP_MODE = AppMode.RUN_LOCALLY;
+	private final static AppMode mode = AppMode.RUN_LOCALLY;
 	
 	 //Identify the path of the task and the input file
 	private final static String TMP_DIR = "/home/mzouink/Desktop/test2/";
@@ -45,8 +45,10 @@ public class TestApp {
 		new ImageJ();
 		MyLogger.initLogger();
 		
-//		Login.login();
-		
+		if(mode != AppMode.RUN_LOCALLY) {
+			Login.login();
+		}
+
 		Job job = Job.initJob(APP_MODE,TASK_PATH,INPUT_PATH,TMP_DIR);
 //		job.openTempFolder();
 		Config.setJob(job);

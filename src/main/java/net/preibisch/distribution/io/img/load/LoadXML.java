@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.io.img;
+package main.java.net.preibisch.distribution.io.img.load;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -13,7 +13,8 @@ import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import ij.IJ;
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
@@ -100,7 +101,7 @@ public class testSaveBlockN5 {
 
 		for(int i =0; i< total; i++) {
 			
-			saveBlock(i,source,n5,dataset,output_path,md.getBlocksInfo().get(i),blockSize);	
+			saveBlock(i,source,n5,dataset,output_path,(BasicBlockInfo) md.getBlocksInfo().get(i),blockSize);	
 			
 			//SimpleMultiThreading.threadHaltUnClean();
 			IJ.showProgress( i, total );
@@ -113,7 +114,7 @@ public class testSaveBlockN5 {
 	}
 	
 	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
-			String output_path,BlockInfos binfo, final int[] blockSize ) throws IOException {
+			String output_path,BasicBlockInfo binfo, final int[] blockSize ) throws IOException {
 
 		/*
 		boolean fits = true;
@@ -139,7 +140,7 @@ public class testSaveBlockN5 {
 		}
 		else*/
 		{
-			block = Views.interval( source,binfo.getX1(),binfo.getX2());			
+			block = Views.interval( source,binfo.getMin(),binfo.getMax());			
 		}
 
 		//ImageJFunctions.show(block,"block "+i);

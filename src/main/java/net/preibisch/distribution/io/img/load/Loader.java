@@ -1,10 +1,10 @@
-package main.java.net.preibisch.distribution.io.img;
+package main.java.net.preibisch.distribution.io.img.load;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.DataFile;
 import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
@@ -19,7 +19,7 @@ import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 public class Loader {
 	final File file;
 	final SpimData2 spimData;
-	final JFile jfile;
+
 
 	public SpimData2 getSpimData() {
 		return spimData;
@@ -28,8 +28,8 @@ public class Loader {
 		return file;
 	}
 	
-	private Loader(File file, SpimData2 spimData, JFile jfile) {
-		this.jfile = jfile;
+	private Loader(File file, SpimData2 spimData, DataFile file) {
+		this.file = file;
 		this.file = file;
 		this.spimData = spimData;
 	}
@@ -49,13 +49,12 @@ public class Loader {
 		return null;
 	}
 
-	public RandomAccessibleInterval< FloatType > fuse() throws IncompatibleTypeException
+	public static RandomAccessibleInterval< FloatType > fuse(DataFile file) throws IncompatibleTypeException
 	{
-		switch (jfile.getExtension()) {
+		switch (file.getExtension()) {
 		case TIF:
-//			return LoadTIFF.load(jfile.getAll());
-//			main.java.com.tools.IOFunctions.openAs32Bit(new File(jfile.getAll()));
-			return  LoadTIFF.load(jfile.getAll());
+
+			return  LoadTIFF.load(file.getAbsolutePath());
 		case XML:
 			final List<ViewId> viewIds = new ArrayList<>(spimData.getSequenceDescription().getViewDescriptions().values()); 
 			final BoundingBox bb = new BoundingBoxMaximal( viewIds,spimData ).estimate( "Full Bounding Box" );
@@ -69,23 +68,21 @@ public class Loader {
 	}
 	
 
-	public static class Builder {
-		public static Loader load(JFile jfile) {
-			switch (jfile.getExtension()) {
-			case TIF:
-				return new Loader(null,null,jfile);
-			case XML:
-				final LoadXML loadxml = new LoadXML(jfile.getAll() );
-				return new Loader(loadxml.file, loadxml.spimData,jfile);
-			case N5:
-				final LoadN5 loadn5 = new LoadN5(jfile.getAll());
-				return new Loader(null,null, jfile);
+	public static Loader load(DataFile file) {
+		switch (file.getExtension()) {
+		case TIF:
+			return new Loader(null,null,file);
+		case XML:
+			final LoadXML loadxml = new LoadXML(file.getAbsolutePath() );
+			return new Loader(loadxml.file, loadxml.spimData,file);
+		case N5:
+			final LoadN5 loadn5 = new LoadN5(file.getAbsolutePath());
+			return new Loader(null,null, file);
 
-			default:
-				break;
-			}
-			return null;
+		default:
+			break;
 		}
+		return null;
 	}
 
 }

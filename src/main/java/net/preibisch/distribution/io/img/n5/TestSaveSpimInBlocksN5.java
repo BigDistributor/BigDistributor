@@ -19,9 +19,12 @@ import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.io.img.ImgFile;
+import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
@@ -50,88 +53,58 @@ public class TestSaveSpimInBlocksN5 {
 		final String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
 
 		File out = new File(output_path);
-		if(out.exists())	
+		if (out.exists())
 			Tools.deleteRecursively(out);
-
-//		SpimData2 spimData = SpimData2.convert(SimulatedBeadsImgLoader.spimdataExample(new int[] { 0, 0, 0 }));
-		SpimData2 spimData = new XmlIoSpimData2( "" ).load(input_path);
-		for(BoundingBox box : spimData.getBoundingBoxes().getBoundingBoxes()) {
-			System.out.println(box.toString());
+		ImgFile file;
+		if (DataExtension.fromURI(input_path) == DataExtension.XML) {
+			file = new XMLFile(input_path, false);
 		}
-
-		final List<ViewId> viewIds = new ArrayList<ViewId>();
-		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());		
-
-		final boolean useBDV = false;
-		BoundingBoxEstimation estimation;
-
-		if ( useBDV )
-			estimation = new BoundingBoxBigDataViewer( spimData, viewIds );
-		else
-			estimation = new BoundingBoxMaximal( viewIds, spimData );
-
-		final BoundingBox bb = estimation.estimate( "Full Bounding Box" );
-
-		// small part of the bounding box\
-		//Interval bb = new FinalInterval(new long[] { 0, 0, 0 }, new long[] { 980, 1428, 392 });
-
-
-		// downsampling
-		double downsampling = Double.NaN; // 2.0
-//		double downsampling = 2; // 2.0
+		
 
 		// perforn the fusion virtually
-		RandomAccessibleInterval<FloatType> source = FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling);
-
-		ImageJFunctions.show(source, "Input");
 		
-		long[] dims = Tools.dimensions(source);
+
+		ImageJFunctions.show(file.fuse(), "Input");
+
+		long[] dims = file.getDims();
 		System.out.println("Dims: " + Util.printCoordinates(dims));
 
-		int[] blockSize  = new int[dims.length];
-		Arrays.fill(blockSize , 80);
+		int[] blockSize = new int[dims.length];
+		Arrays.fill(blockSize, 80);
 		System.out.println("Blocks: " + Util.printCoordinates(blockSize));
 		BlocksMetaData md = MetaDataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
 
 		int total = md.getBlocksInfo().size();
 		System.out.println(md.toString());
-	
-		N5Writer n5 = new N5FSWriter(output_path);
-		final DatasetAttributes attributes = new DatasetAttributes(
-				dims,
-				blockSize,
-				N5Utils.dataType(Util.getTypeFromInterval(source)),
-				new GzipCompression());
 
-		String dataset = "/volumes/raw" ;
-		n5.createDataset(dataset , attributes);
-		System.out.println("dataset created : "+ output_path);
-		
-		
-		
+		N5Writer n5 = new N5FSWriter(output_path);
+		final DatasetAttributes attributes = new DatasetAttributes(dims, blockSize,
+				N5Utils.dataType(Util.getTypeFromInterval(source)), new GzipCompression());
+
+		String dataset = "/volumes/raw";
+		n5.createDataset(dataset, attributes);
+
+		System.out.println("dataset created : " + output_path);
+
 		RandomAccessibleInterval<FloatType> virtual = N5Utils.open(new N5FSReader(output_path), dataset);
-		ImageJFunctions.show(virtual,"Black output");
+		ImageJFunctions.show(virtual, "Black output");
 
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 
+		for (int i = 0; i < total; i++) {
 
-		for(int i =0; i< total; i++) {
-					
-			saveBlock(i,source,n5,dataset,output_path,(BasicBlockInfo) md.getBlocksInfo().get(i));	
+			saveBlock(i, source, n5, dataset, output_path, (BasicBlockInfo) md.getBlocksInfo().get(i));
 		}
 		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
-		
-		ImageJFunctions.show(virtual2," output");
+
+		ImageJFunctions.show(virtual2, " output");
 
 	}
-	
-	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
-			String output_path,BasicBlockInfo binfo) throws IOException {
-		RandomAccessibleInterval< FloatType > block = Views.interval( source,binfo.getMin(),binfo.getMax());
 
-		N5Utils.saveBlock(block, n5, dataset,  binfo.getGridOffset());
-		MyLogger.log.info("Block "+i+" saved !");
+	private static void saveBlock(int i, RandomAccessibleInterval<FloatType> source, N5Writer n5, String dataset,
+			String output_path, BasicBlockInfo binfo) throws IOException {
+		RandomAccessibleInterval<FloatType> block = Views.interval(source, binfo.getMin(), binfo.getMax());
+		N5Utils.saveBlock(block, n5, dataset, binfo.getGridOffset());
+		MyLogger.log.info("Block " + i + " saved !");
 	}
 }
-
-
