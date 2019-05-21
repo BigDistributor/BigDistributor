@@ -1,12 +1,12 @@
 package main.java.net.preibisch.distribution.algorithm.blockmanager.block;
 
-public class EffectiveBlockInfo extends BasicBlockInfo implements BlockInfo {
+public class ComplexBlockInfo extends BasicBlockInfo implements BlockInfo {
 
 	private long[] offset;
 	private long[] effectiveLocalOffset;
 	private boolean isPrecise;
 
-	public EffectiveBlockInfo(long[] gridOffset, long[] blockSize, long[] effectiveSize, long[] min, long[] max,
+	public ComplexBlockInfo(long[] gridOffset, long[] blockSize, long[] effectiveSize, long[] min, long[] max,
 			long[] offset, long[] effectiveLocalOffset, boolean isPrecise) {
 		super(gridOffset, blockSize, effectiveSize, min, max);
 		this.offset = offset;

@@ -1,5 +1,6 @@
 package main.java.net.preibisch.distribution.io.img;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,22 +35,31 @@ public class XMLFile extends ImgFile {
 		return bb;
 	}
 
-	public XMLFile(String path) throws SpimDataException {
+	public XMLFile(String path) throws SpimDataException, IOException {
 		this(path, false);
 	}
 
-	public XMLFile(String path, boolean useBDV) throws SpimDataException {
+	public XMLFile(String path, boolean useBDV) throws SpimDataException, IOException {
 		this(path, Double.NaN, useBDV);
 	}
 
-	public XMLFile(String path, double downsampling, boolean useBDV) throws SpimDataException {
+	public XMLFile(String path, double downsampling, boolean useBDV) throws SpimDataException, IOException {
 		super(path);
+		if (!exists())
+			throw new IOException("File not found! ");
+
 		spimData = new XmlIoSpimData2("").load(path);
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
 		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());
+		this.viewIds = viewIds;
 		bb = estimateBoundingBox(useBDV);
 		this.downsampling = downsampling;
-		this.dims = bb.getDimensions((int) downsampling);
+
+		if(Double.isNaN(downsampling))
+			this.dims = bb.getDimensions(1);
+		else
+			this.dims = bb.getDimensions((int) downsampling);
+
 //		dataType = Util.getTypeFromInterval(fuse());
 
 	}
@@ -65,7 +75,12 @@ public class XMLFile extends ImgFile {
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse() {
+	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
+		return FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling);
+	}
+
+	@Override
+	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb) throws IOException {
 		return FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling);
 	}
 

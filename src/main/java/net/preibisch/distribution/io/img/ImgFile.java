@@ -1,6 +1,7 @@
 package main.java.net.preibisch.distribution.io.img;
 
 import java.io.File;
+import java.io.IOException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import main.java.net.preibisch.distribution.io.img.load.Loader;
@@ -21,7 +22,6 @@ public class ImgFile extends File implements ImgFunctions<FloatType> {
 		super(path);
 		this.extension = DataExtension.fromURI(path);
 	}
-
 	
 	public long[] getDims() {
 		return dims;
@@ -31,14 +31,14 @@ public class ImgFile extends File implements ImgFunctions<FloatType> {
 		return extension;
 	}
 
+	@Override
+	public RandomAccessibleInterval<FloatType> fuse() throws IOException{
+		throw new IOException();
+	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse() {
-		// TODO Auto-generated method stub
-		return null;
+	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb) throws IOException {
+		throw new IOException();
 	}
-	
-	
-
 	
 }

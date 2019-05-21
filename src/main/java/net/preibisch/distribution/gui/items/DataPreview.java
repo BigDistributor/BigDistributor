@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.GraphicBlocksManager;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
+import main.java.net.preibisch.distribution.io.img.ImgFile;
 
 public class DataPreview extends Object{
 	//TODO use BlockInfos 
-	private final JDataFile file;
+	private final ImgFile file;
 	private long[] blocksSizes;
 	private long overlap;
 	private ArrayList<BlockPreview> blocksPreview;
@@ -25,9 +25,8 @@ public class DataPreview extends Object{
 	public void setBlocksPreview(ArrayList<BlockPreview> blocksPreview) {
 		this.blocksPreview = blocksPreview;
 	}
-	
 	 
-	public JDataFile getFile() {
+	public ImgFile getFile() {
 		return file;
 	}
 	
@@ -49,23 +48,19 @@ public class DataPreview extends Object{
 		return overlap;
 	}
 
-
 	public int getPreviewPreferedHeight() {
 		return previewPreferedHeight;
 	}
 
-
 	public void generateBlocks() {
-		this.blocksPreview = GraphicBlocksManager.generateBlocks(file.getDimensions(), blocksSizes, overlap);
-	}
-	
-	
+		this.blocksPreview = GraphicBlocksManager.generateBlocks(file.getDims(), blocksSizes, overlap);
+	}	
 	
 	public void setBlockSizes(long[] blocksSizes) {
 		this.blocksSizes = blocksSizes;
 	}
 	
-	private DataPreview(JDataFile file,long[] blocksSizes,long overlap) {
+	private DataPreview(ImgFile file,long[] blocksSizes,long overlap) {
 		this.file = file;
 		this.overlap = overlap;
 		this.blocksSizes = blocksSizes;
@@ -73,13 +68,12 @@ public class DataPreview extends Object{
 	}
 	
 	
-	public static DataPreview of(JDataFile file, long[] blockSizes, long overlap) {
+	public static DataPreview of(ImgFile file, long[] blockSizes, long overlap) {
 		return new DataPreview(file,blockSizes,overlap);
 	}
 	
-
 	public static class Builder {
-		private JDataFile file;
+		private ImgFile file;
 		private ArrayList<BlockPreview> blocksPreview;
 		private final long DEFAULT_BLOCK_SIZE = 200;
 		private long[] blocksSizes;
@@ -91,16 +85,14 @@ public class DataPreview extends Object{
 			return this;
 		}
 
-		public Builder file(JDataFile file) {
+		public Builder file(ImgFile file) {
 			this.file = file;
 			return this;
-		}
-	
-		
+		}	
 		
 		public DataPreview build() {
 //			previewPreferedHeight = (int) (numberBlocks[1]*blocksSize[1]);
-			this.blocksSizes  = new long[file.getDimensions().length];
+			this.blocksSizes  = new long[file.getDims().length];
 			Arrays.fill(this.blocksSizes , DEFAULT_BLOCK_SIZE);
 			return new DataPreview(this);
 		}
