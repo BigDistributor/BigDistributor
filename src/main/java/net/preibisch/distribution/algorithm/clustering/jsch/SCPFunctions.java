@@ -2,6 +2,7 @@ package main.java.net.preibisch.distribution.algorithm.clustering.jsch;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +14,15 @@ import com.jcraft.jsch.JSchException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.gui.items.Colors;
-import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.gui.items.DataPreview;
 
 public class SCPFunctions {
-	
+
 	public static void runCommand(String command, AbstractCallBack callBack) throws JSchException {
-		
+
 		SessionManager.validateConnection();
-		
-		System.out.println("$- "+command);
+
+		System.out.println("$- " + command);
 		Channel channel = SessionManager.getCurrentSession().openChannel("exec");
 		callBack.log(command);
 		((ChannelExec) channel).setCommand(command);
@@ -30,17 +31,48 @@ public class SCPFunctions {
 
 	public static void generateQStatLog(String logFile, AbstractCallBack callBack) throws JSchException {
 		SessionManager.validateConnection();
-		String command = "qstat > "+logFile;
+		String command = "qstat > " + logFile;
 		Channel channel = SessionManager.getCurrentSession().openChannel("exec");
 		callBack.log(command);
 		((ChannelExec) channel).setCommand(command);
 		channel.connect();
 	}
 
-	public static void getFile(String remoteFile, String localFile, int id) throws IOException, JSchException {
-		
+	public static void sendFile(String localFile, String remoteFile, int id) throws JSchException, IOException {
 		SessionManager.validateConnection();
-		
+
+		send(localFile, remoteFile);
+
+		// System.exit(0);
+		if (id != -1) {
+			try {
+				DataPreview.getBlocksPreview().get(id).setStatus(Colors.SENT);
+
+				throw new Exception("Out of boxes");
+			} catch (Exception e) {
+				// Helper.log("Out of size");
+			}
+		}
+	}
+
+	public static void getFile(String remoteFile, String localFile, int id) throws IOException, JSchException {
+
+		SessionManager.validateConnection();
+
+		get(remoteFile, localFile);
+
+		// System.exit(0);
+		if (id >= 0) {
+			try {
+				DataPreview.getBlocksPreview().get(id).setStatus(Colors.GOT);
+			} catch (IndexOutOfBoundsException ex) {
+				System.out.println("Error! no box for index: " + id);
+			}
+		}
+	}
+
+	private static void get(String remoteFile, String localFile)
+			throws JSchException, IOException, FileNotFoundException {
 		FileOutputStream fos = null;
 		String prefix = null;
 		if (new File(localFile).isDirectory()) {
@@ -93,7 +125,7 @@ public class SCPFunctions {
 					break;
 				}
 			}
-			
+
 			buf[0] = 0;
 			out.write(buf, 0, 1);
 			out.flush();
@@ -128,21 +160,11 @@ public class SCPFunctions {
 			out.write(buf, 0, 1);
 			out.flush();
 		}
-
-		// System.exit(0);
-		if (id >= 0) {
-			try {
-				Config.getDataPreview().getBlocksPreview().get(id).setStatus(Colors.GOT);
-			} catch (IndexOutOfBoundsException ex) {
-				System.out.println("Error! no box for index: " + id);
-			}
-		}
 	}
 
-	public static void sendFile( String localFile, String remoteFile, int id)
-			throws JSchException, IOException {
+	private static void send(String localFile, String remoteFile)
+			throws JSchException, IOException, FileNotFoundException {
 		FileInputStream fis = null;
-		SessionManager.validateConnection();
 		boolean ptimestamp = true;
 
 		// exec 'scp -t rfile' remotely
@@ -211,20 +233,8 @@ public class SCPFunctions {
 		out.close();
 
 		channel.disconnect();
-
-		// System.exit(0);
-		if (id != -1) {
-			try {
-				Config.getDataPreview().getBlocksPreview().get(id).setStatus(Colors.SENT);
-
-				throw new Exception("Out of boxes");
-			} catch (Exception e) {
-				// Helper.log("Out of size");
-			}
-		}
 	}
 
-	
 	static int checkAck(InputStream in) throws IOException {
 		int b = in.read();
 		// b may be 0 for success,

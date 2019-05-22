@@ -18,7 +18,6 @@ import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskLaun
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellSender;
-import main.java.net.preibisch.distribution.tools.config.Config;
 
 public final class FunctionSequenceManager {
 	List<AbstractTask> functionsFlow ;
@@ -78,16 +77,17 @@ public final class FunctionSequenceManager {
 	
 	 
 	public FunctionSequenceManager(Flow flow) {
+		AppMode mode = Job.getAppMode();
 		if(Flow.START_FLOW.equals(flow)) {
-		if (AppMode.CLUSTER_INPUT_MODE.equals(Config.getJob().getAppMode())) {
+		if (AppMode.CLUSTER_INPUT_MODE.equals(mode)) {
 			starterClusterInputModeWorkflow();
-		} else if (AppMode.LOCAL_INPUT_MODE.equals(Config.getJob().getAppMode())) {
+		} else if (AppMode.LOCAL_INPUT_MODE.equals(mode)) {
 			starterLocalInputModeWorkflow();
 		}}else if(Flow.RESULT_FLOW.equals(flow))
 		{
-		if (AppMode.CLUSTER_INPUT_MODE.equals(Config.getJob().getAppMode())) {
+		if (AppMode.CLUSTER_INPUT_MODE.equals(mode)) {
 			resultClusterInputModeWorkflow();
-		} else if (AppMode.LOCAL_INPUT_MODE.equals(Config.getJob().getAppMode())) {
+		} else if (AppMode.LOCAL_INPUT_MODE.equals(mode)) {
 			resultLocalInputModeWorkflow();
 		}
 		}

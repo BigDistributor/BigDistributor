@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class BatchGenerator {
 
@@ -18,10 +19,11 @@ public class BatchGenerator {
 	
 	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles,AbstractCallBack  callback,int taskPos) {
 	MyLogger.log.info("Start Generate batch for Local file.. " );
-		String id = Config.getLogin().getId();
-		String path = Config.getLogin().getServer().getPath();
+		String id = Login.getId();
+		String path = Login.getServer().getPath();
+		String tmpDir = Job.getTmpDir();
 		boolean error = false;
-		File file = new File(Config.getTempFolderPath(),BATCH_CLUSTER_NAME);
+		File file = new File(tmpDir,BATCH_CLUSTER_NAME);
 		System.out.println("Input total files:" + totalInputFiles + " - Tasks Per job:" + tasksPerJob);
 		int jobs = totalInputFiles / tasksPerJob;
 		int restPortions = totalInputFiles % tasksPerJob;
@@ -75,10 +77,11 @@ public class BatchGenerator {
 	}
 	
 	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int taskPos) {
-		String id = Config.getLogin().getId();
-		String path = Config.getLogin().getServer().getPath();
+		String id = Login.getId();
+		String path = Login.getServer().getPath();
 		boolean error = false;
-		File file = new File(Config.getTempFolderPath(),BATCH_CLUSTER_NAME);
+		String tmpDir = Job.getTmpDir();
+		File file = new File(tmpDir ,BATCH_CLUSTER_NAME);
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/bash");
 			out.println("cd " + path);
@@ -102,11 +105,12 @@ public class BatchGenerator {
 	
 	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int totalBlocks, int taskPos) {
 		MyLogger.log.info("Start Generate batch for Cluster file.. " );
-		String path = Config.getLogin().getServer().getPath();
-		File file = new File(Config.getTempFolderPath(),BATCH_CLUSTER_NAME);
+		String path = Login.getServer().getPath();
+		String tmpDir = Job.getTmpDir();
+		File file = new File(tmpDir ,BATCH_CLUSTER_NAME);
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/bash");
-			File f = new File(path,Config.getLogin().getId());
+			File f = new File(path,Login.getId());
 			out.print("mkdir "+ f.getAbsolutePath());
 			out.println("cd " + f.getAbsolutePath());
             for (int i = 1;i<= totalBlocks;i++ ) {
@@ -126,7 +130,7 @@ public class BatchGenerator {
 	}
 
 	private static String getLogProviderLine(int i) {
-		String id = Config.getLogin().getId();
+		String id = Login.getId();
 		return "qsub -N \"" + LOG_JOB_NAME + i 
 				+ " -hold_jid "+ TASK_JOB_NAME + i
 				+ " -v uuid=" + id 

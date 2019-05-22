@@ -7,16 +7,18 @@ import java.io.PrintWriter;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class ShellGenerator {
 	public static final String TASK_SHELL_NAME = "task.sh";
 
 	public static final String PREPROCESS_SHELL_NAME = "preprocess.sh";
 	public static final String LOG_PROVIDER_SHELL_NAME = "logProvider.sh";
+	
+	
 	public static void generateTaskShell(int pos,AbstractCallBack callback)  {
 
-		File file = new File(Config.getTempFolderPath(),TASK_SHELL_NAME);
+		String tmpDir = Job.getTmpDir();
+		File file = new File(tmpDir ,TASK_SHELL_NAME);
 		
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
@@ -33,7 +35,7 @@ public class ShellGenerator {
 			out.println(getTaskLine());
 			out.flush();
 			out.close();
-			Config.getJob().setTaskShellPath(file.getAbsolutePath());
+			Job.setTaskShellPath(file.getAbsolutePath());
 			callback.onSuccess(pos);
 		} catch (FileNotFoundException e) {
 			callback.onError(e.toString());
@@ -42,10 +44,10 @@ public class ShellGenerator {
 
 	private static String getTaskLine() {
 		String taskLine  = "";
-		if(AppMode.LocalInputMode.equals(Config.getJob().getAppMode())) {
+		if(AppMode.LOCAL_INPUT_MODE.equals(Job.getAppMode())) {
 			taskLine = getLocalInputTaskLine();
 		}
-			else if (AppMode.ClusterInputMode.equals(Config.getJob().getAppMode())) {
+			else if (AppMode.CLUSTER_INPUT_MODE.equals(Job.getAppMode())) {
 				taskLine = getCloudInputTaskLine();
 			}
 		return taskLine;
@@ -53,19 +55,19 @@ public class ShellGenerator {
 
 	private static String getCloudInputTaskLine() {
 		return "java -jar task.jar"
-				+" -i " + Config.getJob().getInput().getFile().getAll()
+				+" -i " + Job.getInput()
 				+" -x $SGE_TASK_ID" ;
 	}
 
 	private static String getLocalInputTaskLine() {
-		return "java -jar "+Job.TASK_CLUSTER_NAME+" $SGE_TASK_ID" + Config.getInputPrefix();
+		return "java -jar "+Job.TASK_CLUSTER_NAME+" $SGE_TASK_ID" + ".tif";
 		
 	}
 
 	// provider.sh
 	public static String generateLogProviderShell(int pos, AbstractCallBack callback) {
 
-		File file = new File(Config.getTempFolderPath());
+		File file = new File(Job.getTmpDir());
 		String filePath = file.getAbsolutePath() + "/logProvider.sh";
 
 		try (PrintWriter out = new PrintWriter(filePath)) {
@@ -89,28 +91,5 @@ public class ShellGenerator {
 			callback.onError(e.toString());
 			return null;
 		}
-	}
-
-	public static void main(String[] args) {
-		generateLogProviderShell(0, new AbstractCallBack() {
-
-			@Override
-			public void onSuccess(int pos) {
-				System.out.println("Done !");
-
-			}
-
-			@Override
-			public void onError(String error) {
-				System.out.println("Error: " + error);
-
-			}
-
-			@Override
-			public void log(String log) {
-				// TODO Auto-generated method stub
-
-			}
-		});
 	}
 }

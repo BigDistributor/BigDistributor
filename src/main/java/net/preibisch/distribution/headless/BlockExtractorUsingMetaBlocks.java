@@ -1,8 +1,8 @@
 package main.java.net.preibisch.distribution.headless;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
@@ -10,12 +10,13 @@ import com.google.gson.Gson;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.Block;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlocksManager;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfos;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.ComplexBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;
+import main.java.net.preibisch.distribution.io.img.ImgFile;
+import main.java.net.preibisch.distribution.io.img.XMLFile;
+import mpicbg.spim.data.SpimDataException;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.type.numeric.real.FloatType;
@@ -47,26 +48,26 @@ public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 	}
 
 	@Override
-	public Void call() throws FileNotFoundException, IncompatibleTypeException {
+	public Void call() throws IncompatibleTypeException, IOException, SpimDataException {
 		BufferedReader br;
 
 		br = new BufferedReader(new FileReader(metadataPath));
 		BlocksMetaData blocksMetadata = new Gson().fromJson(br, BlocksMetaData.class);
-		BlockInfos binfo = blocksMetadata.getBlocksInfo().get(id);
+		ComplexBlockInfo binfo = (ComplexBlockInfo) blocksMetadata.getBlocksInfo().get(id);
 		final ExecutorService service = Threads.createExService(1);
 		Block block = new Block(service, binfo);
-		JDataFile inputData = new JDataFile.Builder().file(JFile.of(dataPath)).load().getDataInfos().build();
-		RandomAccessibleInterval<FloatType> image = inputData.getLoader().fuse();
+		XMLFile inputData = new XMLFile(dataPath);
+		RandomAccessibleInterval<FloatType> image = inputData.fuse();
 		AbstractCallBack callBack = createCallBack();
 		BlocksManager.saveBlock(image, binfo.getBlockSize(), path, id, block, callBack);
 
 		return null;
 	}
 	
-	public static RandomAccessibleInterval<FloatType> getBlock(String dataPath,Block block, AbstractCallBack callback) throws FileNotFoundException, IncompatibleTypeException{
+	public static RandomAccessibleInterval<FloatType> getBlock(String dataPath,Block block, AbstractCallBack callback) throws IncompatibleTypeException, SpimDataException, IOException{
 
-		JDataFile inputData = new JDataFile.Builder().file(JFile.of(dataPath)).load().getDataInfos().build();
-		RandomAccessibleInterval<FloatType> image = inputData.getLoader().fuse();
+		ImgFile inputData =  new XMLFile(dataPath);
+		RandomAccessibleInterval<FloatType> image = inputData.fuse();
 	
 		return BlocksManager.getBlock(image, block, callback);
 	}

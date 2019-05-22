@@ -1,11 +1,12 @@
 package main.java.net.preibisch.distribution.io.img.load;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.DataFile;
-import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
+import main.java.net.preibisch.distribution.io.img.ImgFile;
+import main.java.net.preibisch.distribution.io.img.XMLFile;
+import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
@@ -15,30 +16,22 @@ import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 
-
 public class Loader {
-	final File file;
-	final SpimData2 spimData;
+	final ImgFile file;
 
-
-	public SpimData2 getSpimData() {
-		return spimData;
-	}
-	public File getFile() {
+	public ImgFile getFile() {
 		return file;
 	}
-	
-	private Loader(File file, SpimData2 spimData, DataFile file) {
+
+	private Loader(ImgFile file) {
 		this.file = file;
-		this.file = file;
-		this.spimData = spimData;
 	}
-	
-	public RandomAccessibleInterval< FloatType > fuse(final SpimData2 spimData, final List< ViewId > viewIds, final Interval interval )
-	{
-		switch (jfile.getExtension()) {
+
+	public RandomAccessibleInterval<FloatType> fuse(final SpimData2 spimData, final List<ViewId> viewIds,
+			final Interval interval) {
+		switch (file.getExtension()) {
 		case TIF:
-			//TODO
+			// TODO
 			break;
 		case XML:
 			return LoadXML.fuse(spimData, viewIds, interval);
@@ -49,40 +42,27 @@ public class Loader {
 		return null;
 	}
 
-	public static RandomAccessibleInterval< FloatType > fuse(DataFile file) throws IncompatibleTypeException
-	{
+	public static RandomAccessibleInterval<FloatType> fuse(ImgFile file) throws IncompatibleTypeException, IOException {
 		switch (file.getExtension()) {
 		case TIF:
 
-			return  LoadTIFF.load(file.getAbsolutePath());
+			return LoadTIFF.load(file.getAbsolutePath());
 		case XML:
-			final List<ViewId> viewIds = new ArrayList<>(spimData.getSequenceDescription().getViewDescriptions().values()); 
-			final BoundingBox bb = new BoundingBoxMaximal( viewIds,spimData ).estimate( "Full Bounding Box" );
-			return LoadXML.fuse(spimData, viewIds, bb);
+			XMLFile xmlfile = (XMLFile) file;
+			final List<ViewId> viewIds = new ArrayList<>(
+					xmlfile.spimData().getSequenceDescription().getViewDescriptions().values());
+			final BoundingBox bb = new BoundingBoxMaximal(viewIds, xmlfile.spimData()).estimate("Full Bounding Box");
+			return LoadXML.fuse(xmlfile.spimData(), viewIds, bb);
 		case N5:
-			return LoadN5.fuse(jfile.getAll());
-		default:
-			break;
-		}
-		return null;
-	}
-	
-
-	public static Loader load(DataFile file) {
-		switch (file.getExtension()) {
-		case TIF:
-			return new Loader(null,null,file);
-		case XML:
-			final LoadXML loadxml = new LoadXML(file.getAbsolutePath() );
-			return new Loader(loadxml.file, loadxml.spimData,file);
-		case N5:
-			final LoadN5 loadn5 = new LoadN5(file.getAbsolutePath());
-			return new Loader(null,null, file);
-
+			N5File n5file = (N5File) file;
+			return n5file.fuse();
 		default:
 			break;
 		}
 		return null;
 	}
 
+	public static Loader load(ImgFile file) {
+		return new Loader(file);
+	}
 }

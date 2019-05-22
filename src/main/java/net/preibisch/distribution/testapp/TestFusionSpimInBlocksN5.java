@@ -22,7 +22,7 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
-public class TestSaveSpimInBlocksN5 {
+public class TestFusionSpimInBlocksN5 {
 	public static void main(String[] args) throws IOException, SpimDataException {
 
 		final String tmpDir = "/home/mzouink/Desktop/testsave/";

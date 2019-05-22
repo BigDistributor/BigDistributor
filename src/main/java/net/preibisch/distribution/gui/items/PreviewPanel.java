@@ -6,8 +6,8 @@ import java.awt.GridLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import main.java.net.preibisch.distribution.gui.GUIConfig;
 import main.java.net.preibisch.distribution.tools.config.Config;
-import main.java.net.preibisch.distribution.tools.config.GUIConfig;
 
 public class PreviewPanel extends JPanel {
 	private static final long serialVersionUID = -5153593379781883390L;

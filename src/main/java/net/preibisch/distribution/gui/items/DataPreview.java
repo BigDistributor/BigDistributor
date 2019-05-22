@@ -3,98 +3,57 @@ package main.java.net.preibisch.distribution.gui.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.GraphicBlocksManager;
+import main.java.net.preibisch.distribution.gui.GUIConfig;
 import main.java.net.preibisch.distribution.io.img.ImgFile;
 
-public class DataPreview extends Object{
-	//TODO use BlockInfos 
-	private final ImgFile file;
-	private long[] blocksSizes;
-	private long overlap;
-	private ArrayList<BlockPreview> blocksPreview;
-	private int previewPreferedHeight ;
+public class DataPreview extends Object {
+	private static long[] dims;
+	private static long[] blocksSizes;
+	private static long overlap = 10;
+	private static ArrayList<BlockPreview> blocksPreview;
+	private static int previewPreferedHeight ;
 
-	private DataPreview(Builder builder) {
-		this.file = builder.file;
-		this.blocksPreview = builder.blocksPreview;
-		this.overlap = builder.overlap;
-		this.blocksSizes = builder.blocksSizes;
+	public static long[] getDims() {
+		return dims;
 	}
 	
-	
-	public void setBlocksPreview(ArrayList<BlockPreview> blocksPreview) {
-		this.blocksPreview = blocksPreview;
-	}
-	 
-	public ImgFile getFile() {
-		return file;
-	}
-	
-	public ArrayList<BlockPreview> getBlocksPreview() {
+	public static ArrayList<BlockPreview> getBlocksPreview() {
 		return blocksPreview;
 	}
-	
-	public long[] getBlocksSizes() {
+
+	public static long[] getBlocksSizes() {
 		return blocksSizes;
 	}
-	public void setBlockSize(int position,long blockSize) {
-		this.blocksSizes[position] = blockSize;
+
+	public static void setBlockSize(int position, long blockSize) {
+		DataPreview.blocksSizes[position] = blockSize;
 	}
-	public void setOverlap(long overlap) {
-		this.overlap = overlap;
+
+	public static void setOverlap(long overlap) {
+		DataPreview.overlap = overlap;
 	}
-	
-	public long getOverlap() {
+
+	public static long getOverlap() {
 		return overlap;
 	}
 
-	public int getPreviewPreferedHeight() {
+	public static int getPreviewPreferedHeight() {
 		return previewPreferedHeight;
 	}
 
-	public void generateBlocks() {
-		this.blocksPreview = GraphicBlocksManager.generateBlocks(file.getDims(), blocksSizes, overlap);
-	}	
-	
-	public void setBlockSizes(long[] blocksSizes) {
-		this.blocksSizes = blocksSizes;
+	public static void generateBlocks() {
+		DataPreview.blocksPreview = GraphicBlocksManager.generateBlocks(dims, blocksSizes, overlap);
 	}
-	
-	private DataPreview(ImgFile file,long[] blocksSizes,long overlap) {
-		this.file = file;
-		this.overlap = overlap;
-		this.blocksSizes = blocksSizes;
-		
-	}
-	
-	
-	public static DataPreview of(ImgFile file, long[] blockSizes, long overlap) {
-		return new DataPreview(file,blockSizes,overlap);
-	}
-	
-	public static class Builder {
-		private ImgFile file;
-		private ArrayList<BlockPreview> blocksPreview;
-		private final long DEFAULT_BLOCK_SIZE = 200;
-		private long[] blocksSizes;
-		private long overlap = 10 ;
-		private int previewPreferedHeight ;
-		
-		public Builder BlocksPreview() {
-			this.blocksPreview = blocksPreview;
-			return this;
-		}
 
-		public Builder file(ImgFile file) {
-			this.file = file;
-			return this;
-		}	
-		
-		public DataPreview build() {
-//			previewPreferedHeight = (int) (numberBlocks[1]*blocksSize[1]);
-			this.blocksSizes  = new long[file.getDims().length];
-			Arrays.fill(this.blocksSizes , DEFAULT_BLOCK_SIZE);
-			return new DataPreview(this);
-		}
+	public static void fromFile(ImgFile file) {
+		DataPreview.dims = file.getDims();
+		DataPreview.previewPreferedHeight = GUIConfig.PREVIEW_PREFERED_HEIGHT;
+		long[] blocksSizes = new long[dims.length];
+		Arrays.fill(blocksSizes, BlockConfig.BLOCK_UNIT);
+		DataPreview.blocksSizes = blocksSizes;
+		generateBlocks();
 	}
+
 }

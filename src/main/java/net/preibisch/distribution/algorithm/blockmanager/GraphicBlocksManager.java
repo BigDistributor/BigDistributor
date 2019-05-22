@@ -3,10 +3,9 @@ package main.java.net.preibisch.distribution.algorithm.blockmanager;
 import java.util.ArrayList;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import main.java.net.preibisch.distribution.gui.GUIConfig;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
 import main.java.net.preibisch.distribution.tools.Helper;
-import main.java.net.preibisch.distribution.tools.config.Config;
-import main.java.net.preibisch.distribution.tools.config.GUIConfig;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
 

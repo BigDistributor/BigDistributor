@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.headless;
+package main.java.net.preibisch.distribution.plugin;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -107,46 +107,14 @@ public class MainJob implements Callable<Void> {
 
 
 	public static void blockTask(String input, String metadataPath, String output, int id) throws SpimDataException, JsonSyntaxException, JsonIOException, IOException {
-		System.out.println(id +"- Start");
-		
-		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
-		BlockInfos binfo = blocksMetadata.getBlocksInfo().get(id);
-		
-//		final ExecutorService service = Threads.createExService(1);
-//		Block block = new Block(service, binfo);
-		
-//		JDataFile inputData = new JDataFile.Builder().file(JFile.of(input)).load().getDataInfos().build();
-
-//		JDataFile outputData = new JDataFile.Builder().file(JFile.of(output)).load().getDataInfos().build();
-
-	
-//		RandomAccessibleInterval<FloatType> tmp =  BlocksManager.getBlock(inputData.getLoader().fuse(), block, new Callback());
-
-		RandomAccessibleInterval<FloatType>  result = Fusion.Fusion(input, binfo.getOffset(),binfo.getEffectiveSize());
-//		ImageJFunctions.show(result,id+" result");
-		
-//		RandomAccessibleInterval<FloatType>  result = task.start(inputData.getLoader().fuse(), blockId , new Callback());
-//		RandomAccessibleInterval<FloatType>  result = task.start(this.input, params , new Callback());
-		
-//		RandomAccessibleInterval<FloatType> outImage = outputData.getLoader().fuse();
-		
-//		block.pasteBlock(outImage , tmp, new Callback());
-		MyLogger.log.info("Process: "+id+"-save block size = "+Util.printCoordinates(Tools.dimensions(result))+"position: "+Util.printCoordinates(binfo.getOffset()));
-		
-		N5IO.saveBlock(output, result, binfo.getOffset());
-		MyLogger.log.info("Process: "+id+ "- Finish saving!");
+		//TODO
 
 		
 	}
 
 
 	public static void prestart(String metadataPath, String output) throws IOException {
-		MyLogger.log.info("Preprocess: Start create output ");
-		BlocksMetaData blocksMetadata = new Gson().fromJson(new BufferedReader(new FileReader(metadataPath)), BlocksMetaData.class);
-		int[] blocks = Arrays.stream(blocksMetadata.getBlocksize()).mapToInt(i -> (int)i).toArray();
-		N5IO.createBackResult(output, blocksMetadata.getDimensions(), blocks);
-		MyLogger.log.info("Output created: "+output);
-		MyLogger.log.info("Preprocess: Finish create output !");
+		//TODO
 	}
 
 }

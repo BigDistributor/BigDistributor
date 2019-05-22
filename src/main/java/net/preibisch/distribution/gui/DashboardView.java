@@ -9,12 +9,13 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.Timer;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.gui.items.ControlPanel;
+import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.gui.items.Frame;
 import main.java.net.preibisch.distribution.gui.items.PreviewPanel;
 import main.java.net.preibisch.distribution.gui.items.SliderPanel;
 import main.java.net.preibisch.distribution.gui.items.UpbarPanel;
-import main.java.net.preibisch.distribution.tools.config.Config;
 
 public class DashboardView extends Frame {
 	private static final long serialVersionUID = -667700225183799945L;
@@ -28,7 +29,7 @@ public class DashboardView extends Frame {
 		setSize(FRAME_SIZE[0], FRAME_SIZE[1]);
 		setLayout(new GridBagLayout());
 		previewPanel = new PreviewPanel();
-		controlPanel = new ControlPanel(Config.getJob().getInput().getDimensions().length);
+		controlPanel = new ControlPanel(Job.getInput().getDims().length);
 		for (SliderPanel slider : controlPanel.blockSizeControlPanel.sliderPanels) {
 			slider.slider.addAdjustmentListener(new SliderListener());
 		}
@@ -65,11 +66,11 @@ public class DashboardView extends Frame {
 		@Override
 		public void adjustmentValueChanged(AdjustmentEvent e) {
 			if(e.getSource().equals(controlPanel.sliderOverlapPanel.slider)) {
-				Config.getDataPreview().setOverlap(e.getValue());
-				Config.getDataPreview().generateBlocks();
+				DataPreview.setOverlap(e.getValue());
+				DataPreview.generateBlocks();
 				controlPanel.sliderOverlapPanel.updateValue(e.getValue());
 
-				Config.getDataPreview().generateBlocks();
+				DataPreview.generateBlocks();
 				previewPanel.updateCanvas();
 			}else {
 				 if (e.getSource() instanceof SliderPanel)
@@ -80,12 +81,12 @@ public class DashboardView extends Frame {
 					@Override
 					public void run() {
 						System.out.println(e.getValue());
-						Config.getDataPreview().setBlockSize(slider.getId(),e.getValue());
-						Config.getDataPreview().generateBlocks();
+						DataPreview.setBlockSize(slider.getId(),e.getValue());
+						DataPreview.generateBlocks();
 						slider.updateValue(e.getValue());
 //						controlPanel.numberBlocksLabel.setText("Total Blocks:"+Config.totalBlocks);
 
-						Config.getDataPreview().generateBlocks();
+						DataPreview.generateBlocks();
 						previewPanel.updateCanvas();
 					}
 				});

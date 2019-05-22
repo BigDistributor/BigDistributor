@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.tools.config.DEFAULT;
 
 public class FilePicker extends JPanel {
 	private static final long serialVersionUID = 8143576502972745045L;
@@ -22,7 +22,7 @@ public class FilePicker extends JPanel {
 	private JFileChooser fileChooser;
 
 	public FilePicker(String textFieldLabel, String buttonLabel) {
-		fileChooser = new JFileChooser(Config.getDefaultInputPath());
+		fileChooser = new JFileChooser(DEFAULT.DEFAULT_INPUT_PATH);
 		setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		label = new JLabel(textFieldLabel);
 		textField = new JTextField(20);

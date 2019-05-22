@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.multithreading.Threads;
 import main.java.net.preibisch.distribution.gui.items.BlockPreview;
 import main.java.net.preibisch.distribution.gui.items.Colors;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.io.IOFunctions;
-import main.java.net.preibisch.distribution.tools.config.Config;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
@@ -31,7 +31,7 @@ public class BlocksManager {
 			AbstractCallBack callback) {
 
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64)
-				.create(Config.getJob().getInput().getDimensions(), new FloatType());
+				.create(Job.getInput().getDims(), new FloatType());
 		for (final Integer key : blockMap.keySet()) {
 			String string = blocksDir + "/" + key + ".tif";
 			Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
@@ -48,7 +48,7 @@ public class BlocksManager {
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		int i = 0;
-		String tempDir = Config.getJob().getTmpDir();
+		String tempDir = Job.getTmpDir();
 		callBack.log("Temp Dir: " + tempDir);
 		for (final Block block : blocks) {
 			++i;
@@ -97,7 +97,7 @@ public class BlocksManager {
 
 	public static <T> List<Block> generateBlocks(DataPreview data, AbstractCallBack callback) {
 		final ExecutorService service = Threads.createExService(1);
-		long[] dims = data.getFile().getDims();
+		long[] dims = data.getDims();
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, data.getBlocksSizes());
 		final double[] sigmas = Util.getArrayFromValue((double) data.getOverlap(), dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);

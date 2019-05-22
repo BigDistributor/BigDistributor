@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -13,22 +14,17 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JDataFile;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.JFile;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.gui.items.FilePicker;
 import main.java.net.preibisch.distribution.gui.items.Frame;
-import main.java.net.preibisch.distribution.tools.config.Config;
-import main.java.net.preibisch.distribution.tools.config.server.Account;
-import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
-
+import mpicbg.spim.data.SpimDataException;
 
 public class InputFrame extends Frame implements ActionListener {
 	private static final long serialVersionUID = -6778326835751228740L;
-	private FilePicker taskPicker, inputPicker,extraPicker;
+	private FilePicker taskPicker, inputPicker, extraPicker;
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
 	private AppMode appMode = AppMode.LOCAL_INPUT_MODE;
@@ -38,16 +34,11 @@ public class InputFrame extends Frame implements ActionListener {
 		super(arg0);
 		MyLogger.log.info("Hello");
 		initConfig();
-		
 		initGui();
-
 	}
 
 	private static void initConfig() {
-		Account account = new Account.Builder().build();
-		ServerConfiguration server = new ServerConfiguration.Builder().build();
-		Login login = new Login.Builder().id().server(server).account(account).build();
-		Config.setLogin(login);
+		Login.login();
 	}
 
 	private void initGui() {
@@ -96,44 +87,30 @@ public class InputFrame extends Frame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextButton) {
-			if(!configurated) {
-				JOptionPane.showMessageDialog(null, "Configurate first." , "Not configured ! using default configuration" , JOptionPane.INFORMATION_MESSAGE);
-				  
+			if (!configurated) {
+				JOptionPane.showMessageDialog(null, "Configurate first.",
+						"Not configured ! using default configuration", JOptionPane.INFORMATION_MESSAGE);
+
 			}
 //			else 
 			if ((!taskPicker.getFile().isEmpty()) && (!inputPicker.getFile().isEmpty())) {
 
 				setVisible(false);
-				
-				
-				JDataFile inputData = new JDataFile.Builder()
-													.file(JFile.of(inputPicker.getFile()))
-													.load()
-													.getDataInfos()
-													.build();
-				
-//				for (final ViewId viewid: inputData.getLoader().getSpimData().getSequenceDescription().getViewDescriptions().values())	
-//					IOFunctions.println(viewid);
-				
-				
-				Job job = new Job.Builder()
-							     .appMode(appMode)
-							     .task(JFile.of(taskPicker.getFile()))
-							     .extra(JFile.of(extraPicker.getFile()))
-							     .input(inputData)
-							     .createTempDir()
-							     .buid();
-				
-				
-				
-				DataPreview dataPreview = new DataPreview.Builder()
-														 .file(inputData)
-														 .build();
-				dataPreview.generateBlocks();
-				
-				Config.setJob(job);
-				Config.setDataPreview(dataPreview);
-				
+
+				String inputPath = inputPicker.getFile();
+				String taskPath = taskPicker.getFile();
+				try {
+					Job.initJob(appMode, taskPath, inputPath);
+				} catch (SpimDataException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				DataPreview.fromFile(Job.getInput());
+
 				dispose();
 				DashboardView dashboardView = new DashboardView("Progress..");
 				dashboardView.setVisible(true);
@@ -157,5 +134,5 @@ public class InputFrame extends Frame implements ActionListener {
 			appMode = AppMode.CLUSTER_INPUT_MODE;
 		}
 	}
-	
+
 }
