@@ -39,6 +39,8 @@ public class TestSaveSpimInBlocksN5 {
 
 		// perform the fusion virtually
 		ImageJFunctions.show(InputFile.fuse(), "Input");
+
+		System.out.println("BB: " + InputFile.bb().toString());
 		System.out.println("Dims: " + Util.printCoordinates(InputFile.getDims()));
 
 		N5File outputFile = N5File.fromXML(InputFile, output_path);
@@ -80,6 +82,8 @@ class Task implements Runnable {
 			RandomAccessibleInterval<FloatType> block = input.fuse(bb);
 			output.saveBlock(block, binfo.getGridOffset());
 			MyLogger.log.info("Block " + i + " saved !");
+			if(i%1000==0)
+				ImageJFunctions.show(output.fuse(), i+"- output");
 		} catch (IOException e) {
 			MyLogger.log.info("ERROR: Block " + i);
 			// TODO Auto-generated catch block

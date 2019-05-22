@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.janelia.saalfeldlab.n5.Compression;
 import org.janelia.saalfeldlab.n5.DataType;
 import org.janelia.saalfeldlab.n5.DatasetAttributes;
+import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
 import org.janelia.saalfeldlab.n5.N5Reader;
@@ -20,7 +21,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class N5File extends ImgFile {
-	private final static Compression COMPRESSION = new RawCompression();
+	private final static Compression COMPRESSION = new GzipCompression();
 
 	private final static DataType DATA_TYPE = DataType.FLOAT64;
 

@@ -110,10 +110,11 @@ public class BasicBlockGenerator {
 			final long[] effectiveBlockSize = blockSize.clone();
 
 			for (int d = 0; d < numDimensions; d++) {
-				min[d] = currentBlock[d] * blockSize[d]-bb.min(d);
+//				System.out.println(d+"-Min bb: "+bb.min(d));
+				min[d] = currentBlock[d] * blockSize[d]+bb.min(d);
 
-				if (min[d] + blockSize[d] > imgSize[d])
-					effectiveBlockSize[d] = imgSize[d] - min[d];
+				if (min[d] + blockSize[d] > imgSize[d]+bb.min(d))
+					effectiveBlockSize[d] = imgSize[d] - min[d] + bb.min(d);
 
 				max[d] = min[d]+effectiveBlockSize[d]-1;
 			}
