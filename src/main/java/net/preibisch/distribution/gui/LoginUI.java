@@ -2,10 +2,13 @@ package main.java.net.preibisch.distribution.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -13,58 +16,65 @@ import javax.swing.SpringLayout;
 
 import loci.plugins.config.SpringUtilities;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
-import main.java.net.preibisch.distribution.tools.config.Config;
 import main.java.net.preibisch.distribution.tools.config.DEFAULT;
+import main.java.net.preibisch.distribution.tools.config.server.Account;
 
-public class LoginUI {
+public class LoginUI extends JFrame {
 	public static void main(String[] args) {
-		show();
+		new LoginUI();
 	}
- 
-    public static void show() {
-        final JFrame frame = new JFrame("JPasswordField Demo");
- 
-        JLabel lblUser = new JLabel("User Name:");
-        JTextField tfUser = new JTextField(20);
-        lblUser.setLabelFor(tfUser);
-        tfUser.setText(DEFAULT.USER_PSEUDO);
- 
-        JLabel lblPassword = new JLabel("Password:");
-        final JPasswordField pfPassword = new JPasswordField(20);
-        lblPassword.setLabelFor(pfPassword);
 
-        JButton btnLogin = new JButton("Login");
- 
-        JPanel panel = new JPanel();
-        panel.setLayout(new SpringLayout());
- 
-        panel.add(lblUser);
-        panel.add(tfUser);
-        panel.add(lblPassword);
-        panel.add(pfPassword);
+	public LoginUI() {
+		super("Login..");
 
-        panel.add(new JPanel());
-        panel.add(btnLogin);
-        frame.getRootPane().setDefaultButton(btnLogin);
-        btnLogin.addActionListener(new ActionListener() {
-			
+		addWindowListener(new WindowAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				DEFAULT.USER_PASSWORD = pfPassword.getPassword();
-				DEFAULT.USER_PSEUDO = tfUser.getText();
-				frame.setVisible(false);
-				frame.dispose();
+			public void windowClosing(WindowEvent e) {
+				JOptionPane.showMessageDialog(e.getComponent(), "You have to login first !", "Login first ..",
+						JOptionPane.ERROR_MESSAGE);
+//				throw new RuntimeException("LoginClosedException");
 			}
 		});
 
-        SpringUtilities.makeCompactGrid(panel,
-                3, 2, //rows, cols
-                6, 6, //initX, initY
-                6, 6); //xPad, yPad
- 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 120);
-        frame.getContentPane().add(panel);
-        frame.setVisible(true);
-    }
+		JLabel lblUser = new JLabel("User Name:");
+		JTextField tfUser = new JTextField(20);
+		lblUser.setLabelFor(tfUser);
+		tfUser.setText(DEFAULT.USER_PSEUDO);
+
+		JLabel lblPassword = new JLabel("Password:");
+		final JPasswordField pfPassword = new JPasswordField(20);
+		lblPassword.setLabelFor(pfPassword);
+
+		JButton btnLogin = new JButton("Login");
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new SpringLayout());
+
+		panel.add(lblUser);
+		panel.add(tfUser);
+		panel.add(lblPassword);
+		panel.add(pfPassword);
+
+		panel.add(new JPanel());
+		panel.add(btnLogin);
+		getRootPane().setDefaultButton(btnLogin);
+		btnLogin.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Login.setAccount(new Account(tfUser.getText(), pfPassword.getPassword()));
+				setVisible(false);
+				dispose();
+			}
+		});
+
+		SpringUtilities.makeCompactGrid(panel, 3, 2, // rows, cols
+				6, 6, // initX, initY
+				6, 6); // xPad, yPad
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(300, 120);
+		getContentPane().add(panel);
+		setVisible(true);
+	}
 }

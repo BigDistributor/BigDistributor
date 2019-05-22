@@ -13,7 +13,7 @@ public class LogFrame extends JFrame{
 	}
 	public LogFrame(Context context) {
 		super("Log Frame");
-		this.setSize(400, 300);
+		this.setSize(900, 400);
 		 logPanel = new LoggingPanel(context);
 
 		this.getContentPane().add(logPanel);		

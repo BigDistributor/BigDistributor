@@ -97,7 +97,7 @@ public class BlocksManager {
 
 	public static <T> List<Block> generateBlocks(DataPreview data, AbstractCallBack callback) {
 		final ExecutorService service = Threads.createExService(1);
-		long[] dims = data.getFile().getDimensions();
+		long[] dims = data.getFile().getDims();
 		final BlockGenerator<Block> generator = new BlockGeneratorFixedSizePrecise(service, data.getBlocksSizes());
 		final double[] sigmas = Util.getArrayFromValue((double) data.getOverlap(), dims.length);
 		final int[] halfKernelSizes = Gauss3.halfkernelsizes(sigmas);

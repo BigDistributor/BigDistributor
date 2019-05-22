@@ -1,19 +1,17 @@
-package main.java.net.preibisch.distribution.algorithm.controllers.items.callback;
+package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Flow;
-import main.java.net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGeneratorTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.AllDataGetter;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.BlockCombinator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputSender;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.PreprocessTaskSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskLauncher;
@@ -41,7 +39,7 @@ public final class FunctionSequenceManager {
 
 	private void starterClusterInputModeWorkflow() {
 		functionsFlow = Arrays.asList(
-					new MetaDataGenerator(),
+					new MetadataGeneratorTask(),
 					new TaskShellGenerator(),
 					new TaskBatchGenerator(),
 //					new PreprocessTaskSender(),
@@ -117,7 +115,12 @@ public final class FunctionSequenceManager {
 					@Override
 					public void run() {
 					if(functionsFlow.size()>(pos+1)) {
-						functionsFlow.get(pos+1).start(pos+1, callback);
+						try {
+							functionsFlow.get(pos+1).start(pos+1, callback);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					}
 				});
@@ -127,7 +130,7 @@ public final class FunctionSequenceManager {
 		};
 	}
 
-	public void start() {
+	public void start() throws IOException {
 		functionsFlow.get(0).start(0, callback);	
 	}
 }

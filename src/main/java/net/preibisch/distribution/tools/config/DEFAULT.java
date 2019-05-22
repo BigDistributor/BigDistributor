@@ -2,8 +2,6 @@ package main.java.net.preibisch.distribution.tools.config;
 
 public class DEFAULT {
 	public static  String USER_PSEUDO = "mzouink";
-	public static  char[] USER_PASSWORD ;
-	
 
 	public static final String defaultInputPath = "/Users/Marwan/Desktop/Task";
 	

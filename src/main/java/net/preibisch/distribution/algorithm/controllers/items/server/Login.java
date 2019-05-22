@@ -3,72 +3,45 @@ package main.java.net.preibisch.distribution.algorithm.controllers.items.server;
 import java.util.UUID;
 
 import main.java.net.preibisch.distribution.gui.LoginUI;
-import main.java.net.preibisch.distribution.tools.config.Config;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
 import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
 public class Login {
 
-	private final String id;
-	private final Account account;
-	private final ServerConfiguration server;
+	private static String id;
+	private static Account account;
+	private static ServerConfiguration server;
 
-	public String getId() {
+	public static void setAccount(Account account) {
+		Login.account = account;
+	}
+
+	public static String getId() {
 		return id;
 	}
 
-	public Account getAccount() {
+	public static Account getAccount() {
 		return account;
 	}
 
-	public ServerConfiguration getServer() {
+	public static ServerConfiguration getServer() {
 		return server;
 	}
 
-	private Login(Builder builder) {
-		this.id = builder.id;
-		this.account = builder.account;
-		this.server = builder.server;
-	}
-
-	public static class Builder {
-
-		private String id;
-		private Account account;
-		private ServerConfiguration server;
-
-		public Builder id(final String id) {
-			this.id = id;
-			return this;
-		}
-		
-		public Builder id() {
-			this.id = UUID.randomUUID().toString().replace("-", "");
-			return this;
-		}
-
-		public Builder account(final Account account) {
-			this.account = account;
-			return this;
-		}
-
-		public Builder server(final ServerConfiguration server) {
-			this.server = server;
-			return this;
-		}
-
-		public Login build() {
-			return new Login(this);
-		}
-
+	private static String id() {
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 
 	public static void login() {
-		LoginUI.show();
-		Account account = new Account.Builder().getDefault();
-		ServerConfiguration server = new ServerConfiguration.Builder().getDefault();
-		Login login = new Login.Builder().id().server(server).account(account).build();
-		Config.setLogin(login);
+		Login.id = id();
+		new LoginUI();
+		Login.server = new ServerConfiguration.Builder().getDefault();
+	}
+
+	private Login(ServerConfiguration server, Account account) {
+		Login.id = id();
+		Login.server = server;
+		Login.account = account;
 	}
 
 }

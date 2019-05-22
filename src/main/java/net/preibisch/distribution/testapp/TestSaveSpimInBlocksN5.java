@@ -82,8 +82,6 @@ class Task implements Runnable {
 			RandomAccessibleInterval<FloatType> block = input.fuse(bb);
 			output.saveBlock(block, binfo.getGridOffset());
 			MyLogger.log.info("Block " + i + " saved !");
-			if(i%1000==0)
-				ImageJFunctions.show(output.fuse(), i+"- output");
 		} catch (IOException e) {
 			MyLogger.log.info("ERROR: Block " + i);
 			// TODO Auto-generated catch block

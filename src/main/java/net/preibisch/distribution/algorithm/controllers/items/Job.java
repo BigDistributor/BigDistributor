@@ -5,14 +5,19 @@ import java.io.IOException;
 
 import com.google.common.io.Files;
 
-public class Job extends Object{
+import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
+import main.java.net.preibisch.distribution.io.img.ImgFile;
+
+public class Job<T, I, P> extends Object{
 
 	public static final String TASK_CLUSTER_NAME = "task.jar";
 	
-	final private JFile task;
-	final private JFile extra;
+	final private AbstractTask2<T, I, P> task;
+	final private AbstractTaskParams extra;
 	
-	final private JDataFile input;
+	final private ImgFile input;
+
+	final private ImgFile output;
 	final private AppMode appMode;
 	final private String tmpDir;
 

@@ -16,9 +16,9 @@ import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.MetaDataGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import main.java.net.preibisch.distribution.io.IOFunctions;
 import main.java.net.preibisch.distribution.tools.Tools;
 import net.imglib2.RandomAccessibleInterval;
@@ -89,7 +89,7 @@ public class testSaveBlockN5 {
 //		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
 //		
 //		ImageJFunctions.show(virtual2,"After block0 output");
-		BlocksMetaData md = MetaDataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
+		BlocksMetaData md = MetadataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
 		
 		int total = md.getBlocksInfo().size();
 		

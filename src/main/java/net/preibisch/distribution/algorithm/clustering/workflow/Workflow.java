@@ -1,7 +1,7 @@
 package main.java.net.preibisch.distribution.algorithm.clustering.workflow;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.FunctionSequenceManager;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.FunctionSequenceManager;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.StatusListenerManager;
 import main.java.net.preibisch.distribution.gui.items.ProgressBarPanel;
 

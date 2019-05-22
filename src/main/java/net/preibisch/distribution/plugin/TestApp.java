@@ -49,7 +49,7 @@ public class TestApp {
 			Login.login();
 		}
 
-		Job job = Job.initJob(APP_MODE,TASK_PATH,INPUT_PATH,TMP_DIR);
+		Job job = Job.initJob(mode,TASK_PATH,INPUT_PATH,TMP_DIR);
 //		job.openTempFolder();
 		Config.setJob(job);
 		RandomAccessibleInterval<FloatType> input = job.getInput().getLoader().fuse();

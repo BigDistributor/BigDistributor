@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import kafka.utils.ShutdownableThread;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.config.KafkaProperties;
 
 public class JobConsumer extends ShutdownableThread {
     private final KafkaConsumer<Integer, String> consumer;

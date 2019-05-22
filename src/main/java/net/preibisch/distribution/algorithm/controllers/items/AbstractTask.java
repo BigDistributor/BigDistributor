@@ -1,8 +1,10 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
+import java.io.IOException;
+
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 
 public interface AbstractTask {
 	
-	public void start(int pos,AbstractCallBack callback);
+	public void start(int pos,AbstractCallBack callback)throws IOException;
 }

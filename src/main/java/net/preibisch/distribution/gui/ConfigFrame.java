@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
+import main.java.net.preibisch.distribution.algorithm.clustering.jsch.TCPProperties;
+import main.java.net.preibisch.distribution.algorithm.clustering.kafka.KafkaProperties;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.gui.items.Frame;
 import main.java.net.preibisch.distribution.tools.config.Config;
-import main.java.net.preibisch.distribution.tools.config.KafkaProperties;
-import main.java.net.preibisch.distribution.tools.config.TCPProperties;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
 import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 

@@ -13,24 +13,15 @@ import net.imglib2.type.numeric.real.FloatType;
 public enum Config {
 	INSTANCE;
 
-	private static Login login;
-	private static Job job;
-
 	private static DataPreview dataPreview;
 	
 	private static String defaultInputPath = "/Users/Marwan/Desktop/Task";
-
-	
-
-	private static Session currentSession;
 
 	private static int[] numberBlocks = {};
 	private static int[] blocksStatus;
 
 
 	private static int totalBlocks;
-
-
 	
 	private static ArrayList<String> blocksFilesNames;
 	private static String inputPrefix = ".tif";
@@ -55,10 +46,6 @@ public enum Config {
 		Config.defaultInputPath = defaultInputPath;
 	}
 	
-
-	public static String getTempFolderPath() {
-		return job.getTmpDir();
-	}
 	
 	public static int[] getNumberBlocks() {
 		return numberBlocks;
@@ -66,33 +53,6 @@ public enum Config {
 
 	public static void setNumberBlocks(int[] numberBlocks) {
 		Config.numberBlocks = numberBlocks;
-	}
-
-
-	public static Session getSession() {
-		return currentSession;
-	}
-
-	public static void setSession(Session session) {
-		Config.currentSession = session;
-	}
-	
-
-		public static void setLogin(Login login) {
-		Config.login = login;
-
-	}
-	
-	public static Login getLogin() {
-		return Config.login;
-	}
-	
-	public static void setJob(Job job) {
-		Config.job = job;
-	}
-	
-	public static Job getJob() {
-		return Config.job;
 	}
 
 	public static ArrayList<String> getBlocksFilesNames() {
