@@ -8,8 +8,6 @@ import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import main.java.net.preibisch.distribution.io.img.ImgFile;
@@ -32,21 +30,19 @@ public class TestFusionSpimInBlocksN5 {
 		new ImageJ();
 		MyLogger.initLogger();
 
-		XMLFile InputFile = null;
-		if (DataExtension.fromURI(input_path) == DataExtension.XML) {
-			InputFile = new XMLFile(input_path, false);
-		}
+		XMLFile inputFile = new XMLFile(input_path, false);;
 
 		// perform the fusion virtually
-		ImageJFunctions.show(InputFile.fuse(), "Input");
+		ImageJFunctions.show(inputFile.fuse(), "Input");
 
-		System.out.println("BB: " + InputFile.bb().toString());
-		System.out.println("Dims: " + Util.printCoordinates(InputFile.getDims()));
+		System.out.println("BB: " + inputFile.bb().toString());
+		System.out.println("Dims: " + Util.printCoordinates(inputFile.getDims()));
 
-		N5File outputFile = N5File.fromXML(InputFile, output_path);
+//		N5File outputFile = N5File.fromXML(inputFile, output_path);
+		N5File outputFile = new N5File(output_path, inputFile.getDims());
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-		BlocksMetaData md = MetadataGenerator.genarateMetaData(InputFile.bb(), outputFile.getBlocksize());
+		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
 		int total = md.getBlocksInfo().size();
 		System.out.println(md.toString());
 
@@ -57,7 +53,7 @@ public class TestFusionSpimInBlocksN5 {
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 
 		for (int i = 0; i < total; i++) {
-			executor.submit(new Task(i, InputFile, outputFile, md.getBlocksInfo().get(i)));
+			executor.submit(new Task(i, inputFile, outputFile, md.getBlocksInfo().get(i)));
 		}
 	}
 }

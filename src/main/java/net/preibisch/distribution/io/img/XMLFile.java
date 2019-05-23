@@ -1,9 +1,13 @@
 package main.java.net.preibisch.distribution.io.img;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.IIOException;
+
+import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.RandomAccessibleInterval;
@@ -17,11 +21,18 @@ import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 import net.preibisch.mvrecon.process.fusion.FusionTools;
 
 public class XMLFile extends ImgFile {
+	private final static String HDF5_FILE = "dataset.h5";
+
 	private List<ViewId> viewIds;
 	private BoundingBox bb;
 	private SpimData2 spimData;
 	private double downsampling;
+	private List<File> relatedFiles;
 //	private T dataType;
+
+	public List<File> getRelatedFiles() {
+		return relatedFiles;
+	}
 
 	public SpimData2 spimData() {
 		return spimData;
@@ -45,23 +56,47 @@ public class XMLFile extends ImgFile {
 
 	public XMLFile(String path, double downsampling, boolean useBDV) throws SpimDataException, IOException {
 		super(path);
+
 		if (!exists())
-			throw new IOException("File not found! ");
+			throw new IOException("File not found! " + path);
+
+		if (!DataExtension.XML.equals(DataExtension.fromURI(path)))
+			throw new IIOException("Invalide input! " + path);
 
 		spimData = new XmlIoSpimData2("").load(path);
+
+		this.relatedFiles = initRelatedFiles();
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
 		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());
 		this.viewIds = viewIds;
 		bb = estimateBoundingBox(useBDV);
 		this.downsampling = downsampling;
 
-		if(Double.isNaN(downsampling))
+		if (Double.isNaN(downsampling))
 			this.dims = bb.getDimensions(1);
 		else
 			this.dims = bb.getDimensions((int) downsampling);
 
 //		dataType = Util.getTypeFromInterval(fuse());
+		System.out.println(toString());
+	}
 
+	private List<File> initRelatedFiles() throws IOException {
+		List<File> files = new ArrayList<File>();
+		File hdfFile = new File(getParent(), HDF5_FILE);
+		if (!hdfFile.exists())
+			throw new IOException("HDF5 file not exist: " + hdfFile.getAbsolutePath());
+		files.add(hdfFile);
+		return files;
+	}
+
+	@Override
+	public String toString() {
+		String related = "\n Related files: \n";
+		for (File f : relatedFiles)
+			related += f.getAbsolutePath() + "\n";
+
+		return super.toString() + related;
 	}
 
 	private BoundingBox estimateBoundingBox(boolean useBDV) {

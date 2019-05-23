@@ -18,12 +18,12 @@ public class MetadataGenerator {
 		if ( overlap == 0 )
 		{
 			final Map<Integer, BlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(blockSize, dims, callback);
-			return new BlocksMetaData(blocks, blockSize, dims);
+			return new BlocksMetaData(blocks, blockSize, dims,blocks.size());
 		}
 		else
 		{
 			final Map<Integer, BlockInfo> blocks = ComplexBloxGenerator.generateBlocks(blockSize, dims, overlap, callback);	
-			return new BlocksMetaData(blocks, blockSize, dims);
+			return new BlocksMetaData(blocks, blockSize, dims,blocks.size());
 		}
 	}
 	
@@ -37,7 +37,7 @@ public class MetadataGenerator {
 		if ( overlap == 0 )
 		{
 			final Map<Integer, BlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(bb, blockSize);
-			return new BlocksMetaData(blocks, blockSize, bb.getDimensions(1));
+			return new BlocksMetaData(blocks, blockSize, bb.getDimensions(1),blocks.size());
 		}
 		else
 		{

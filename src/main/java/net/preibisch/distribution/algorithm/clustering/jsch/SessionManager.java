@@ -16,7 +16,7 @@ public class SessionManager {
 	}
 
 	public static void connect() throws JSchException {
-
+		System.out.println("Connecting..");
 		if (currentSession == null)
 			openSession();
 
@@ -33,12 +33,15 @@ public class SessionManager {
 			} else
 				throw new JSchException("Error login ! ");
 		}
+		System.out.println("Connected to server");
 	}
 
-	private static void openSession() throws JSchException {
+	public static void openSession() throws JSchException {
+		System.out.println("opening Session..");
 		JSch jsch = new JSch();
 		currentSession = jsch.getSession(Login.getAccount().getPseudo(), Login.getServer().getHost(),
 				Login.getServer().getPort());
+		System.out.println("Connection Session Opened !");
 	}
 
 	public static void disconnect() {

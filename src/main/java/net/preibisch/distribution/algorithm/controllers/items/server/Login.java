@@ -2,7 +2,10 @@ package main.java.net.preibisch.distribution.algorithm.controllers.items.server;
 
 import java.util.UUID;
 
+import com.jcraft.jsch.JSchException;
+
 import main.java.net.preibisch.distribution.gui.LoginUI;
+import main.java.net.preibisch.distribution.tools.config.DEFAULT;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
 import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
@@ -34,8 +37,10 @@ public class Login {
 
 	public static void login() {
 		Login.id = id();
-		new LoginUI();
+//		new LoginUI();
+		Login.account = new Account(DEFAULT.USER_PSEUDO, null);
 		Login.server = new ServerConfiguration.Builder().getDefault();
+
 	}
 
 	public static void login(ServerConfiguration server, Account account) {
