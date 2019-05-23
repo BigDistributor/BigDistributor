@@ -1,6 +1,5 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -117,7 +116,7 @@ public final class FunctionSequenceManager {
 					if(functionsFlow.size()>(pos+1)) {
 						try {
 							functionsFlow.get(pos+1).start(pos+1, callback);
-						} catch (IOException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -130,7 +129,7 @@ public final class FunctionSequenceManager {
 		};
 	}
 
-	public void start() throws IOException {
+	public void start() throws Exception {
 		functionsFlow.get(0).start(0, callback);	
 	}
 }

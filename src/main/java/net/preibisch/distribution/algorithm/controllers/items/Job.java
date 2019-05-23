@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import com.google.common.io.Files;
 
-import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
 import main.java.net.preibisch.distribution.io.img.ImgFile;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
 import mpicbg.spim.data.SpimDataException;
@@ -14,8 +13,9 @@ public class Job extends Object {
 
 	public static final String TASK_CLUSTER_NAME = "task.jar";
 
-	private static Object task;
+	private static TaskFile task;
 	private static AbstractTaskParams extra;
+	private static int totalBlocks;
 	private static ImgFile input;
 	private static ImgFile output;
 	private static AppMode appMode;
@@ -23,7 +23,7 @@ public class Job extends Object {
 	private static String metaDataPath;
 	private static String taskShellPath;
 
-	private Job(Object task, AbstractTaskParams extra, ImgFile input, ImgFile output, AppMode appMode, String tmpDir,
+	private Job(TaskFile task, AbstractTaskParams extra, ImgFile input, ImgFile output, AppMode appMode, String tmpDir,
 			String metaDataPath, String taskShellPath) {
 		Job.task = task;
 		Job.extra = extra;
@@ -41,12 +41,16 @@ public class Job extends Object {
 		Job.input = inputData;
 		Job.appMode = mode;
 	}
+	
+	public static int getTotalBlocks() {
+		return totalBlocks;
+	}
 
 	public static ImgFile getOutput() {
 		return output;
 	}
 
-	public static Object getTask() {
+	public static TaskFile getTask() {
 		return task;
 	}
 

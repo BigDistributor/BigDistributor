@@ -6,5 +6,5 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.callback
 
 public interface AbstractTask {
 	
-	public void start(int pos,AbstractCallBack callback)throws IOException;
+	public void start(int pos,AbstractCallBack callback)throws Exception;
 }

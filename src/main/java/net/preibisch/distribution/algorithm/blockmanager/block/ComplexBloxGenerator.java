@@ -99,7 +99,7 @@ public class ComplexBloxGenerator {
 			}
 
 			blockinfosList.put(i,
-					new ComplexBlockInfo(gridOffset, blockSize, effectiveSize,x1, x2, offset, effectiveLocalOffset, true));
+					new ComplexBlockInfo(gridOffset, blockSize, effectiveSize,x1, x2, offset, effectiveLocalOffset,effectiveLocalOffset, true));
 			i++;
 //			if (i % 10 == 0) {
 				MyLogger.log.info(

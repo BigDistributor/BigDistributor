@@ -47,30 +47,30 @@ public class AllDataGetter implements AbstractTask{
 			Workflow.progressBarPanel.updateBar(0);
 			// ArrayList<String> files = Config.getBlocksFilesNames();
 			// int key = 0;
-			for (int i = 1; i <= Config.getTotalInputFiles(); i++) {
-				String file = i + Config.getInputPrefix();
-				try {
-					SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath()+ "//" + file,
-							Config.getTempFolderPath() + "//" + file, i - 1);
-
-					MyLogger.log.info("block " + i + " got with success !");
-					Workflow.progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
-				} catch (IOException e) {
-					valid = false;
-					callback.onError(e.toString());
-					e.printStackTrace();
-				} catch (JSchException e) {
-					try {
-						
-					e.printStackTrace();
-				} catch (IndexOutOfBoundsException e) {
-					e.printStackTrace();
-					// callBack.onSuccess();
-				}
-
-			}
-			if (valid)
-				callback.onSuccess(pos);
+//			for (int i = 1; i <= Config.getTotalInputFiles(); i++) {
+//				String file = i + Config.getInputPrefix();
+//				try {
+//					SCP.get(Config.getLogin(), Config.getLogin().getServer().getPath()+ "//" + file,
+//							Config.getTempFolderPath() + "//" + file, i - 1);
+//
+//					MyLogger.log.info("block " + i + " got with success !");
+//					Workflow.progressBarPanel.updateBar((i * 100) / Config.getTotalInputFiles());
+//				} catch (IOException e) {
+//					valid = false;
+//					callback.onError(e.toString());
+//					e.printStackTrace();
+//				} catch (JSchException e) {
+//					try {
+//						
+//					e.printStackTrace();
+//				} catch (IndexOutOfBoundsException e) {
+//					e.printStackTrace();
+//					// callBack.onSuccess();
+//				}
+//
+//			}
+//			if (valid)
+//				callback.onSuccess(pos);
 		}
 	
 	}

@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -61,11 +62,20 @@ public class ControlPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startWorkFlowButton) {
-			Workflow.run(Flow.START_FLOW);
-			;
+			try {
+				Workflow.run(Flow.START_FLOW);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		if (e.getSource() == generateResultButton) {
-			Workflow.run(Flow.RESULT_FLOW);
+			try {
+				Workflow.run(Flow.RESULT_FLOW);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }

@@ -2,31 +2,23 @@ package main.java.net.preibisch.distribution.algorithm.controllers.tasks;
 
 import com.jcraft.jsch.JSchException;
 
-import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCP;
+import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPFunctions;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
+
 
 public class TaskLauncher implements AbstractTask{
+	private static final String SUBMIT_FILE = "submit.cmd";
 
 	@Override
-	public void start(int pos, AbstractCallBack callback) {
+	public void start(int pos, AbstractCallBack callback) throws JSchException {
 
 		Boolean valid = true;
 		callback.log("Run Submit..");
-		try {
-			SCP.run(Config.getLogin(), "submit.cmd", callback);
-		} catch (JSchException e) {
-			try {
-				SCP.connect(Config.getLogin());
-			} catch (JSchException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			valid = false;
-			callback.onError(e.toString());
-			e.printStackTrace();
-		}
+		String command = "cd " + Login.getServer().getPath() + " && chmod +x " + SUBMIT_FILE + " && ./"+ SUBMIT_FILE;
+		
+			SCPFunctions.runCommand( command, callback);
 
 		if (valid)
 			callback.onSuccess(pos);

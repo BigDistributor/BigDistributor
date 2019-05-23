@@ -4,39 +4,29 @@ import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
 
-import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCP;
+import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPFunctions;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.tools.config.Config;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 
 public class TaskBatchSender implements AbstractTask {
 
 	@Override
-	public void start(int pos, AbstractCallBack callback) {
+	public void start(int pos, AbstractCallBack callback) throws JSchException, IOException {
 
 		Boolean valid = true;
 		callback.log("Send submit..");
-		try {
-			SCP.send(Config.getLogin(), Config.getTempFolderPath() + "//submit.cmd",
-					Config.getLogin().getServer().getPath() + "submit.cmd", -1);
-		} catch (JSchException e) {
-			valid = false;
-			callback.onError(e.toString());
-			e.printStackTrace();
-			try {
-				SCP.connect(Config.getLogin());
-			} catch (JSchException e1) {
-				callback.log("Invalide Host");
-				e1.printStackTrace();
-			}
-		} catch (IOException e) {
-			callback.onError(e.toString());
-			e.printStackTrace();
-		}
+
+		String localBatch = Job.getTmpDir() + "//submit.cmd";
+		String serverBatch = Login.getServer().getPath() + "submit.cmd";
+		System.out.println("Local Batch: ");
+
+		SCPFunctions.sendFile(localBatch, serverBatch, -1);
 
 		if (valid)
 			callback.onSuccess(pos);
-	
+
 	}
 
 }

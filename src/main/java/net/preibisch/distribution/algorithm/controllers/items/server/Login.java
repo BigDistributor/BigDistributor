@@ -38,7 +38,7 @@ public class Login {
 		Login.server = new ServerConfiguration.Builder().getDefault();
 	}
 
-	private Login(ServerConfiguration server, Account account) {
+	public static void login(ServerConfiguration server, Account account) {
 		Login.id = id();
 		Login.server = server;
 		Login.account = account;

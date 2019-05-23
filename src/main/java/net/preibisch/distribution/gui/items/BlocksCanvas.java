@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
-import main.java.net.preibisch.distribution.tools.config.Config;
 
 
 public class BlocksCanvas extends JComponent {
@@ -25,7 +24,7 @@ public class BlocksCanvas extends JComponent {
 	@Override
 	public void paint(Graphics g) {
 		try {
-		for (BlockPreview block : Config.getDataPreview().getBlocksPreview()) {
+		for (BlockPreview block : DataPreview.getBlocksPreview()) {
 			// fill rect used status
 			g.setColor(Colors.Color(block.getStatus()));
 			g.fillRect((int) block.getMainArrea().getX(), (int) block.getMainArrea().getY(),

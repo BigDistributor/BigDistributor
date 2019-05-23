@@ -4,12 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
-import main.java.net.preibisch.distribution.io.img.load.Loader;
-import main.java.net.preibisch.distribution.tools.Helper;
 import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class ImgFile extends File implements ImgFunctions<FloatType> {

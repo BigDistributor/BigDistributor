@@ -16,7 +16,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.jsch.TCPPropert
 import main.java.net.preibisch.distribution.algorithm.clustering.kafka.KafkaProperties;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.gui.items.Frame;
-import main.java.net.preibisch.distribution.tools.config.Config;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
 import main.java.net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
@@ -76,9 +75,7 @@ public class ConfigFrame extends Frame {
 					JOptionPane.showMessageDialog(null, "Invalid Buffer size", "InfoBox: " + "ERROR !", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				
-				Account account = new Account.Builder().pseudo(pseudoField.getText())
-						.password(passwordField.getPassword()).build();
+				Account account = new Account(pseudoField.getText(), passwordField.getPassword());
 
 				int portValue = 22;
 
@@ -92,11 +89,9 @@ public class ConfigFrame extends Frame {
 
 				ServerConfiguration server = new ServerConfiguration.Builder().host(hostField.getText()).port(portValue)
 						.path(serverPathField.getText()).build();
+				Login.login(server, account);
 
-				Login login = new Login.Builder().id().server(server).account(account).build();
-
-				System.out.println(login.toString());
-				Config.setLogin(login);
+//				System.out.println(Login.toString());
 
 				setVisible(false);
 				dispose();
