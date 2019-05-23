@@ -10,7 +10,7 @@ import net.imglib2.util.Util;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BasicBlockGenerator {
-	public static Map<Integer, BlockInfo> divideIntoBlocks(final long[] blockSize, final long[] imgSize, AbstractCallBack callback) {
+	public static Map<Integer, BasicBlockInfo> divideIntoBlocks(final long[] blockSize, final long[] imgSize, AbstractCallBack callback) {
 		
 		final int numDimensions = imgSize.length;
 
@@ -32,7 +32,7 @@ public class BasicBlockGenerator {
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final Map<Integer, BlockInfo> blockinfosList = new HashMap<Integer, BlockInfo>();
+		final Map<Integer, BasicBlockInfo> blockinfosList = new HashMap<Integer, BasicBlockInfo>();
 
 		final int[] currentBlock = new int[numDimensions];
 		int i = 0;
@@ -70,7 +70,7 @@ public class BasicBlockGenerator {
 		return blockinfosList;
 	}
 
-	public static Map<Integer, BlockInfo> divideIntoBlocks(BoundingBox bb, long[] blockSize) {
+	public static Map<Integer, BasicBlockInfo> divideIntoBlocks(BoundingBox bb, long[] blockSize) {
 
 		long[] imgSize = bb.getDimensions(1);
 		
@@ -94,7 +94,7 @@ public class BasicBlockGenerator {
 		// now we instantiate the individual blocks iterating over all dimensions
 		// we use the well-known ArrayLocalizableCursor for that
 		final LocalizingZeroMinIntervalIterator cursor = new LocalizingZeroMinIntervalIterator(numBlocks);
-		final Map<Integer, BlockInfo> blockinfosList = new HashMap<Integer, BlockInfo>();
+		final Map<Integer, BasicBlockInfo> blockinfosList = new HashMap<Integer, BasicBlockInfo>();
 
 		final int[] currentBlock = new int[numDimensions];
 		int i = 0;

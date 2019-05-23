@@ -1,17 +1,28 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.items;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import net.imglib2.util.Util;
 
 public class BlocksMetaData {
 	private int total;
 	private long[] dimensions;
 	private long[] blocksize;
-	private Map<Integer, BlockInfo> blocksInfo;
+	private Map<Integer, BasicBlockInfo> blocksInfo;
 
-	public BlocksMetaData(Map<Integer, BlockInfo> blocksInfo, long[] bsizes, long[] dimensions, int total) {
+	public BlocksMetaData(Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, long[] dimensions, int total) {
 		super();
 		this.total = total;
 		this.dimensions = dimensions;
@@ -19,11 +30,11 @@ public class BlocksMetaData {
 		this.blocksInfo = blocksInfo;
 	}
 
-	public Map<Integer, BlockInfo> getBlocksInfo() {
+	public Map<Integer, BasicBlockInfo> getBlocksInfo() {
 		return blocksInfo;
 	}
 
-	public void setBlocksInfo(Map<Integer, BlockInfo> blocksInfo) {
+	public void setBlocksInfo(Map<Integer, BasicBlockInfo> blocksInfo) {
 		this.blocksInfo = blocksInfo;
 	}
 
@@ -59,4 +70,13 @@ public class BlocksMetaData {
 		return str + elms;
 	}
 
+	public void toJson(File file) throws IOException {
+		Writer writer = new FileWriter(file);
+		Gson gson = new GsonBuilder().create();
+		gson.toJson(this, writer);
+	}
+	
+	public static BlocksMetaData fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+		return new Gson().fromJson(new FileReader(path), BlocksMetaData.class);
+	}
 }

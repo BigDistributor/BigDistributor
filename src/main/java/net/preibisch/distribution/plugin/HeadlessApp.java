@@ -6,10 +6,14 @@ import com.jcraft.jsch.JSchException;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
+import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import mpicbg.spim.data.SpimDataException;
+import net.imglib2.util.Util;
 
 public class HeadlessApp {
 	private final static String tmpDir = "/home/mzouink/Desktop/testsave/";
@@ -22,14 +26,18 @@ public class HeadlessApp {
 		MyLogger.initLogger();
 
 		// Input XML
-		XMLFile InputFile = new XMLFile(input_path);
+		XMLFile inputFile = new XMLFile(input_path);
 		
 		// Connection
 		Login.login();
 		SessionManager.connect();
 		
 		// Generate Metadata
-		
+		N5File outputFile = new N5File(output_path, inputFile.getDims());
+		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
+
+		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
+		JsonMetadata.
 		// Generate script
 		
 		// Generate batch
