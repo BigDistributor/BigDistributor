@@ -38,40 +38,8 @@ public class SCPFunctions {
 		channel.connect();
 	}
 
-	public static void sendFile(String localFile, String remoteFile, int id) throws JSchException, IOException {
-		SessionManager.validateConnection();
 
-		send(localFile, remoteFile);
-
-		// System.exit(0);
-		if (id != -1) {
-			try {
-				DataPreview.getBlocksPreview().get(id).setStatus(Colors.SENT);
-
-				throw new Exception("Out of boxes");
-			} catch (Exception e) {
-				// Helper.log("Out of size");
-			}
-		}
-	}
-
-	public static void getFile(String remoteFile, String localFile, int id) throws IOException, JSchException {
-
-		SessionManager.validateConnection();
-
-		get(remoteFile, localFile);
-
-		// System.exit(0);
-		if (id >= 0) {
-			try {
-				DataPreview.getBlocksPreview().get(id).setStatus(Colors.GOT);
-			} catch (IndexOutOfBoundsException ex) {
-				System.out.println("Error! no box for index: " + id);
-			}
-		}
-	}
-
-	private static void get(String remoteFile, String localFile)
+	public static void get(String remoteFile, String localFile)
 			throws JSchException, IOException, FileNotFoundException {
 		FileOutputStream fos = null;
 		String prefix = null;
@@ -152,7 +120,7 @@ public class SCPFunctions {
 			fos = null;
 
 			if (checkAck(in) != 0) {
-				System.exit(0);
+				throw new JSchException();
 			}
 
 			// send '\0'
@@ -162,8 +130,9 @@ public class SCPFunctions {
 		}
 	}
 
-	private static void send(String localFile, String remoteFile)
+	public static void send(String localFile, String remoteFile)
 			throws JSchException, IOException, FileNotFoundException {
+		SessionManager.validateConnection();
 		FileInputStream fis = null;
 		boolean ptimestamp = true;
 
@@ -179,7 +148,7 @@ public class SCPFunctions {
 		channel.connect();
 
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 
 		File _lfile = new File(localFile);
@@ -193,7 +162,7 @@ public class SCPFunctions {
 			out.write(command.getBytes());
 			out.flush();
 			if (checkAck(in) != 0) {
-				System.exit(0);
+				throw new JSchException();
 			}
 		}
 
@@ -209,7 +178,7 @@ public class SCPFunctions {
 		out.write(command.getBytes());
 		out.flush();
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 
 		// send a content of lfile
@@ -228,7 +197,7 @@ public class SCPFunctions {
 		out.write(buf, 0, 1);
 		out.flush();
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 		out.close();
 

@@ -50,9 +50,11 @@ public class SessionManager {
 
 	public static void validateConnection() throws JSchException {
 		if (currentSession == null) {
+			System.out.println("Open session");
 			connect();
 		}
-		if (currentSession.isConnected()) {
+		if (!currentSession.isConnected()) {
+			System.out.println("Not connected");
 			connect();
 		}
 	}

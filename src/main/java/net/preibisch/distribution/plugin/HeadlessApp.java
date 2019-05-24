@@ -6,7 +6,7 @@ import java.io.IOException;
 import com.jcraft.jsch.JSchException;
 
 import ij.ImageJ;
-import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
+import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
@@ -34,7 +34,7 @@ public class HeadlessApp {
 		
 		// Connection
 		Login.login();
-		SessionManager.connect();
+	//	SessionManager.connect();
 		
 		// Generate Metadata
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
@@ -43,6 +43,8 @@ public class HeadlessApp {
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
 		File metadataFile = new File(tmpDir,Job.getId()+"metadata.json");
 		md.toJson(metadataFile );
+		
+		SCPManager.sendInput(inputFile);
 		// Generate script
 		
 		// Generate batch
