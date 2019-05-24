@@ -21,38 +21,41 @@ public class HeadlessApp {
 	private final static String tmpDir = "/home/mzouink/Desktop/testn5/";
 	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
 	private final static String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
-	
+
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException {
 
 		new ImageJ();
 		MyLogger.initLogger();
-		
+
 		new Job();
 
 		// Input XML
 		XMLFile inputFile = new XMLFile(input_path);
-		
+
 		// Connection
 		Login.login();
-	//	SessionManager.connect();
-		
+		// SessionManager.connect();
+
 		// Generate Metadata
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
-		File metadataFile = new File(tmpDir,Job.getId()+"metadata.json");
-		md.toJson(metadataFile );
-		
+		File metadataFile = new File(tmpDir, Job.getId() + "metadata.json");
+		md.toJson(metadataFile);
+
+		// Send input with related files
 		SCPManager.sendInput(inputFile);
+
+		String clusterFolderName = new File(Login.getServer().getPath(), Job.getId()).getPath();
+		SCPManager.createClusterFolder(clusterFolderName);
 		// Generate script
-		
+
 		// Generate batch
-		
+
 		// Generate output in server
-		
+
 		// Run
-	
-		
+
 	}
 }
