@@ -19,7 +19,7 @@ public class BatchGenerator {
 	
 	public static void GenerateBatchForLocalFiles(int tasksPerJob, int totalInputFiles,AbstractCallBack  callback,int taskPos) {
 	MyLogger.log.info("Start Generate batch for Local file.. " );
-		String id = Login.getId();
+		String id = Job.getId();
 		String path = Login.getServer().getPath();
 		String tmpDir = Job.getTmpDir();
 		boolean error = false;
@@ -77,7 +77,7 @@ public class BatchGenerator {
 	}
 	
 	public static void GenerateBatchForClusterFile( AbstractCallBack callback, int taskPos) {
-		String id = Login.getId();
+		String id = Job.getId();
 		String path = Login.getServer().getPath();
 		boolean error = false;
 		String tmpDir = Job.getTmpDir();
@@ -110,7 +110,7 @@ public class BatchGenerator {
 		File file = new File(tmpDir ,BATCH_CLUSTER_NAME);
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/bash");
-			File f = new File(path,Login.getId());
+			File f = new File(path,Job.getId());
 			out.print("mkdir "+ f.getAbsolutePath());
 			out.println("cd " + f.getAbsolutePath());
             for (int i = 1;i<= totalBlocks;i++ ) {
@@ -130,7 +130,7 @@ public class BatchGenerator {
 	}
 
 	private static String getLogProviderLine(int i) {
-		String id = Login.getId();
+		String id = Job.getId();
 		return "qsub -N \"" + LOG_JOB_NAME + i 
 				+ " -hold_jid "+ TASK_JOB_NAME + i
 				+ " -v uuid=" + id 

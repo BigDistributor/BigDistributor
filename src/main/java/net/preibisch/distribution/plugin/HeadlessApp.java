@@ -1,5 +1,6 @@
 package main.java.net.preibisch.distribution.plugin;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
@@ -7,6 +8,7 @@ import com.jcraft.jsch.JSchException;
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
@@ -16,7 +18,7 @@ import mpicbg.spim.data.SpimDataException;
 import net.imglib2.util.Util;
 
 public class HeadlessApp {
-	private final static String tmpDir = "/home/mzouink/Desktop/testsave/";
+	private final static String tmpDir = "/home/mzouink/Desktop/testn5/";
 	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
 	private final static String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
 	
@@ -24,6 +26,8 @@ public class HeadlessApp {
 
 		new ImageJ();
 		MyLogger.initLogger();
+		
+		new Job();
 
 		// Input XML
 		XMLFile inputFile = new XMLFile(input_path);
@@ -37,7 +41,8 @@ public class HeadlessApp {
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
-		JsonMetadata.
+		File metadataFile = new File(tmpDir,Job.getId()+"metadata.json");
+		md.toJson(metadataFile );
 		// Generate script
 		
 		// Generate batch

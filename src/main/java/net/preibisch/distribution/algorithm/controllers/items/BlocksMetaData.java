@@ -74,6 +74,7 @@ public class BlocksMetaData {
 		Writer writer = new FileWriter(file);
 		Gson gson = new GsonBuilder().create();
 		gson.toJson(this, writer);
+		System.out.println("Metadata saved: "+file.getAbsolutePath());
 	}
 	
 	public static BlocksMetaData fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
