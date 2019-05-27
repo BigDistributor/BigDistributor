@@ -2,24 +2,25 @@ package main.java.net.preibisch.distribution.algorithm.clustering.scripting;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 
-public class ShellGenerator {
+public class ClusterScript {
 	public static final String TASK_SHELL_NAME = "task.sh";
 
 	public static final String PREPROCESS_SHELL_NAME = "preprocess.sh";
 	public static final String LOG_PROVIDER_SHELL_NAME = "logProvider.sh";
-	
-	
-	public static void generateTaskShell(int pos,AbstractCallBack callback)  {
 
-		String tmpDir = Job.getTmpDir();
-		File file = new File(tmpDir ,TASK_SHELL_NAME);
-		
+	public static void generateTaskScript(File file, String metadata, String input) throws IOException {
+		generateTaskScript(file, metadata, input, "");
+	}
+
+	public static void generateTaskScript(File file, String metadata, String input, String extraParams)
+			throws IOException {
+		System.out.println("Create Script file: "+file.getAbsolutePath());
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
 			out.println("# This is my job script with qsub-options ");
@@ -32,43 +33,24 @@ public class ShellGenerator {
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
-			out.println(getTaskLine());
+			out.println(taskLine(metadata, input, extraParams));
 			out.flush();
 			out.close();
-			Job.setTaskShellPath(file.getAbsolutePath());
-			callback.onSuccess(pos);
 		} catch (FileNotFoundException e) {
-			callback.onError(e.toString());
+			throw new IOException();
 		}
+
+		System.out.println("Script file created: "+file.getAbsolutePath());
 	}
 
-	private static String getTaskLine() {
-		String taskLine  = "";
-		if(AppMode.LOCAL_INPUT_MODE.equals(Job.getAppMode())) {
-			taskLine = getLocalInputTaskLine();
-		}
-			else if (AppMode.CLUSTER_INPUT_MODE.equals(Job.getAppMode())) {
-				taskLine = getCloudInputTaskLine();
-			}
-		return taskLine;
-	}
-
-	private static String getCloudInputTaskLine() {
-		return "java -jar task.jar"
-				+" -i " + Job.getInput()
-				+" -x $SGE_TASK_ID" ;
-	}
-
-	private static String getLocalInputTaskLine() {
-		return "java -jar "+Job.TASK_CLUSTER_NAME+" $SGE_TASK_ID" + ".tif";
-		
+	private static String taskLine(String metadata, String input, String extraParams) {
+		return "java -jar task.jar" + " -i " + input + " -m " + metadata + " -id $SGE_TASK_ID";
 	}
 
 	// provider.sh
 	public static String generateLogProviderShell(int pos, AbstractCallBack callback) {
 
-		File file = new File(Job.getTmpDir());
-		String filePath = file.getAbsolutePath() + "/logProvider.sh";
+		String filePath = Job.getTmpDir().getAbsolutePath() + "/logProvider.sh";
 
 		try (PrintWriter out = new PrintWriter(filePath)) {
 			out.println("#!/bin/sh");

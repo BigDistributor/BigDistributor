@@ -32,10 +32,10 @@ public class MainJob implements Callable<Void> {
 	@Option(names = { "-t", "--task" }, required = false, description = "pre : to generate black result | job : to run the task")
 	private String job;
 	
-	@Option(names = { "-out", "--output" }, required = false, description = "The path of the Data")
+	@Option(names = { "-o", "--output" }, required = false, description = "The path of the Data")
 	private String output;
 	
-	@Option(names = { "-in", "--input" }, required = false, description = "The path of the Data")
+	@Option(names = { "-i", "--input" }, required = false, description = "The path of the Data")
 	private String input;
 
 	@Option(names = { "-m", "--meta" }, required = false, description = "The path of the MetaData file")
@@ -61,7 +61,7 @@ public class MainJob implements Callable<Void> {
 		String meta = "/home/mzouink/Desktop/test/METADATA.json";;
 		int id = 1;
 		String job = "job";
-		String args = "-t "+job+" -in "+in+" -out "+out+" -m "+meta+" -id "+id;
+		String args = "-t "+job+" -i "+in+" -o "+out+" -m "+meta+" -id "+id;
 
 		System.out.println(args);
 		return args.split(" ");

@@ -42,7 +42,7 @@ public class GenerateMetaBlocksFile implements Callable<Void> {
 		XMLFile inputData = new XMLFile(dataPath);
 		int[] blocksizes = Tools.array(BlockConfig.BLOCK_UNIT, inputData.getDims().length);
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputData.bb(), blocksizes);
-		JsonMetadata.createJSon(md,new File(outpath), callback);
+		md.toJson(new File(outpath));
 		callback.log("Success: Metablocks created !");
 		callback.log("Metablocks path: "+outpath);
 		return null;

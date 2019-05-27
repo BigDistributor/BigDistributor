@@ -12,9 +12,9 @@ public class Job extends Object {
 
 	private static String id;
 	private static AppMode appMode;
-	private static String tmpDir;
+	private static File tmpDir;
 
-	private Job(String id, AppMode appMode, String tmpDir) {
+	private Job(String id, AppMode appMode, File tmpDir) {
 		Job.id = id;
 		Job.appMode = appMode;
 		Job.tmpDir = tmpDir;
@@ -24,7 +24,7 @@ public class Job extends Object {
 
 		String id = Tools.id();
 
-		String tmpDir = createTempDir();
+		File tmpDir = createTempDir();
 
 		new Job(id, mode, tmpDir);
 	}
@@ -33,9 +33,10 @@ public class Job extends Object {
 		new Job(AppMode.CLUSTER_INPUT_MODE);
 	}
 
-	public static String createTempDir() {
+	public static File createTempDir() {
 		File tempDir = Files.createTempDir();
-		return tempDir.getAbsolutePath();
+		System.out.println("tmp Dir: "+tempDir.getAbsolutePath());
+		return tempDir;
 	}
 
 	public static String getId() {
@@ -46,8 +47,12 @@ public class Job extends Object {
 		return appMode;
 	}
 
-	public static String getTmpDir() {
+	public static File getTmpDir() {
 		return tmpDir;
+	}
+
+	public static File file(String string) {
+		return new File(tmpDir,string);
 	}
 
 }
