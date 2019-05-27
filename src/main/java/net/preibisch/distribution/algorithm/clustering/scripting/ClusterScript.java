@@ -14,13 +14,13 @@ public class ClusterScript {
 	public static final String PREPROCESS_SHELL_NAME = "preprocess.sh";
 	public static final String LOG_PROVIDER_SHELL_NAME = "logProvider.sh";
 
-	public static void generateTaskScript(File file, String metadata, String input) throws IOException {
-		generateTaskScript(file, metadata, input, "");
+	public static void generateTaskScript(File file, String metadata, String input, String output) throws IOException {
+		generateTaskScript(file, metadata, input, output, "");
 	}
 
-	public static void generateTaskScript(File file, String metadata, String input, String extraParams)
+	public static void generateTaskScript(File file, String metadata, String input, String output, String extraParams)
 			throws IOException {
-		System.out.println("Create Script file: "+file.getAbsolutePath());
+		System.out.println("Create Script file: " + file.getAbsolutePath());
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
 			out.println("# This is my job script with qsub-options ");
@@ -33,18 +33,18 @@ public class ClusterScript {
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
-			out.println(taskLine(metadata, input, extraParams));
+			out.println(taskLine(metadata, input, output, extraParams));
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
 			throw new IOException();
 		}
 
-		System.out.println("Script file created: "+file.getAbsolutePath());
+		System.out.println("Script file created: " + file.getAbsolutePath());
 	}
 
-	private static String taskLine(String metadata, String input, String extraParams) {
-		return "java -jar task.jar" + " -i " + input + " -m " + metadata + " -id $SGE_TASK_ID";
+	private static String taskLine(String metadata, String input, String output, String extraParams) {
+		return "java -jar task.jar" + " -i " + input + " -o " + output + " -m " + metadata + " -id $SGE_TASK_ID";
 	}
 
 	// provider.sh

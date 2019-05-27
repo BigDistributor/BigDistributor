@@ -8,7 +8,10 @@ public class ClusterFile extends File{
 		super(parent, child);
 	}
 
-	public String file(File f) {
-		return new File(getPath(),f.getName()).getPath();
+	public File subfile(File f) {
+		return new File(getPath(),f.getName());
+	}
+	public File subfile(String s) {
+		return new File(getPath(),s);
 	}
 }

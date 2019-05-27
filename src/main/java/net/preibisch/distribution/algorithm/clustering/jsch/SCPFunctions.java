@@ -10,7 +10,10 @@ import java.io.OutputStream;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.gui.items.Colors;
@@ -202,6 +205,51 @@ public class SCPFunctions {
 		out.close();
 
 		channel.disconnect();
+	}
+	
+	public static void recursiveFolderUpload(ChannelSftp channelSftp,String sourcePath, String destinationPath)
+			throws SftpException, FileNotFoundException {
+
+		File sourceFile = new File(sourcePath);
+		if (sourceFile.isFile()) {
+
+			// copy if it is a file
+			channelSftp.cd(destinationPath);
+			if (!sourceFile.getName().startsWith("."))
+				channelSftp.put(new FileInputStream(sourceFile), sourceFile.getName(), ChannelSftp.OVERWRITE);
+
+		} else {
+
+			System.out.println("inside else " + sourceFile.getName());
+			File[] files = sourceFile.listFiles();
+
+			if (files != null && !sourceFile.getName().startsWith(".")) {
+
+				channelSftp.cd(destinationPath);
+				SftpATTRS attrs = null;
+
+				// check if the directory is already existing
+				try {
+					attrs = channelSftp.stat(destinationPath + "/" + sourceFile.getName());
+				} catch (Exception e) {
+					System.out.println(destinationPath + "/" + sourceFile.getName() + " not found");
+				}
+
+				// else create a directory
+				if (attrs != null) {
+					System.out.println("Directory exists IsDir=" + attrs.isDir());
+				} else {
+					System.out.println("Creating dir " + sourceFile.getName());
+					channelSftp.mkdir(sourceFile.getName());
+				}
+
+				for (File f : files) {
+					recursiveFolderUpload(channelSftp,f.getAbsolutePath(), destinationPath + "/" + sourceFile.getName());
+				}
+
+			}
+		}
+
 	}
 
 	static int checkAck(InputStream in) throws IOException {

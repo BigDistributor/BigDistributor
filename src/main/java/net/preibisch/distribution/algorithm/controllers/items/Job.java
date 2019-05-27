@@ -13,6 +13,7 @@ public class Job extends Object {
 	private static String id;
 	private static AppMode appMode;
 	private static File tmpDir;
+	private static int totalbBlocks;
 
 	private Job(String id, AppMode appMode, File tmpDir) {
 		Job.id = id;
@@ -35,7 +36,7 @@ public class Job extends Object {
 
 	public static File createTempDir() {
 		File tempDir = Files.createTempDir();
-		System.out.println("tmp Dir: "+tempDir.getAbsolutePath());
+		System.out.println("tmp Dir: " + tempDir.getAbsolutePath());
 		return tempDir;
 	}
 
@@ -52,7 +53,14 @@ public class Job extends Object {
 	}
 
 	public static File file(String string) {
-		return new File(tmpDir,string);
+		return new File(tmpDir, string);
 	}
 
+	public static int getTotalbBlocks() {
+		return totalbBlocks;
+	}
+
+	public static void setTotalbBlocks(int totalbBlocks) {
+		Job.totalbBlocks = totalbBlocks;
+	}
 }
