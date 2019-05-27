@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.clustering.ClusterFile;
@@ -22,9 +23,8 @@ import net.imglib2.util.Util;
 
 public class HeadlessApp {
 	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
-	private final static String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
 
-	public static void main(String[] args) throws SpimDataException, IOException, JSchException {
+	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 
 		new ImageJ();
 		MyLogger.initLogger();
@@ -48,31 +48,33 @@ public class HeadlessApp {
 		Job.setTotalbBlocks(md.getTotal());
 		md.toJson(metadataFile);
 		
-
+		//create output
+		//TODO should be in cluster
+		outputFile.create();
 		
-
-//		SCPManager.createClusterFolder(clusterFolderName.getPath());
+		// Create project folder in the cluster
+		SCPManager.createClusterFolder(clusterFolderName.getPath());
 		
 		// Generate script
 		File scriptFile = Job.file("task.sh") ;
 		File metadataCluster = clusterFolderName.subfile(metadataFile);
 		File inputCluster = clusterFolderName.subfile(inputFile);
+		File clusterOutput = clusterFolderName.subfile(outputFile);
 		
-		ClusterScript.generateTaskScript(scriptFile, metadataCluster.getPath(), inputCluster.getPath(),output );
+		ClusterScript.generateTaskScript(scriptFile, metadataCluster.getPath(), inputCluster.getPath(),clusterOutput.getPath() );
 		
 
 		//		
 		// Generate batch
 		File batchScriptFile = Job.file("submit.cmd");
-		File batchScriptClusterFile = clusterFolderName.subfile(batchScriptFile);
 		BatchScriptFile.generate(batchScriptFile  , md.getTotal());
 		
 		// send all
 
 		inputFile.getRelatedFiles().add(metadataFile);
-		inputFile.getRelatedFiles().add(metadataCluster);
-		inputFile.getRelatedFiles().add(inputCluster);
-		inputFile.getRelatedFiles().add(batchScriptClusterFile);
+		inputFile.getRelatedFiles().add(outputFile);
+		inputFile.getRelatedFiles().add(batchScriptFile);
+		inputFile.getRelatedFiles().add(scriptFile);
 		SCPManager.sendInput(inputFile);
 		// Generate output in server
 
