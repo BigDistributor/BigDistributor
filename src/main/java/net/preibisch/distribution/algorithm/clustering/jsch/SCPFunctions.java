@@ -16,8 +16,6 @@ import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.gui.items.Colors;
-import main.java.net.preibisch.distribution.gui.items.DataPreview;
 
 public class SCPFunctions {
 
@@ -278,5 +276,16 @@ public class SCPFunctions {
 			}
 		}
 		return b;
+	}
+
+	public static void mkdir(String path, String folder) throws JSchException, SftpException {
+		SessionManager.validateConnection();
+		Channel channel = SessionManager.getCurrentSession().openChannel("sftp"); // Open SFTP Channel
+		channel.connect();
+		ChannelSftp channelSftp = (ChannelSftp) channel;
+		channelSftp.cd(path);
+		channelSftp.mkdir(folder);
+//		String command = "mkdir " + path;
+//		SCPFunctions.runCommand(command, new Callback());
 	}
 }

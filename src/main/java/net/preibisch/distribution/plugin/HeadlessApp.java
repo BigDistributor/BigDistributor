@@ -49,11 +49,10 @@ public class HeadlessApp {
 		md.toJson(metadataFile);
 		
 		//create output
-		//TODO should be in cluster
 		outputFile.create();
 		
 		// Create project folder in the cluster
-		SCPManager.createClusterFolder(clusterFolderName.getPath());
+//		SCPManager.createClusterFolder(clusterFolderName);
 		
 		// Generate script
 		File scriptFile = Job.file("task.sh") ;
@@ -75,7 +74,7 @@ public class HeadlessApp {
 		inputFile.getRelatedFiles().add(outputFile);
 		inputFile.getRelatedFiles().add(batchScriptFile);
 		inputFile.getRelatedFiles().add(scriptFile);
-		SCPManager.sendInput(inputFile);
+		SCPManager.sendInput(inputFile,clusterFolderName);
 		// Generate output in server
 
 		// Run

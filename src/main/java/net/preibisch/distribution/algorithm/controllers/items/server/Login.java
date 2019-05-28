@@ -8,6 +8,7 @@ public class Login {
 
 	private static Account account;
 	private static ServerConfiguration server;
+	private static boolean configured = false;
 
 	public static void setAccount(Account account) {
 		Login.account = account;
@@ -26,6 +27,7 @@ public class Login {
 
 	public static void login() {
 //		new LoginUI();
+		Login.configured = true;
 		Login.account = new Account(DEFAULT.USER_PSEUDO, null);
 		Login.server = new ServerConfiguration.Builder().getDefault();
 
@@ -34,6 +36,9 @@ public class Login {
 	public static void login(ServerConfiguration server, Account account) {	
 		Login.server = server;
 		Login.account = account;
+	}
+	public static boolean isConfigured() {
+		return configured;
 	}
 
 }

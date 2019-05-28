@@ -4,6 +4,7 @@ import java.io.File;
 
 import com.google.common.io.Files;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.tools.Tools;
 
 public class Job extends Object {
@@ -13,12 +14,14 @@ public class Job extends Object {
 	private static String id;
 	private static AppMode appMode;
 	private static File tmpDir;
+	private static File cluster;
 	private static int totalbBlocks;
 
-	private Job(String id, AppMode appMode, File tmpDir) {
+	private Job(String id, AppMode appMode, File tmpDir, File cluster) {
 		Job.id = id;
 		Job.appMode = appMode;
 		Job.tmpDir = tmpDir;
+		Job.cluster = cluster;
 	}
 
 	public Job(AppMode mode) {
@@ -26,8 +29,12 @@ public class Job extends Object {
 		String id = Tools.id();
 
 		File tmpDir = createTempDir();
-
-		new Job(id, mode, tmpDir);
+		if(!Login.isConfigured()) {
+			Login.login();
+		}
+		String clusterPath = Login.getServer().getPath();
+		File cluster = new File(clusterPath , id);
+		new Job(id, mode, tmpDir, cluster);
 	}
 
 	public Job() {
@@ -62,5 +69,9 @@ public class Job extends Object {
 
 	public static void setTotalbBlocks(int totalbBlocks) {
 		Job.totalbBlocks = totalbBlocks;
+	}
+
+	public static File getCluster() {
+		return cluster;
 	}
 }

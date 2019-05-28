@@ -9,30 +9,30 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.gui.items.Colors;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
 
 public class SCPManager {
 
-	public static void sendInput(XMLFile inputFile) throws JSchException, IOException, SftpException {
-		sendFile(inputFile);
+	public static void sendInput(XMLFile inputFile,File cluster) throws JSchException, IOException, SftpException {
+		createClusterFolder(cluster);
+		String serverPath = cluster.getPath();
+		
+		sendFile(inputFile,serverPath);
 		System.out.println("Related files: " + inputFile.getRelatedFiles().size());
 		for (File f : inputFile.getRelatedFiles()) {
 			System.out.println("Related file: " + f.getAbsolutePath());
 			if (f.isDirectory()) {
-				sendFolder(f);
+				sendFolder(f.getAbsolutePath(),serverPath);
 			} else {
-				sendFile(f);
+				sendFile(f,serverPath);
 			}
 		}
 	}
 
-	public static void sendFile(File f) throws JSchException, IOException {
-
-		String serverPath = Login.getServer().getPath();
+	public static void sendFile(File f,String serverPath) throws JSchException, IOException {
 		String localFile = f.getAbsolutePath();
 		String clusterFile = new File(serverPath, f.getName()).getPath();
 		System.out.println("Local file: " + localFile);
@@ -41,17 +41,11 @@ public class SCPManager {
 		System.out.println("File sent ! " + localFile + " -> " + clusterFile);
 	}
 	
-	public static void sendFolder(File f) throws JSchException,SftpException , SftpException, FileNotFoundException {
 
-		String serverPath = Login.getServer().getPath();
-		String localFile = f.getAbsolutePath();
-//		String clusterFile = new File(serverPath, f.getName()).getPath();
-		sendFolder(localFile, serverPath);
-	}
 
-	public static void createClusterFolder(String path) throws JSchException {
-		String command = "mkdir " + path;
-		SCPFunctions.runCommand(command, new Callback());
+	public static void createClusterFolder(File file) throws JSchException, SftpException {		
+		SCPFunctions.mkdir(file.getParent(),file.getName());
+		System.out.println("Folder created: "+file.getPath());
 	}
 
 	public static void sendFile(String localFile, String remoteFile, int id) throws JSchException, IOException {
