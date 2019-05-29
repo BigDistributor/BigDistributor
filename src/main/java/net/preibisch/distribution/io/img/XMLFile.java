@@ -62,6 +62,7 @@ public class XMLFile extends ImgFile {
 
 		if (!DataExtension.XML.equals(DataExtension.fromURI(path)))
 			throw new IIOException("Invalide input! " + path);
+		System.out.println("File found! ");
 
 		spimData = new XmlIoSpimData2("").load(path);
 

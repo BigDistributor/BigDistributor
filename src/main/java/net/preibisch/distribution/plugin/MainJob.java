@@ -22,16 +22,16 @@ import picocli.CommandLine.Option;
 
 public class MainJob implements Callable<Void> {
 
-	@Option(names = { "-o", "--output" }, required = false, description = "The path of the Data")
+	@Option(names = { "-o", "--output" }, required = true, description = "The path of the Data")
 	private String output;
 
-	@Option(names = { "-i", "--input" }, required = false, description = "The path of the Data")
+	@Option(names = { "-i", "--input" }, required = true, description = "The path of the Data")
 	private String input;
 
-	@Option(names = { "-m", "--meta" }, required = false, description = "The path of the MetaData file")
+	@Option(names = { "-m", "--meta" }, required = true, description = "The path of the MetaData file")
 	private String metadataPath;
 
-	@Option(names = { "-id" }, required = false, description = "The id of block")
+	@Option(names = { "-id" }, required = true, description = "The id of block")
 	private Integer id;
 
 	private AbstractTask2<RandomAccessibleInterval<FloatType>, RandomAccessibleInterval<FloatType>, Object> task;
@@ -41,11 +41,16 @@ public class MainJob implements Callable<Void> {
 	}
 
 	@Override
-	public Void call() throws Exception {
+	public Void call() {
 
-		blockTask(input, metadataPath, output, id);
+		try {
+			blockTask(input, metadataPath, output, id);
+			MyLogger.log.info("Block " + id + " saved !");
+		} catch (JsonSyntaxException | JsonIOException | SpimDataException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		MyLogger.log.info("Block " + id + " saved !");
 		return null;
 	}
 
@@ -61,6 +66,7 @@ public class MainJob implements Callable<Void> {
 	}
 	
 	public static void main(String[] args) {
+		System.out.println(String.join(" ", args));
 		CommandLine.call(new MainJob(), args);
 	}
 }

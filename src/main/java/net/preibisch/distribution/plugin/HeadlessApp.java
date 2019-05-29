@@ -16,6 +16,7 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
+import main.java.net.preibisch.distribution.io.GsonIO;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import mpicbg.spim.data.SpimDataException;
@@ -50,7 +51,8 @@ public class HeadlessApp {
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
 		File metadataFile = Job.file("metadata.json"); 
 		Job.setTotalbBlocks(md.getTotal());
-		md.toJson(metadataFile);
+//		md.toJson(metadataFile);
+		GsonIO.toJson(md, metadataFile);
 		
 		//create output
 		outputFile.create();
@@ -63,22 +65,20 @@ public class HeadlessApp {
 		File metadataCluster = clusterFolderName.subfile(metadataFile);
 		File inputCluster = clusterFolderName.subfile(inputFile);
 		File clusterOutput = clusterFolderName.subfile(outputFile);
-		
-		ClusterScript.generateTaskScript(scriptFile, metadataCluster.getPath(), inputCluster.getPath(),clusterOutput.getPath() );
-		
 
-		//		
+		File taskFile = new File(task_path);
+		ClusterScript.generateTaskScript(scriptFile, taskFile.getName() ,metadataCluster.getPath(), inputCluster.getPath(),clusterOutput.getPath() );
+		
 		// Generate batch
 		File batchScriptFile = Job.file(BATCH_NAME);
-		BatchScriptFile.generate(batchScriptFile  , md.getTotal());
+		BatchScriptFile.generate(batchScriptFile , clusterFolderName.getPath(), md.getTotal());
 		
 		// send all
-
 		inputFile.getRelatedFiles().add(metadataFile);
 		inputFile.getRelatedFiles().add(outputFile);
 		inputFile.getRelatedFiles().add(batchScriptFile);
 		inputFile.getRelatedFiles().add(scriptFile);
-		File taskFile = new File(task_path);
+		
 		inputFile.getRelatedFiles().add(taskFile );
 		SCPManager.sendInput(inputFile,clusterFolderName);
 		

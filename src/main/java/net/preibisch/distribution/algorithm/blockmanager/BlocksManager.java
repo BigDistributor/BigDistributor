@@ -31,7 +31,8 @@ public class BlocksManager {
 			AbstractCallBack callback) {
 
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64)
-				.create(Job.getInput().getDims(), new FloatType());
+				.create(new long[] {0,0,0}, new FloatType());
+//		Job.getInput().getDims()
 		for (final Integer key : blockMap.keySet()) {
 			String string = blocksDir + "/" + key + ".tif";
 			Img<FloatType> tmp = IOFunctions.openAs32Bit(new File(string));
@@ -48,7 +49,7 @@ public class BlocksManager {
 		final Img<FloatType> tmp = ArrayImgs.floats(blockSizeDim);
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		int i = 0;
-		String tempDir = Job.getTmpDir();
+		String tempDir = Job.getTmpDir().getAbsolutePath();
 		callBack.log("Temp Dir: " + tempDir);
 		for (final Block block : blocks) {
 			++i;

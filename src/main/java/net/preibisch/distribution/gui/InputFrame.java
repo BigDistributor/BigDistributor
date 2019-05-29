@@ -99,17 +99,8 @@ public class InputFrame extends Frame implements ActionListener {
 
 				String inputPath = inputPicker.getFile();
 				String taskPath = taskPicker.getFile();
-				try {
-					Job.initJob(appMode, taskPath, inputPath);
-				} catch (SpimDataException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				DataPreview.fromFile(Job.getInput());
+				new Job();
+//				DataPreview.fromFile(Job.getInput());
 
 				dispose();
 				DashboardView dashboardView = new DashboardView("Progress..");

@@ -1,7 +1,6 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.metadata;
 
 import java.io.File;
-import java.io.IOException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
@@ -18,7 +17,7 @@ public class MetadataGeneratorTask implements AbstractTask {
 				
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(DataPreview.getDims(),DataPreview.getBlocksSizes(),DataPreview.getOverlap(), callback);
 		File file = new File(Job.getTmpDir(),METADATA_FILE_NAME);
-		md.createJson(file);
+		md.toJson(file);
 
 		callback.onSuccess(pos);
 	}

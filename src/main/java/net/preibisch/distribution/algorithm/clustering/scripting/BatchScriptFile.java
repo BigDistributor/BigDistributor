@@ -4,10 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 
 public class BatchScriptFile {
@@ -15,21 +11,21 @@ public class BatchScriptFile {
 	public static final String TASK_JOB_NAME = "task_";
 	public static final String PREPROCESS_JOB_NAME = "preprocess_";
 	public static final String LOG_JOB_NAME = "provider_";
-
-	public static void generate(File file, int totalInputFiles) throws FileNotFoundException {
+	
+	public static void generate(File file,String clusterPath,  int totalInputFiles) throws FileNotFoundException {
 		MyLogger.log.info("Start Generate batch file.. ");
 
 		System.out.println("Input total files:" + totalInputFiles);
-		PrintWriter out = new PrintWriter(file);
-		out.println("#!/bin/bash");
-		out.println("cd " + file.getParent());
-		int i = 0;
-		for (i = 0; i < totalInputFiles; i++) {
-			out.println("qsub -N \"task_" + (i + 1) + "\" -t " + i + " ./task.sh");
+		try(PrintWriter out = new PrintWriter(file)){
+			out.println("#!/bin/bash");
+			out.println("cd " + clusterPath);
+			int i = 0;
+			for (i = 0; i < totalInputFiles; i++) {
+				out.println("qsub -N \"task_" + (i + 1) + "\" -t " + i + " ./task.sh");
+			}
+			out.flush();
+			out.close();
 		}
-		out.flush();
-		out.close();
-
 	}
 
 //	public static void GenerateBatchForClusterFile(AbstractCallBack callback, int taskPos) {

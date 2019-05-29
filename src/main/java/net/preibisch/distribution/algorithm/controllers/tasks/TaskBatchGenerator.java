@@ -1,6 +1,5 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.tasks;
 
-import main.java.net.preibisch.distribution.algorithm.clustering.scripting.BatchGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
@@ -13,7 +12,7 @@ public class TaskBatchGenerator implements AbstractTask{
 
 		callback.log("Generate Batch..");
 		
-			BatchGenerator.GenerateBatchForClusterFile(callback, Job.getTotalBlocks(), pos);
+//			BatchGenerator.GenerateBatchForClusterFile(callback, Job.getTotalBlocks(), pos);
 		}
 	
 

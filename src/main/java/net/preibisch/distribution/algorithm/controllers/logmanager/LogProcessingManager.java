@@ -1,7 +1,7 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.logmanager;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.DataGetter;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.ResultManager;
 import main.java.net.preibisch.distribution.gui.items.Colors;
@@ -16,7 +16,7 @@ public class LogProcessingManager {
 		int parallelJobs = DEFAULT.PARRALEL_JOB;
 		try {
 //			System.out.println("ProcessLog:"+ parts[1] +" - " + Config.getUUID()+" "+(parts[1] == Config.getUUID())+" "+parts[1].equals(Config.getUUID()));
-			if (parts[1].equals(Login.getId()) ) {
+			if (parts[1].equals(Job.getId()) ) {
 				IOFunctions.println("Log got:" + log);
 				int id = Integer.parseInt(parts[2]);
 
