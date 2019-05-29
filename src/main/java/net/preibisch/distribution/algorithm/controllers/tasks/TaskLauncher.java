@@ -4,6 +4,7 @@ import com.jcraft.jsch.JSchException;
 
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPFunctions;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 
@@ -16,9 +17,9 @@ public class TaskLauncher implements AbstractTask{
 
 		Boolean valid = true;
 		callback.log("Run Submit..");
-		String command = "cd " + Login.getServer().getPath() + " && chmod +x " + SUBMIT_FILE + " && ./"+ SUBMIT_FILE;
+		String command = "cd " + Job.getCluster().getPath() + " && chmod +x " + SUBMIT_FILE + " && ./"+ SUBMIT_FILE;
 		
-			SCPFunctions.runCommand( command, callback);
+			SCPFunctions.runCommand( command);
 
 		if (valid)
 			callback.onSuccess(pos);

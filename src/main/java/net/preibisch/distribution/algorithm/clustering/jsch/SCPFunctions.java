@@ -19,13 +19,11 @@ import main.java.net.preibisch.distribution.algorithm.controllers.items.callback
 
 public class SCPFunctions {
 
-	public static void runCommand(String command, AbstractCallBack callBack) throws JSchException {
-
+	public static void runCommand(String command) throws JSchException {
 		SessionManager.validateConnection();
-
 		System.out.println("$- " + command);
 		Channel channel = SessionManager.getCurrentSession().openChannel("exec");
-		callBack.log(command);
+//		callBack.log(command);
 		((ChannelExec) channel).setCommand(command);
 		channel.connect();
 	}

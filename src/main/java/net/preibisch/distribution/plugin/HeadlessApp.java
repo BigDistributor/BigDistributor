@@ -22,7 +22,11 @@ import mpicbg.spim.data.SpimDataException;
 import net.imglib2.util.Util;
 
 public class HeadlessApp {
+	private static final String BATCH_NAME = "submit.cmd";
+	private static final String TASK_SHELL_NAME = "task.sh";
+	
 	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
+	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask.jar";
 
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 
@@ -55,7 +59,7 @@ public class HeadlessApp {
 //		SCPManager.createClusterFolder(clusterFolderName);
 		
 		// Generate script
-		File scriptFile = Job.file("task.sh") ;
+		File scriptFile = Job.file(TASK_SHELL_NAME) ;
 		File metadataCluster = clusterFolderName.subfile(metadataFile);
 		File inputCluster = clusterFolderName.subfile(inputFile);
 		File clusterOutput = clusterFolderName.subfile(outputFile);
@@ -65,7 +69,7 @@ public class HeadlessApp {
 
 		//		
 		// Generate batch
-		File batchScriptFile = Job.file("submit.cmd");
+		File batchScriptFile = Job.file(BATCH_NAME);
 		BatchScriptFile.generate(batchScriptFile  , md.getTotal());
 		
 		// send all
@@ -74,10 +78,13 @@ public class HeadlessApp {
 		inputFile.getRelatedFiles().add(outputFile);
 		inputFile.getRelatedFiles().add(batchScriptFile);
 		inputFile.getRelatedFiles().add(scriptFile);
+		File taskFile = new File(task_path);
+		inputFile.getRelatedFiles().add(taskFile );
 		SCPManager.sendInput(inputFile,clusterFolderName);
+		
 		// Generate output in server
-
+		
 		// Run
-
+		SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
 	}
 }
