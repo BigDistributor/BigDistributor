@@ -30,7 +30,7 @@ public class TestFusionSpimInBlocksN5 {
 		new ImageJ();
 		MyLogger.initLogger();
 
-		XMLFile inputFile = new XMLFile(input_path, false);;
+		XMLFile inputFile = new XMLFile(input_path);
 
 		// perform the fusion virtually
 		ImageJFunctions.show(inputFile.fuse(), "Input");

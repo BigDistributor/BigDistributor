@@ -24,15 +24,17 @@ public class N5File extends ImgFile {
 
 	private final static DataType DATA_TYPE = DataType.FLOAT64;
 
+	private static final String DEFAULT_DATASET = "/volumes/raw";
+
 	private String dataset = "/volumes/raw";
 	private int[] blocksize;
-	
+
 	public int[] getBlocksize() {
 		return blocksize;
 	}
 
 	N5File(String path, int[] blocksize, long[] dims) throws IOException {
-		this(path, "/volumes/raw", blocksize, dims);
+		this(path, DEFAULT_DATASET, blocksize, dims);
 	}
 
 	public N5File(String path, String dataset, int[] blocksize, long[] dims) throws IOException {
@@ -43,7 +45,6 @@ public class N5File extends ImgFile {
 		this.dims = dims;
 	}
 
-	
 	public N5File(String path, long[] dims) throws IOException {
 		this(path, Tools.array(BlockConfig.BLOCK_UNIT, dims.length), dims);
 	}
@@ -74,11 +75,14 @@ public class N5File extends ImgFile {
 		N5Reader reader = new N5FSReader(getAbsolutePath());
 		return N5Utils.open(reader, dataset);
 	}
-	
+
 	private void clean() throws IOException {
 		if (exists())
 			Tools.deleteRecursively(this);
 	}
 
+	public static N5File open(String path) throws IOException {
+		return new N5File(path, new long[] {0,0,0});
+	}
 
 }
