@@ -20,11 +20,11 @@ public class ClusterScript {
 
 	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output)
 			throws IOException {
-		generateTaskScript(file, taskName, metadata, input, output, "");
+		generateTaskScript(TaskType.PROCESS, file, taskName, metadata, input, output, "");
 	}
 
-	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output,
-			String extraParams) throws IOException {
+	public static void generateTaskScript(TaskType type, File file, String taskName, String metadata, String input,
+			String output, String extraParams) throws IOException {
 		System.out.println("Create Script file: " + file.getAbsolutePath());
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
@@ -38,7 +38,7 @@ public class ClusterScript {
 			out.println("# neccessary to prevent python error ");
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
-			out.println(taskLine(taskName, metadata, input, output, extraParams));
+			out.println(taskLine(type, taskName, metadata, input, output, extraParams));
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -48,8 +48,10 @@ public class ClusterScript {
 		System.out.println("Script file created: " + file.getAbsolutePath());
 	}
 
-	private static String taskLine(String taskName, String metadata, String input, String output, String extraParams) {
-		return "java -jar " + taskName + " -i " + input + " -o " + output + " -m " + metadata + " -id $SGE_TASK_ID";
+	private static String taskLine(TaskType type, String taskName, String metadata, String input, String output,
+			String extraParams) {
+		return "java -jar " + taskName + " -t " +TaskType.str(type)+ " -i " + input + " -o " + output + " -m " + metadata
+				+ " -id $SGE_TASK_ID";
 	}
 
 	// provider.sh

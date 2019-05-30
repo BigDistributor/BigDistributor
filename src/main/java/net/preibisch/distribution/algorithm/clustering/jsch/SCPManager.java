@@ -9,6 +9,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
+import main.java.net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.gui.items.Colors;
 import main.java.net.preibisch.distribution.gui.items.DataPreview;
@@ -29,7 +30,7 @@ public class SCPManager {
 		System.out.println("Related files: " + inputFile.getRelatedFiles().size());
 		for (File f : inputFile.getRelatedFiles()) {
 			System.out.println("Related file: " + f.getAbsolutePath());
-			if (f.isDirectory()) {
+			if (f.isDirectory()||(DataExtension.fromURI(f.getName())==DataExtension.N5)) {
 				sendFolder(f.getAbsolutePath(), serverPath);
 			} else {
 				sendFile(f, serverPath);

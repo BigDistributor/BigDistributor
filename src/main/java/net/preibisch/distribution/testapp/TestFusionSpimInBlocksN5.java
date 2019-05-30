@@ -23,7 +23,6 @@ import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 public class TestFusionSpimInBlocksN5 {
 	public static void main(String[] args) throws IOException, SpimDataException {
 
-		final String tmpDir = "/home/mzouink/Desktop/testsave/";
 		final String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
 		final String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
 
@@ -35,12 +34,12 @@ public class TestFusionSpimInBlocksN5 {
 		// perform the fusion virtually
 		ImageJFunctions.show(inputFile.fuse(), "Input");
 
-		System.out.println("BB: " + inputFile.bb().toString());
-		System.out.println("Dims: " + Util.printCoordinates(inputFile.getDims()));
+		MyLogger.log.info("BB: " + inputFile.bb().toString());
+		MyLogger.log.info("Dims: " + Util.printCoordinates(inputFile.getDims()));
 
 //		N5File outputFile = N5File.fromXML(inputFile, output_path);
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
-		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
+		MyLogger.log.info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
 		int total = md.getBlocksInfo().size();
@@ -74,12 +73,13 @@ class Task implements Runnable {
 	@Override
 	public void run() {
 		try {
+			MyLogger.log.info("Started " + i);
 			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
 			RandomAccessibleInterval<FloatType> block = input.fuse(bb);
 			output.saveBlock(block, binfo.getGridOffset());
 			MyLogger.log.info("Block " + i + " saved !");
 		} catch (IOException e) {
-			MyLogger.log.info("ERROR: Block " + i);
+			MyLogger.log.error("ERROR: Block " + i);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

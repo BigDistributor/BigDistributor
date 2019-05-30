@@ -19,9 +19,10 @@ public class BatchScriptFile {
 		try(PrintWriter out = new PrintWriter(file)){
 			out.println("#!/bin/bash");
 			out.println("cd " + clusterPath);
+			out.println("qsub -N \"prep\" -t " + 1 + " ./"+TaskType.file(TaskType.PREPARE));
 			int i = 0;
 			for (i = 0; i < totalInputFiles; i++) {
-				out.println("qsub -N \"task_" + (i + 1) + "\" -t " + i + " ./task.sh");
+				out.println("qsub -N \"task_" + (i + 1) + "\" -hold_jid prep -t " + i + " ./"+TaskType.file(TaskType.PROCESS));
 			}
 			out.flush();
 			out.close();
