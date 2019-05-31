@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.AbstractTask2;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.io.img.n5.LoadN5;
+import main.java.net.preibisch.distribution.io.img.n5.tests.LoadN5;
 import main.java.net.preibisch.distribution.tools.Threads;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.algorithm.gauss3.Gauss3;

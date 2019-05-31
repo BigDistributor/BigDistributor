@@ -12,17 +12,22 @@ public class BatchScriptFile {
 	public static final String PREPROCESS_JOB_NAME = "preprocess_";
 	public static final String LOG_JOB_NAME = "provider_";
 	
-	public static void generate(File file,String clusterPath,  int totalInputFiles) throws FileNotFoundException {
+	public static void generate(File file,String clusterPath,  int totalInputFiles, boolean parallel) throws FileNotFoundException {
 		MyLogger.log.info("Start Generate batch file.. ");
 
 		System.out.println("Input total files:" + totalInputFiles);
 		try(PrintWriter out = new PrintWriter(file)){
 			out.println("#!/bin/bash");
 			out.println("cd " + clusterPath);
-			out.println("qsub -N \"prep\" -t " + 1 + " ./"+TaskType.file(TaskType.PREPARE));
-			int i = 0;
-			for (i = 0; i < totalInputFiles; i++) {
-				out.println("qsub -N \"task_" + (i + 1) + "\" -hold_jid prep -t " + i + " ./"+TaskType.file(TaskType.PROCESS));
+			String taskName = "prep";
+			out.println("qsub -N \""+taskName+"\" -t " + 1 + " ./"+TaskType.file(TaskType.PREPARE));
+			for (int i = 1; i <= totalInputFiles; i++) {
+				String exTaskName = taskName;
+				taskName = "task_" + i ;
+				String hold = "";
+				if(!parallel)
+					hold = " -hold_jid "+exTaskName;
+				out.println("qsub -N \""+taskName+"\""+hold+" -t " + i + " ./"+TaskType.file(TaskType.PROCESS));
 			}
 			out.flush();
 			out.close();

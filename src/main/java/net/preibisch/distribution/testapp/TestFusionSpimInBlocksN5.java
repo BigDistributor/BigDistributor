@@ -24,7 +24,7 @@ public class TestFusionSpimInBlocksN5 {
 	public static void main(String[] args) throws IOException, SpimDataException {
 
 		final String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
-		final String output_path = "/home/mzouink/Desktop/testn5/output45.n5";
+		final String output_path = "/home/mzouink/Desktop/testn5/back_ output45.n5";
 
 		new ImageJ();
 		MyLogger.initLogger();

@@ -20,6 +20,7 @@ import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
+import net.imagej.ImageJ;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
@@ -28,19 +29,19 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 public class MainJob implements Callable<Void> {
-	@Option(names = { "-t", "--task" }, required = true, description = "The path of the Data")
+	@Option(names = { "-t", "--task" }, required = false, description = "The path of the Data")
 	private String task;
 
-	@Option(names = { "-o", "--output" }, required = true, description = "The path of the Data")
+	@Option(names = { "-o", "--output" }, required = false, description = "The path of the Data")
 	private String output;
 
-	@Option(names = { "-i", "--input" }, required = true, description = "The path of the Data")
+	@Option(names = { "-i", "--input" }, required = false, description = "The path of the Data")
 	private String input;
 
-	@Option(names = { "-m", "--meta" }, required = true, description = "The path of the MetaData file")
+	@Option(names = { "-m", "--meta" }, required = false, description = "The path of the MetaData file")
 	private String metadataPath;
 
-	@Option(names = { "-id" }, required = true, description = "The id of block")
+	@Option(names = { "-id" }, required = false, description = "The id of block")
 	private Integer id;
 
 	public MainJob() {
@@ -49,26 +50,28 @@ public class MainJob implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		if (task == null)
-			task = "pre";
+		id = id -1; 
+		
 		TaskType type = TaskType.of(task);
 		switch (type) {
 		case PREPARE:
 			generateN5(input, metadataPath, output, id);
-			break;
+			return null;
 		case PROCESS:
 			blockTask(input, metadataPath, output, id);
-			break;
+			return null;
 
 		default:
+			System.out.println("Error");
 			throw new Exception("Specify task!");
 		}
 //			MyLogger.log.info("Block " + id + " saved !");
-		return null;
+		
 	}
 
 	public static void blockTask(String inputPath, String metadataPath, String outputPath, int id) {
 		try {
+			System.out.println("Start process"+id);
 			XMLFile inputFile = new XMLFile(inputPath);
 			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
 			BasicBlockInfo binfo = md.getBlocksInfo().get(id);
@@ -76,6 +79,7 @@ public class MainJob implements Callable<Void> {
 			RandomAccessibleInterval<FloatType> block = inputFile.fuse(bb);
 			N5File outputFile = N5File.open(outputPath);
 			outputFile.saveBlock(block, binfo.getGridOffset());
+			System.out.println("Task finished "+id);
 		} catch (SpimDataException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,32 +87,33 @@ public class MainJob implements Callable<Void> {
 	}
 
 	public static void generateN5(String inputPath, String metadataPath, String outputPath, int id) {
-		try {
-			System.out.println("Start geberating output");
-			XMLFile inputFile = new XMLFile(inputPath);
-			RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
-			String dataset = "/volumes/raw";
-			N5Writer writer = new N5FSWriter(outputPath);
-			int[] blocks = Tools.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
-
-			N5Utils.save(virtual, writer, dataset, blocks, new RawCompression());
-			System.out.println("Ouptut generated");
-		} catch (SpimDataException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 //		try {
-//			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
-//			long[] dims = md.getDimensions();
-//			N5File outputFile = new N5File(outputPath, dims);
-//			outputFile.create();
-//		} catch (JsonSyntaxException | JsonIOException | IOException e) {
+//			System.out.println("Start generating output");
+//			XMLFile inputFile = new XMLFile(inputPath);
+//			RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
+//			String dataset = "/volumes/raw";
+//			N5Writer writer = new N5FSWriter(outputPath);
+//			int[] blocks = Tools.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
+//
+//			N5Utils.save(virtual, writer, dataset, blocks, new RawCompression());
+//			System.out.println("Ouptut generated");
+//		} catch (SpimDataException | IOException e1) {
 //			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//			e1.printStackTrace();
 //		}
+		try {
+			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
+			long[] dims = md.getDimensions();
+			N5File outputFile = new N5File(outputPath, dims);
+			outputFile.create();
+		} catch (JsonSyntaxException | JsonIOException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
+//		new ImageJ();
 		System.out.println(String.join(" ", args));
 		CommandLine.call(new MainJob(), args);
 	}

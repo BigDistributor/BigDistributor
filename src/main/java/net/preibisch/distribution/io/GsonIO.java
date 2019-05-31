@@ -26,7 +26,6 @@ public class GsonIO {
 		try (PrintWriter out = new PrintWriter(file)){
 			Gson gson = new Gson();
 			String json = gson.toJson(obj);
-			System.out.println("Json: \n"+json);
 			out.print(json);
 			out.flush();
 			out.close();

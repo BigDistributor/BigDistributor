@@ -79,7 +79,7 @@ public class HeadlessApp {
 				
 		// Generate batch
 		File batchScriptFile = Job.file(BATCH_NAME);
-		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal());
+		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal(),false); //md.getTotal()
 
 
 		// send all

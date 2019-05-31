@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.io.img.n5;
+package main.java.net.preibisch.distribution.io.img.n5.tests;
 
 import java.io.File;
 import java.io.IOException;
