@@ -39,7 +39,7 @@ public class N5File extends ImgFile {
 
 	public N5File(String path, String dataset, int[] blocksize, long[] dims) throws IOException {
 		super(path);
-		clean();
+//		clean();
 		this.dataset = dataset;
 		this.blocksize = blocksize;
 		this.dims = dims;

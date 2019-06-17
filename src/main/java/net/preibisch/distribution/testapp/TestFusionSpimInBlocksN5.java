@@ -13,6 +13,7 @@ import main.java.net.preibisch.distribution.algorithm.controllers.metadata.Metad
 import main.java.net.preibisch.distribution.io.img.ImgFile;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.io.img.n5.N5File;
+import main.java.net.preibisch.distribution.tools.Threads;
 import mpicbg.spim.data.SpimDataException;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -49,7 +50,7 @@ public class TestFusionSpimInBlocksN5 {
 
 		ImageJFunctions.show(outputFile.fuse(), "Black output");
 
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		ExecutorService executor = Threads.createExService();
 
 		for (int i = 0; i < total; i++) {
 			executor.submit(new Task(i, inputFile, outputFile, md.getBlocksInfo().get(i)));

@@ -1,6 +1,8 @@
 package main.java.net.preibisch.distribution.plugin;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 import org.janelia.saalfeldlab.n5.GzipCompression;
@@ -69,6 +71,25 @@ public class MainJob implements Callable<Void> {
 		
 	}
 
+	public static void testProcess(String inputPath, String metadataPath, String outputPath, int id) {
+		try {
+			System.out.println("Start process "+id);
+			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
+			System.out.println("got metadata.. ");
+			BasicBlockInfo binfo = md.getBlocksInfo().get(id);
+			System.out.println("got blovk info.. " + binfo.toString());
+//			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
+			N5File outputFile = new N5File(outputPath,md.getDimensions());
+			RandomAccessibleInterval<FloatType> x = outputFile.fuse();
+			System.out.println(x.toString());
+			Files.walk(Paths.get(outputPath)).forEach(System.out::println);
+			System.out.println("Task finished "+id);
+		} catch ( IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void blockTask(String inputPath, String metadataPath, String outputPath, int id) {
 		try {
 			System.out.println("Start process"+id);

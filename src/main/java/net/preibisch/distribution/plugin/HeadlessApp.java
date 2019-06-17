@@ -28,7 +28,10 @@ public class HeadlessApp {
 	private static final String TASK_SHELL_NAME = "task.sh";
 
 	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
-	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask2.jar";
+//	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask2.jar";
+	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask_FullFile.jar";
+	
+	
 
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 
@@ -79,7 +82,7 @@ public class HeadlessApp {
 				
 		// Generate batch
 		File batchScriptFile = Job.file(BATCH_NAME);
-		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal(),false); //md.getTotal()
+		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), 10); //md.getTotal()
 
 
 		// send all
