@@ -67,27 +67,7 @@ public class MainJob implements Callable<Void> {
 			System.out.println("Error");
 			throw new Exception("Specify task!");
 		}
-//			MyLogger.log.info("Block " + id + " saved !");
-		
-	}
-
-	public static void testProcess(String inputPath, String metadataPath, String outputPath, int id) {
-		try {
-			System.out.println("Start process "+id);
-			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
-			System.out.println("got metadata.. ");
-			BasicBlockInfo binfo = md.getBlocksInfo().get(id);
-			System.out.println("got blovk info.. " + binfo.toString());
-//			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
-			N5File outputFile = new N5File(outputPath,md.getDimensions());
-			RandomAccessibleInterval<FloatType> x = outputFile.fuse();
-			System.out.println(x.toString());
-			Files.walk(Paths.get(outputPath)).forEach(System.out::println);
-			System.out.println("Task finished "+id);
-		} catch ( IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//			MyLogger.log.info("Block " + id + " saved !");	
 	}
 	
 	public static void blockTask(String inputPath, String metadataPath, String outputPath, int id) {
@@ -108,20 +88,6 @@ public class MainJob implements Callable<Void> {
 	}
 
 	public static void generateN5(String inputPath, String metadataPath, String outputPath, int id) {
-//		try {
-//			System.out.println("Start generating output");
-//			XMLFile inputFile = new XMLFile(inputPath);
-//			RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
-//			String dataset = "/volumes/raw";
-//			N5Writer writer = new N5FSWriter(outputPath);
-//			int[] blocks = Tools.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
-//
-//			N5Utils.save(virtual, writer, dataset, blocks, new RawCompression());
-//			System.out.println("Ouptut generated");
-//		} catch (SpimDataException | IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
 		try {
 			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
 			long[] dims = md.getDimensions();
@@ -131,6 +97,22 @@ public class MainJob implements Callable<Void> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public static void generateN5fromXML(String inputPath, String metadataPath, String outputPath, int id) {
+	try {
+	System.out.println("Start generating output");
+	XMLFile inputFile = new XMLFile(inputPath);
+	RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
+	String dataset = "/volumes/raw";
+	N5Writer writer = new N5FSWriter(outputPath);
+	int[] blocks = Tools.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
+
+	N5Utils.save(virtual, writer, dataset, blocks, new RawCompression());
+	System.out.println("Ouptut generated");
+} catch (SpimDataException | IOException e1) {
+	// TODO Auto-generated catch block
+	e1.printStackTrace();
+}
 	}
 
 	public static void main(String[] args) {
