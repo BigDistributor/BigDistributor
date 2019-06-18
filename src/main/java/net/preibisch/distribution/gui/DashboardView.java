@@ -29,7 +29,7 @@ public class DashboardView extends Frame {
 		setSize(FRAME_SIZE[0], FRAME_SIZE[1]);
 		setLayout(new GridBagLayout());
 		previewPanel = new PreviewPanel();
-		controlPanel = new ControlPanel(Job.getInput().getDims().length);
+		controlPanel = new ControlPanel(3);
 		for (SliderPanel slider : controlPanel.blockSizeControlPanel.sliderPanels) {
 			slider.slider.addAdjustmentListener(new SliderListener());
 		}

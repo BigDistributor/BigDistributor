@@ -21,24 +21,12 @@ public class AllDataGetter implements AbstractTask{
 			Boolean valid = true;
 			System.out.println("Get Data back..");
 			Workflow.progressBarPanel.updateBar(0);
-			try {
-
-				SCPFunctions.getFile(Job.getInput().getAbsolutePath(),
-						Job.getTmpDir() + "//file.tif", 0);
+//				SCPFunctions.getFile(Job.getInput().getAbsolutePath(),
+//						Job.getTmpDir() + "//file.tif", 0);
 				MyLogger.log.info("file got with success !");
 				Workflow.progressBarPanel.updateBar(1);
 
-			} catch (IOException e) {
-				valid = false;
-				callback.onError(e.toString());
-				e.printStackTrace();
-			} catch (JSchException e) {
-				e.printStackTrace();
-			} catch (IndexOutOfBoundsException e) {
-				e.printStackTrace();
-				// callBack.onSuccess();
-			}
-
+		
 			if (valid)
 				callback.onSuccess(pos);
 		} else if (AppMode.LOCAL_INPUT_MODE.equals(Job.getAppMode())) {

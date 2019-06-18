@@ -10,21 +10,20 @@ import java.io.OutputStream;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.gui.items.Colors;
-import main.java.net.preibisch.distribution.gui.items.DataPreview;
 
 public class SCPFunctions {
 
-	public static void runCommand(String command, AbstractCallBack callBack) throws JSchException {
-
+	public static void runCommand(String command) throws JSchException {
 		SessionManager.validateConnection();
-
 		System.out.println("$- " + command);
 		Channel channel = SessionManager.getCurrentSession().openChannel("exec");
-		callBack.log(command);
+//		callBack.log(command);
 		((ChannelExec) channel).setCommand(command);
 		channel.connect();
 	}
@@ -38,40 +37,8 @@ public class SCPFunctions {
 		channel.connect();
 	}
 
-	public static void sendFile(String localFile, String remoteFile, int id) throws JSchException, IOException {
-		SessionManager.validateConnection();
 
-		send(localFile, remoteFile);
-
-		// System.exit(0);
-		if (id != -1) {
-			try {
-				DataPreview.getBlocksPreview().get(id).setStatus(Colors.SENT);
-
-				throw new Exception("Out of boxes");
-			} catch (Exception e) {
-				// Helper.log("Out of size");
-			}
-		}
-	}
-
-	public static void getFile(String remoteFile, String localFile, int id) throws IOException, JSchException {
-
-		SessionManager.validateConnection();
-
-		get(remoteFile, localFile);
-
-		// System.exit(0);
-		if (id >= 0) {
-			try {
-				DataPreview.getBlocksPreview().get(id).setStatus(Colors.GOT);
-			} catch (IndexOutOfBoundsException ex) {
-				System.out.println("Error! no box for index: " + id);
-			}
-		}
-	}
-
-	private static void get(String remoteFile, String localFile)
+	public static void get(String remoteFile, String localFile)
 			throws JSchException, IOException, FileNotFoundException {
 		FileOutputStream fos = null;
 		String prefix = null;
@@ -152,7 +119,7 @@ public class SCPFunctions {
 			fos = null;
 
 			if (checkAck(in) != 0) {
-				System.exit(0);
+				throw new JSchException();
 			}
 
 			// send '\0'
@@ -162,8 +129,9 @@ public class SCPFunctions {
 		}
 	}
 
-	private static void send(String localFile, String remoteFile)
+	public static void send(String localFile, String remoteFile)
 			throws JSchException, IOException, FileNotFoundException {
+		SessionManager.validateConnection();
 		FileInputStream fis = null;
 		boolean ptimestamp = true;
 
@@ -179,21 +147,21 @@ public class SCPFunctions {
 		channel.connect();
 
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 
 		File _lfile = new File(localFile);
 		System.out.println("File: " + localFile + " |Size:" + _lfile.length());
 
 		if (ptimestamp) {
-			command = "T " + (_lfile.lastModified() / 1000) + " 0";
+			command = "T" + (_lfile.lastModified() / 1000) + " 0";
 			// The access time should be sent here,
 			// but it is not accessible with JavaAPI ;-<
 			command += (" " + (_lfile.lastModified() / 1000) + " 0\n");
 			out.write(command.getBytes());
 			out.flush();
 			if (checkAck(in) != 0) {
-				System.exit(0);
+				throw new JSchException();
 			}
 		}
 
@@ -209,7 +177,7 @@ public class SCPFunctions {
 		out.write(command.getBytes());
 		out.flush();
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 
 		// send a content of lfile
@@ -228,11 +196,56 @@ public class SCPFunctions {
 		out.write(buf, 0, 1);
 		out.flush();
 		if (checkAck(in) != 0) {
-			System.exit(0);
+			throw new JSchException();
 		}
 		out.close();
 
 		channel.disconnect();
+	}
+	
+	public static void recursiveFolderUpload(ChannelSftp channelSftp,String sourcePath, String destinationPath)
+			throws SftpException, FileNotFoundException {
+
+		File sourceFile = new File(sourcePath);
+		if (sourceFile.isFile()) {
+
+			// copy if it is a file
+			channelSftp.cd(destinationPath);
+			if (!sourceFile.getName().startsWith("."))
+				channelSftp.put(new FileInputStream(sourceFile), sourceFile.getName(), ChannelSftp.OVERWRITE);
+
+		} else {
+
+			System.out.println("inside else " + sourceFile.getName());
+			File[] files = sourceFile.listFiles();
+
+			if (files != null && !sourceFile.getName().startsWith(".")) {
+
+				channelSftp.cd(destinationPath);
+				SftpATTRS attrs = null;
+
+				// check if the directory is already existing
+				try {
+					attrs = channelSftp.stat(destinationPath + "/" + sourceFile.getName());
+				} catch (Exception e) {
+					System.out.println(destinationPath + "/" + sourceFile.getName() + " not found");
+				}
+
+				// else create a directory
+				if (attrs != null) {
+					System.out.println("Directory exists IsDir=" + attrs.isDir());
+				} else {
+					System.out.println("Creating dir " + sourceFile.getName());
+					channelSftp.mkdir(sourceFile.getName());
+				}
+
+				for (File f : files) {
+					recursiveFolderUpload(channelSftp,f.getAbsolutePath(), destinationPath + "/" + sourceFile.getName());
+				}
+
+			}
+		}
+
 	}
 
 	static int checkAck(InputStream in) throws IOException {
@@ -261,5 +274,16 @@ public class SCPFunctions {
 			}
 		}
 		return b;
+	}
+
+	public static void mkdir(String path, String folder) throws JSchException, SftpException {
+		SessionManager.validateConnection();
+		Channel channel = SessionManager.getCurrentSession().openChannel("sftp"); // Open SFTP Channel
+		channel.connect();
+		ChannelSftp channelSftp = (ChannelSftp) channel;
+		channelSftp.cd(path);
+		channelSftp.mkdir(folder);
+//		String command = "mkdir " + path;
+//		SCPFunctions.runCommand(command, new Callback());
 	}
 }

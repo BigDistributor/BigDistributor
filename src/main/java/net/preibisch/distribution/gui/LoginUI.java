@@ -14,7 +14,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import com.jcraft.jsch.JSchException;
+
 import loci.plugins.config.SpringUtilities;
+import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.tools.config.DEFAULT;
 import main.java.net.preibisch.distribution.tools.config.server.Account;
@@ -65,6 +68,12 @@ public class LoginUI extends JFrame {
 				Login.setAccount(new Account(tfUser.getText(), pfPassword.getPassword()));
 				setVisible(false);
 				dispose();
+				try {
+					SessionManager.connect();
+				} catch (JSchException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 

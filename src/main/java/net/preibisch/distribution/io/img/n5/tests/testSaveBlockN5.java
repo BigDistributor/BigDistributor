@@ -1,4 +1,4 @@
-package main.java.net.preibisch.distribution.io.img.n5;
+package main.java.net.preibisch.distribution.io.img.n5.tests;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 
 public class testSaveBlockN5 {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		new ImageJ();
 

@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import main.java.net.preibisch.distribution.algorithm.controllers.metadata.JsonMetadata;
 import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.tools.Tools;
@@ -42,7 +41,7 @@ public class GenerateMetaBlocksFile implements Callable<Void> {
 		XMLFile inputData = new XMLFile(dataPath);
 		int[] blocksizes = Tools.array(BlockConfig.BLOCK_UNIT, inputData.getDims().length);
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputData.bb(), blocksizes);
-		JsonMetadata.createJSon(md,new File(outpath), callback);
+		md.toJson(new File(outpath));
 		callback.log("Success: Metablocks created !");
 		callback.log("Metablocks path: "+outpath);
 		return null;

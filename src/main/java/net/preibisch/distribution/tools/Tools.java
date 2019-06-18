@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
@@ -53,6 +54,10 @@ public class Tools {
 		}
 		if (!f.delete())
 			throw new FileNotFoundException("Failed to delete file: " + f);
+	}
+
+	public static String id() {
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 
 }

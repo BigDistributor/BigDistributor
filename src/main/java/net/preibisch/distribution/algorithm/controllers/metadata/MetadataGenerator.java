@@ -3,6 +3,7 @@ package main.java.net.preibisch.distribution.algorithm.controllers.metadata;
 import java.util.Map;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockGenerator;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.ComplexBloxGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
@@ -13,17 +14,18 @@ import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 public class MetadataGenerator {
 		
 	public static <T> BlocksMetaData genarateMetaData(long[] dims, long[] blockSize, long overlap,
-			AbstractCallBack callback) {
+			AbstractCallBack callback) throws Exception {
 		
 		if ( overlap == 0 )
 		{
-			final Map<Integer, BlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(blockSize, dims, callback);
-			return new BlocksMetaData(blocks, blockSize, dims);
+			final Map<Integer, BasicBlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(blockSize, dims, callback);
+			return new BlocksMetaData(blocks, blockSize, dims,blocks.size());
 		}
 		else
 		{
-			final Map<Integer, BlockInfo> blocks = ComplexBloxGenerator.generateBlocks(blockSize, dims, overlap, callback);	
-			return new BlocksMetaData(blocks, blockSize, dims);
+			throw new Exception("TODO ! ");
+//			final Map<Integer, BlockInfo> blocks = ComplexBloxGenerator.generateBlocks(blockSize, dims, overlap, callback);	
+//			return new BlocksMetaData(blocks, blockSize, dims,blocks.size());
 		}
 	}
 	
@@ -36,8 +38,8 @@ public class MetadataGenerator {
 		
 		if ( overlap == 0 )
 		{
-			final Map<Integer, BlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(bb, blockSize);
-			return new BlocksMetaData(blocks, blockSize, bb.getDimensions(1));
+			final Map<Integer, BasicBlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(bb, blockSize);
+			return new BlocksMetaData(blocks, blockSize, bb.getDimensions(1),blocks.size());
 		}
 		else
 		{

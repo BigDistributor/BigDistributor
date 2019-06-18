@@ -12,10 +12,6 @@ import main.java.net.preibisch.distribution.algorithm.controllers.tasks.BlockCom
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.InputSender;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchGenerator;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchSender;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskLauncher;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskSender;
-import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.tasks.TaskShellSender;
 
 public final class FunctionSequenceManager {
@@ -23,14 +19,11 @@ public final class FunctionSequenceManager {
 	public static AbstractCallBack callback;
 
 	private void starterLocalInputModeWorkflow() {
-		functionsFlow = Arrays.asList(new TaskSender(),
+		functionsFlow = Arrays.asList(
 				new InputGenerator(),
 					  new InputSender(),
-					  new TaskShellGenerator(),
 					 new TaskShellSender(),
-					  new TaskBatchGenerator(),
-					  new TaskBatchSender(),
-					  new TaskLauncher()
+					  new TaskBatchGenerator()
 					  );
 		
 	}
@@ -38,13 +31,8 @@ public final class FunctionSequenceManager {
 	private void starterClusterInputModeWorkflow() {
 		functionsFlow = Arrays.asList(
 					new MetadataGeneratorTask(),
-					new TaskShellGenerator(),
 					new TaskBatchGenerator(),
-//					new PreprocessTaskSender(),
-					new TaskSender(),
-					new TaskShellSender(),
-					new TaskBatchSender(),
-					new TaskLauncher()
+					new TaskShellSender()
 					  );
 	}
 	
@@ -58,9 +46,7 @@ public final class FunctionSequenceManager {
 		functionsFlow = Arrays.asList(new AllDataGetter(),
 					  new BlockCombinator(),
 					 new TaskShellSender(),
-					  new TaskBatchGenerator(),
-					  new TaskBatchSender(),
-					  new TaskLauncher()
+					  new TaskBatchGenerator()
 					  );
 	}
 	

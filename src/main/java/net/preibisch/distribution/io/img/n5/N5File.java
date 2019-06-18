@@ -10,7 +10,6 @@ import org.janelia.saalfeldlab.n5.N5FSReader;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
 import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
-import org.janelia.saalfeldlab.n5.RawCompression;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
@@ -25,26 +24,27 @@ public class N5File extends ImgFile {
 
 	private final static DataType DATA_TYPE = DataType.FLOAT64;
 
+	private static final String DEFAULT_DATASET = "/volumes/raw";
+
 	private String dataset = "/volumes/raw";
 	private int[] blocksize;
-	
+
 	public int[] getBlocksize() {
 		return blocksize;
 	}
 
 	N5File(String path, int[] blocksize, long[] dims) throws IOException {
-		this(path, "/volumes/raw", blocksize, dims);
+		this(path, DEFAULT_DATASET, blocksize, dims);
 	}
 
 	public N5File(String path, String dataset, int[] blocksize, long[] dims) throws IOException {
 		super(path);
-		clean();
+//		clean();
 		this.dataset = dataset;
 		this.blocksize = blocksize;
 		this.dims = dims;
 	}
 
-	
 	public N5File(String path, long[] dims) throws IOException {
 		this(path, Tools.array(BlockConfig.BLOCK_UNIT, dims.length), dims);
 	}
@@ -75,11 +75,14 @@ public class N5File extends ImgFile {
 		N5Reader reader = new N5FSReader(getAbsolutePath());
 		return N5Utils.open(reader, dataset);
 	}
-	
+
 	private void clean() throws IOException {
 		if (exists())
 			Tools.deleteRecursively(this);
 	}
 
+	public static N5File open(String path) throws IOException {
+		return new N5File(path, new long[] {0,0,0});
+	}
 
 }

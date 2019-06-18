@@ -1,7 +1,6 @@
 package main.java.net.preibisch.distribution.algorithm.controllers.metadata;
 
 import java.io.File;
-import java.io.IOException;
 
 import main.java.net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
@@ -13,13 +12,13 @@ public class MetadataGeneratorTask implements AbstractTask {
 	private final static String METADATA_FILE_NAME = "METADATA.json";
 
 	@Override
-	public void start(int pos, AbstractCallBack callback) throws IOException {
+	public void start(int pos, AbstractCallBack callback) throws Exception {
 		callback.log("Creating metadata..");
 				
 		BlocksMetaData md = MetadataGenerator.genarateMetaData(DataPreview.getDims(),DataPreview.getBlocksSizes(),DataPreview.getOverlap(), callback);
 		File file = new File(Job.getTmpDir(),METADATA_FILE_NAME);
-		JsonMetadata.createJSon(md, file , callback);
-		
+		md.toJson(file);
+
 		callback.onSuccess(pos);
 	}
 
