@@ -64,6 +64,8 @@ public class HeadlessApp {
 		// Create project folder in the cluster
 //		SCPManager.createClusterFolder(clusterFolderName);
 
+//		inputFile.getRelatedFiles().add(outputFile);
+
 		// Generate script
 		File scriptFile = Job.file(TASK_SHELL_NAME);
 		File metadataCluster = clusterFolderName.subfile(metadataFile);
@@ -87,7 +89,6 @@ public class HeadlessApp {
 
 		// send all
 		inputFile.getRelatedFiles().add(metadataFile);
-//		inputFile.getRelatedFiles().add(outputFile);
 		inputFile.getRelatedFiles().add(batchScriptFile);
 		inputFile.getRelatedFiles().add(scriptFile);
 		
@@ -96,8 +97,6 @@ public class HeadlessApp {
 
 		inputFile.getRelatedFiles().add(taskFile);
 		SCPManager.sendInput(inputFile, clusterFolderName);
-
-		// Generate output in server
 
 		// Run
 		SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
