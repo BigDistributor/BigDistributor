@@ -41,7 +41,7 @@ public class HeadlessApp {
 		new Job();
 
 		// Input XML
-		XMLFile inputFile = new XMLFile(input_path);
+		XMLFile inputFile = XMLFile.XMLFile(input_path);
 
 		// Connection
 		Login.login();

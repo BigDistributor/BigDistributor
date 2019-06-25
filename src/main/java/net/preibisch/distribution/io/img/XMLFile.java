@@ -46,32 +46,42 @@ public class XMLFile extends ImgFile {
 		return bb;
 	}
 
-	public XMLFile(String path) throws SpimDataException, IOException {
-		this(path, false);
+	public static XMLFile XMLFile(String path) throws SpimDataException, IOException {
+		return XMLFile(path, false);
 	}
 
-	public XMLFile(String path, boolean useBDV) throws SpimDataException, IOException {
-		this(path, Double.NaN, useBDV);
+	public static XMLFile XMLFile(String path, boolean useBDV) throws SpimDataException, IOException {
+		return XMLFile(path, Double.NaN, useBDV);
 	}
 
-	public XMLFile(String path, double downsampling, boolean useBDV) throws SpimDataException, IOException {
-		super(path);
-
-		if (!exists())
+	public static XMLFile XMLFile(String path, double downsampling, boolean useBDV) throws SpimDataException, IOException {
+		File f = new File(path);
+		if (!f.exists())
 			throw new IOException("File not found! " + path);
 
 		if (!DataExtension.XML.equals(DataExtension.fromURI(path)))
 			throw new IIOException("Invalide input! " + path);
 		System.out.println("File found! ");
 
-		spimData = new XmlIoSpimData2("").load(path);
+		SpimData2 spimdata = new XmlIoSpimData2("").load(path);
 
-		this.relatedFiles = initRelatedFiles();
+		List<File> relatedFiles = initRelatedFiles(f);
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
-		viewIds.addAll(spimData.getSequenceDescription().getViewDescriptions().values());
+		viewIds.addAll(spimdata.getSequenceDescription().getViewDescriptions().values());
+		BoundingBox bbx = estimateBoundingBox(spimdata,viewIds,useBDV);
+		return new XMLFile(path,bbx,spimdata,downsampling,viewIds,relatedFiles);
+
+	}
+
+
+	public XMLFile(String path, BoundingBox bb, SpimData2 spimdata, double downsampling, List<ViewId> viewIds, List<File> relatedFiles) {
+		super(path);
+
 		this.viewIds = viewIds;
-		bb = estimateBoundingBox(useBDV);
+		this.bb = bb;
 		this.downsampling = downsampling;
+		this.spimData = spimdata;
+		this.relatedFiles = relatedFiles;
 
 		if (Double.isNaN(downsampling))
 			this.dims = bb.getDimensions(1);
@@ -82,9 +92,9 @@ public class XMLFile extends ImgFile {
 		System.out.println(toString());
 	}
 
-	private List<File> initRelatedFiles() throws IOException {
+	private static List<File> initRelatedFiles(File f) throws IOException {
 		List<File> files = new ArrayList<File>();
-		File hdfFile = new File(getParent(), HDF5_FILE);
+		File hdfFile = new File(f.getParent(), HDF5_FILE);
 		if (!hdfFile.exists())
 			throw new IOException("HDF5 file not exist: " + hdfFile.getAbsolutePath());
 		files.add(hdfFile);
@@ -100,14 +110,14 @@ public class XMLFile extends ImgFile {
 		return super.toString() + related;
 	}
 
-	private BoundingBox estimateBoundingBox(boolean useBDV) {
+	private static BoundingBox estimateBoundingBox(SpimData2 spimdata,List<ViewId> viewIds,boolean useBDV) {
 		BoundingBoxEstimation estimation;
 		if (useBDV)
-			estimation = new BoundingBoxBigDataViewer(spimData, viewIds);
+			estimation = new BoundingBoxBigDataViewer(spimdata, viewIds);
 		else
-			estimation = new BoundingBoxMaximal(viewIds, spimData);
+			estimation = new BoundingBoxMaximal(viewIds, spimdata);
 
-		return bb = estimation.estimate("Full Bounding Box");
+		return estimation.estimate("Full Bounding Box");
 	}
 
 	@Override

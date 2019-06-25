@@ -1,11 +1,8 @@
 package main.java.net.preibisch.distribution.plugin;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
-import org.janelia.saalfeldlab.n5.GzipCompression;
 import org.janelia.saalfeldlab.n5.N5FSWriter;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.RawCompression;
@@ -22,7 +19,6 @@ import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
-import net.imagej.ImageJ;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
@@ -73,7 +69,7 @@ public class MainJob implements Callable<Void> {
 	public static void blockTask(String inputPath, String metadataPath, String outputPath, int id) {
 		try {
 			System.out.println("Start process"+id);
-			XMLFile inputFile = new XMLFile(inputPath);
+			XMLFile inputFile = XMLFile.XMLFile(inputPath);
 			BlocksMetaData md = BlocksMetaData.fromJson(metadataPath);
 			BasicBlockInfo binfo = md.getBlocksInfo().get(id);
 			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
@@ -101,7 +97,7 @@ public class MainJob implements Callable<Void> {
 	public static void generateN5fromXML(String inputPath, String metadataPath, String outputPath, int id) {
 	try {
 	System.out.println("Start generating output");
-	XMLFile inputFile = new XMLFile(inputPath);
+	XMLFile inputFile = XMLFile.XMLFile(inputPath);
 	RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
 	String dataset = "/volumes/raw";
 	N5Writer writer = new N5FSWriter(outputPath);
