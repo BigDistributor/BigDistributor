@@ -16,7 +16,6 @@ import main.java.net.preibisch.distribution.algorithm.clustering.scripting.Batch
 import main.java.net.preibisch.distribution.algorithm.clustering.scripting.ClusterScript;
 import main.java.net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData2;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
@@ -35,24 +34,30 @@ public class Clustering {
 	private static final String BATCH_NAME = "submit.cmd";
 	private static final String TASK_SHELL_NAME = "task.sh";
 
-	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask_FullFile.jar";
+	private final static String task_path = "/Users/Marwan/Desktop/Fusion.jar";
 
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 		run("/Users/Marwan/Desktop/grid-3d-stitched-h5/dataset.xml");
 	}
+
 	public static void run(String input_path) throws SpimDataException, IOException, JSchException, SftpException {
 		run(input_path, "output.n5");
 	}
 
 	public static void run(String inputPath, Interval interval, SpimData2 spimdata, double downsampling,
 			List<ViewId> viewIds, String output_name) throws IOException, JSchException, SftpException {
+		int down;
+		if (Double.isNaN(downsampling))
+			down =1;
+		else
+			down =(int) downsampling;
 		new ImageJ();
-		
+
 		MyLogger.initLogger();
 		new Job();
 		List<File> relatedFiles = XMLFile.initRelatedFiles(new File(inputPath));
 		BoundingBox bb = new BoundingBox(interval);
-		XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, downsampling, viewIds, relatedFiles);
+		XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, down, viewIds, relatedFiles);
 
 		Login.login();
 
@@ -62,11 +67,10 @@ public class Clustering {
 
 		Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
 				outputFile.getBlocksize());
-		BlocksMetaData2 md = new BlocksMetaData2(blocksInfo, Util.int2long(outputFile.getBlocksize()), inputFile,
-				blocksInfo.size());
-		// BlocksMetaData md = new BlocksMetaData(blocks,
-		// Util.int2long(outputFile.getBlocksize()),
-		// bb.getDimensions((int)downsampling),blocks.size());
+		// BlocksMetaData2 md = new BlocksMetaData2(blocksInfo,
+		// Util.int2long(outputFile.getBlocksize()), inputFile,blocksInfo.size());
+		BlocksMetaData md = new BlocksMetaData(blocksInfo, Util.int2long(outputFile.getBlocksize()),
+				bb.getDimensions(down), blocksInfo.size());
 		File metadataFile = Job.file("metadata.json");
 		Job.setTotalbBlocks(md.getTotal());
 		// md.toJson(metadataFile);
