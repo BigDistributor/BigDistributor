@@ -2,9 +2,11 @@ package main.java.net.preibisch.distribution.headless;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import main.java.net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
@@ -12,6 +14,7 @@ import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.tools.Tools;
 import mpicbg.spim.data.SpimDataException;
 import net.imglib2.exception.IncompatibleTypeException;
+import net.imglib2.util.Util;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
@@ -38,9 +41,10 @@ public class GenerateMetaBlocksFile implements Callable<Void> {
 	public Void call() throws IncompatibleTypeException, SpimDataException, IOException {
 		AbstractCallBack callback = createCallBack();
 		callback.log("Create metablocks.. ");
-		XMLFile inputData = new XMLFile(dataPath);
+		XMLFile inputData = XMLFile.XMLFile(dataPath);
 		int[] blocksizes = Tools.array(BlockConfig.BLOCK_UNIT, inputData.getDims().length);
-		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputData.bb(), blocksizes);
+		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputData.bb(), blocksizes);
+		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(blocksizes), inputData.bb().getDimensions(1),blocks.size());
 		md.toJson(new File(outpath));
 		callback.log("Success: Metablocks created !");
 		callback.log("Metablocks path: "+outpath);

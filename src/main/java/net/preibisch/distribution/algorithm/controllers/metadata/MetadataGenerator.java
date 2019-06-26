@@ -4,8 +4,6 @@ import java.util.Map;
 
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockGenerator;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
-import main.java.net.preibisch.distribution.algorithm.blockmanager.block.ComplexBloxGenerator;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.imglib2.util.Util;
@@ -29,17 +27,17 @@ public class MetadataGenerator {
 		}
 	}
 	
-	public static <T> BlocksMetaData genarateMetaData(BoundingBox bb, int[] blockSize) {
-		return genarateMetaData(bb,Util.int2long(blockSize), 0);
+	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(BoundingBox bb, int[] blockSize) {
+		return generateBlocks(bb,Util.int2long(blockSize), 0);
 	}
 	
 	
-	public static <T> BlocksMetaData genarateMetaData(BoundingBox bb, long[] blockSize, int overlap) {
+	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(BoundingBox bb, long[] blockSize, int overlap) {
 		
 		if ( overlap == 0 )
 		{
 			final Map<Integer, BasicBlockInfo> blocks = BasicBlockGenerator.divideIntoBlocks(bb, blockSize);
-			return new BlocksMetaData(blocks, blockSize, bb.getDimensions(1),blocks.size());
+			return blocks;
 		}
 		else
 		{

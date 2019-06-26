@@ -56,7 +56,7 @@ public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 		ComplexBlockInfo binfo = (ComplexBlockInfo) blocksMetadata.getBlocksInfo().get(id);
 		final ExecutorService service = Threads.createExService(1);
 		Block block = new Block(service, binfo);
-		XMLFile inputData = new XMLFile(dataPath);
+		XMLFile inputData = XMLFile.XMLFile(dataPath);
 		RandomAccessibleInterval<FloatType> image = inputData.fuse();
 		AbstractCallBack callBack = createCallBack();
 		BlocksManager.saveBlock(image, binfo.getBlockSize(), path, id, block, callBack);
@@ -66,7 +66,7 @@ public class BlockExtractorUsingMetaBlocks implements Callable<Void> {
 	
 	public static RandomAccessibleInterval<FloatType> getBlock(String dataPath,Block block, AbstractCallBack callback) throws IncompatibleTypeException, SpimDataException, IOException{
 
-		ImgFile inputData =  new XMLFile(dataPath);
+		ImgFile inputData =  XMLFile.XMLFile(dataPath);
 		RandomAccessibleInterval<FloatType> image = inputData.fuse();
 	
 		return BlocksManager.getBlock(image, block, callback);

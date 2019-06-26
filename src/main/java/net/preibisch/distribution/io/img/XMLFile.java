@@ -92,7 +92,7 @@ public class XMLFile extends ImgFile {
 		System.out.println(toString());
 	}
 
-	private static List<File> initRelatedFiles(File f) throws IOException {
+	public static List<File> initRelatedFiles(File f) throws IOException {
 		List<File> files = new ArrayList<File>();
 		File hdfFile = new File(f.getParent(), HDF5_FILE);
 		if (!hdfFile.exists())

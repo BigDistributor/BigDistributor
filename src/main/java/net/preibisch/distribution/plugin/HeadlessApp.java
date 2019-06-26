@@ -2,11 +2,13 @@ package main.java.net.preibisch.distribution.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import ij.ImageJ;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import main.java.net.preibisch.distribution.algorithm.clustering.scripting.BatchScriptFile;
@@ -52,7 +54,8 @@ public class HeadlessApp {
 		N5File outputFile = new N5File(Job.file("output.n5").getAbsolutePath(), inputFile.getDims());
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
+		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
+		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.bb().getDimensions(1),blocks.size());
 		File metadataFile = Job.file("metadata.json");
 		Job.setTotalbBlocks(md.getTotal());
 //		md.toJson(metadataFile);

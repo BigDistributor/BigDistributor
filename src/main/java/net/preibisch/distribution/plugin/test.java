@@ -25,7 +25,7 @@ public static void main(String[] args) throws IOException, SpimDataException {
 	new Job();
 
 	// Input XML
-	XMLFile inputFile = new XMLFile(input_path);
+	XMLFile inputFile = XMLFile.XMLFile(input_path);
 
 	String outputPath = Job.file("output.n5").getAbsolutePath();
 	// Generate Metadata

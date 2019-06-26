@@ -1,8 +1,8 @@
 package main.java.net.preibisch.distribution.testapp;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import ij.ImageJ;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
@@ -30,7 +30,7 @@ public class TestFusionSpimInBlocksN5 {
 		new ImageJ();
 		MyLogger.initLogger();
 
-		XMLFile inputFile = new XMLFile(input_path);
+		XMLFile inputFile = XMLFile.XMLFile(input_path);
 
 		// perform the fusion virtually
 		ImageJFunctions.show(inputFile.fuse(), "Input");
@@ -42,7 +42,8 @@ public class TestFusionSpimInBlocksN5 {
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
 		MyLogger.log.info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-		BlocksMetaData md = MetadataGenerator.genarateMetaData(inputFile.bb(), outputFile.getBlocksize());
+		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
+		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.bb().getDimensions(1),blocks.size());
 		int total = md.getBlocksInfo().size();
 		System.out.println(md.toString());
 

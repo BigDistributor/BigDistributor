@@ -24,7 +24,7 @@ public class saveN5 {
 	private final static String output_path = "/home/mzouink/Desktop/testn5/testN5.n5";
 public static void main(String[] args) throws SpimDataException, IOException {
 	System.out.println("Start generating output");
-	XMLFile inputFile = new XMLFile(input_path);
+	XMLFile inputFile = XMLFile.XMLFile(input_path);
 	RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
 	ImageJFunctions.show(virtual,"input");
 	String dataset = "/volumes/raw";

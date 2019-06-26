@@ -24,7 +24,7 @@ public class SendN5 {
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 
 		MyLogger.initLogger();
-		XMLFile inputFile = new XMLFile(input_path);
+		XMLFile inputFile = XMLFile.XMLFile(input_path);
 		for (String s : files)
 			inputFile.getRelatedFiles().add(new File(path, s));
 
