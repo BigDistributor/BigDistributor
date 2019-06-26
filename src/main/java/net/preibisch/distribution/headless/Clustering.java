@@ -16,6 +16,7 @@ import main.java.net.preibisch.distribution.algorithm.clustering.scripting.Batch
 import main.java.net.preibisch.distribution.algorithm.clustering.scripting.ClusterScript;
 import main.java.net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
+import main.java.net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData2;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.Job;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
@@ -25,6 +26,7 @@ import main.java.net.preibisch.distribution.io.img.XMLFile;
 import main.java.net.preibisch.distribution.io.img.n5.N5File;
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
+import net.imglib2.Interval;
 import net.imglib2.util.Util;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
@@ -34,16 +36,23 @@ public class Clustering {
 	private static final String TASK_SHELL_NAME = "task.sh";
 
 	private final static String task_path = "/home/mzouink/Desktop/Task/FusionTask_FullFile.jar";
-	
+
+	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
+		run("/Users/Marwan/Desktop/grid-3d-stitched-h5/dataset.xml");
+	}
 	public static void run(String input_path) throws SpimDataException, IOException, JSchException, SftpException {
 		run(input_path, "output.n5");
 	}
-	
-	public static void run(String inputPath, BoundingBox bb, SpimData2 spimdata, double downsampling, List<ViewId> viewIds,String output_name) throws IOException, JSchException, SftpException {
 
+	public static void run(String inputPath, Interval interval, SpimData2 spimdata, double downsampling,
+			List<ViewId> viewIds, String output_name) throws IOException, JSchException, SftpException {
+		new ImageJ();
+		
 		MyLogger.initLogger();
+		new Job();
 		List<File> relatedFiles = XMLFile.initRelatedFiles(new File(inputPath));
-		XMLFile inputFile = new XMLFile(inputPath,bb,spimdata,downsampling,viewIds,relatedFiles);
+		BoundingBox bb = new BoundingBox(interval);
+		XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, downsampling, viewIds, relatedFiles);
 
 		Login.login();
 
@@ -51,20 +60,20 @@ public class Clustering {
 		N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims());
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
-		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), bb.getDimensions((int)downsampling),blocks.size());
+		Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
+				outputFile.getBlocksize());
+		BlocksMetaData2 md = new BlocksMetaData2(blocksInfo, Util.int2long(outputFile.getBlocksize()), inputFile,
+				blocksInfo.size());
+		// BlocksMetaData md = new BlocksMetaData(blocks,
+		// Util.int2long(outputFile.getBlocksize()),
+		// bb.getDimensions((int)downsampling),blocks.size());
 		File metadataFile = Job.file("metadata.json");
 		Job.setTotalbBlocks(md.getTotal());
-//		md.toJson(metadataFile);
+		// md.toJson(metadataFile);
 		GsonIO.toJson(md, metadataFile);
 
-		// create output
-//		outputFile.create();
-
 		// Create project folder in the cluster
-//		SCPManager.createClusterFolder(clusterFolderName);
-
-//		inputFile.getRelatedFiles().add(outputFile);
+		// SCPManager.createClusterFolder(clusterFolderName);
 
 		// Generate script
 		File scriptFile = Job.file(TASK_SHELL_NAME);
@@ -76,22 +85,19 @@ public class Clustering {
 		ClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster.getPath(),
 				inputCluster.getPath(), clusterOutput.getPath());
 
-		
 		// Task to prepare N5
 		File prepareShell = Job.file(TaskType.file(TaskType.PREPARE));
 		ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(), metadataCluster.getPath(),
-						inputCluster.getPath(), clusterOutput.getPath(), "");
-				
+				inputCluster.getPath(), clusterOutput.getPath(), "");
+
 		// Generate batch
 		File batchScriptFile = Job.file(BATCH_NAME);
-		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal()); //md.getTotal()
-
+		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal()); // md.getTotal()
 
 		// send all
 		inputFile.getRelatedFiles().add(metadataFile);
 		inputFile.getRelatedFiles().add(batchScriptFile);
 		inputFile.getRelatedFiles().add(scriptFile);
-		
 
 		inputFile.getRelatedFiles().add(prepareShell);
 
@@ -100,78 +106,78 @@ public class Clustering {
 
 		// Run
 		SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
-		
+
 	}
-public static void run(String input_path, String output_name) throws SpimDataException, IOException, JSchException, SftpException {
 
+	public static void run(String input_path, String output_name)
+			throws SpimDataException, IOException, JSchException, SftpException {
 
-	new ImageJ();
-	MyLogger.initLogger();
+		new ImageJ();
+		MyLogger.initLogger();
 
-	new Job();
+		new Job();
 
-	// Input XML
-	XMLFile inputFile = XMLFile.XMLFile(input_path);
+		// Input XML
+		XMLFile inputFile = XMLFile.XMLFile(input_path);
 
-	// Connection
-	Login.login();
-	// SessionManager.connect();
+		// Connection
+		Login.login();
+		// SessionManager.connect();
 
-	ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
-	// Generate Metadata
-	N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims());
-	System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
+		ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
+		// Generate Metadata
+		N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims());
+		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-	Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
-	BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.bb().getDimensions(1),blocks.size());
+		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(),
+				outputFile.getBlocksize());
+		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()),
+				inputFile.bb().getDimensions(1), blocks.size());
 
-	File metadataFile = Job.file("metadata.json");
-	Job.setTotalbBlocks(md.getTotal());
-//	md.toJson(metadataFile);
-	GsonIO.toJson(md, metadataFile);
+		File metadataFile = Job.file("metadata.json");
+		Job.setTotalbBlocks(md.getTotal());
+		// md.toJson(metadataFile);
+		GsonIO.toJson(md, metadataFile);
 
-	// create output
-//	outputFile.create();
+		// create output
+		// outputFile.create();
 
-	// Create project folder in the cluster
-//	SCPManager.createClusterFolder(clusterFolderName);
+		// Create project folder in the cluster
+		// SCPManager.createClusterFolder(clusterFolderName);
 
-//	inputFile.getRelatedFiles().add(outputFile);
+		// inputFile.getRelatedFiles().add(outputFile);
 
-	// Generate script
-	File scriptFile = Job.file(TASK_SHELL_NAME);
-	File metadataCluster = clusterFolderName.subfile(metadataFile);
-	File inputCluster = clusterFolderName.subfile(inputFile);
-	File clusterOutput = clusterFolderName.subfile(outputFile);
+		// Generate script
+		File scriptFile = Job.file(TASK_SHELL_NAME);
+		File metadataCluster = clusterFolderName.subfile(metadataFile);
+		File inputCluster = clusterFolderName.subfile(inputFile);
+		File clusterOutput = clusterFolderName.subfile(outputFile);
 
-	File taskFile = new File(task_path);
-	ClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster.getPath(),
-			inputCluster.getPath(), clusterOutput.getPath());
+		File taskFile = new File(task_path);
+		ClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster.getPath(),
+				inputCluster.getPath(), clusterOutput.getPath());
 
-	
-	// Task to prepare N5
-	File prepareShell = Job.file(TaskType.file(TaskType.PREPARE));
-	ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(), metadataCluster.getPath(),
-					inputCluster.getPath(), clusterOutput.getPath(), "");
-			
-	// Generate batch
-	File batchScriptFile = Job.file(BATCH_NAME);
-	BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal()); //md.getTotal()
+		// Task to prepare N5
+		File prepareShell = Job.file(TaskType.file(TaskType.PREPARE));
+		ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(), metadataCluster.getPath(),
+				inputCluster.getPath(), clusterOutput.getPath(), "");
 
+		// Generate batch
+		File batchScriptFile = Job.file(BATCH_NAME);
+		BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal()); // md.getTotal()
 
-	// send all
-	inputFile.getRelatedFiles().add(metadataFile);
-	inputFile.getRelatedFiles().add(batchScriptFile);
-	inputFile.getRelatedFiles().add(scriptFile);
-	
+		// send all
+		inputFile.getRelatedFiles().add(metadataFile);
+		inputFile.getRelatedFiles().add(batchScriptFile);
+		inputFile.getRelatedFiles().add(scriptFile);
 
-	inputFile.getRelatedFiles().add(prepareShell);
+		inputFile.getRelatedFiles().add(prepareShell);
 
-	inputFile.getRelatedFiles().add(taskFile);
-	SCPManager.sendInput(inputFile, clusterFolderName);
+		inputFile.getRelatedFiles().add(taskFile);
+		SCPManager.sendInput(inputFile, clusterFolderName);
 
-	// Run
-	SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
+		// Run
+		SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
 
-}
+	}
 }
