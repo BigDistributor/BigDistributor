@@ -130,4 +130,14 @@ public class XMLFile extends ImgFile {
 		return FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling);
 	}
 
+	public static File fromStitchFolder(String inputPath) {
+		File folder = new File(inputPath.substring(0, inputPath.length()-2));
+		for (File f : folder.listFiles()) {
+			if (DataExtension.XML.equals(DataExtension.fromURI(f.getName()))) {
+				return f;
+			}
+		}
+		return null;
+	}
+
 }

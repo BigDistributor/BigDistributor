@@ -44,13 +44,21 @@ public class Clustering {
 		run(input_path, "output.n5");
 	}
 
-	public static void run(String inputPath, Interval interval, SpimData2 spimdata, double downsampling,
+	public static void run(Interval interval, SpimData2 spimdata, double downsampling,
 			List<ViewId> viewIds, String output_name) throws IOException, JSchException, SftpException {
+		System.out.println("inputPath: " + spimdata.getBasePath() + "\ninterval: " + interval.toString() + "\n spimdata: "
+				+ spimdata.getBasePath().getName() + "\n downsampling: " + downsampling + "\n viewIds: "
+				+ viewIds.toString() + "\n output_name: " + output_name);
+		File xml = XMLFile.fromStitchFolder(spimdata.getBasePath().getAbsolutePath());
+		String inputPath = xml.getAbsolutePath();
+
+		System.out.println("file: " + inputPath);
+		
 		int down;
 		if (Double.isNaN(downsampling))
-			down =1;
+			down = 1;
 		else
-			down =(int) downsampling;
+			down = (int) downsampling;
 		new ImageJ();
 
 		MyLogger.initLogger();

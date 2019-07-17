@@ -8,18 +8,13 @@ public enum DataExtension {
 		case "n5":
 			return DataExtension.N5;
 		case "tif":
-
 			return DataExtension.TIF;
 		case "xml":
-
 			return DataExtension.XML;
 		case "jar":
-
-			return DataExtension.JAR;
-			
+			return DataExtension.JAR;		
 		case "model":
 			return DataExtension.MODEL;
-
 		default:
 			System.out.println("Error extension: " + string);
 			return null;
