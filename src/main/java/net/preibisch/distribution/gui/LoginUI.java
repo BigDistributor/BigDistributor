@@ -16,7 +16,6 @@ import javax.swing.SpringLayout;
 
 import com.jcraft.jsch.JSchException;
 
-import loci.plugins.config.SpringUtilities;
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
 import main.java.net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import main.java.net.preibisch.distribution.tools.config.DEFAULT;
@@ -77,9 +76,9 @@ public class LoginUI extends JFrame {
 			}
 		});
 
-		SpringUtilities.makeCompactGrid(panel, 3, 2, // rows, cols
-				6, 6, // initX, initY
-				6, 6); // xPad, yPad
+//		SpringUtilities.makeCompactGrid(panel, 3, 2, // rows, cols
+//				6, 6, // initX, initY
+//				6, 6); // xPad, yPad
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(300, 120);

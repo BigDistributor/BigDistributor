@@ -8,6 +8,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import ij.ImageJ;
+import main.java.net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import main.java.net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import main.java.net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import main.java.net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
@@ -51,11 +52,12 @@ public class HeadlessApp {
 
 		ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
 		// Generate Metadata
-		N5File outputFile = new N5File(Job.file("output.n5").getAbsolutePath(), inputFile.getDims());
+		N5File outputFile = new N5File(Job.file("output.n5").getAbsolutePath(), inputFile.getDims(),BlockConfig.BLOCK_UNIT);
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
-		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.bb().getDimensions(1),blocks.size());
+		
+		BlocksMetaData md = new BlocksMetaData(inputFile.viewIds(),blocks, Util.int2long(outputFile.getBlocksize()),BlockConfig.BLOCK_UNIT, inputFile.bb().getDimensions(1),blocks.size(),1);
 		File metadataFile = Job.file("metadata.json");
 		Job.setTotalbBlocks(md.getTotal());
 //		md.toJson(metadataFile);

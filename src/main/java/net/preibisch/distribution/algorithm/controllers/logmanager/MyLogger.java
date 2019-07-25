@@ -9,6 +9,8 @@ import net.imagej.ops.OpService;
 
 public class MyLogger {
 	
+	public static Boolean initialized = false;
+	
 	public static Logger log;
 	
 	private static OpService opService;
@@ -24,11 +26,13 @@ public class MyLogger {
 	}
 
 	public static void initLogger() {
+		if(initialized) return ;
 		final Context context = new Context( OpService.class, LogService.class );
 		opService = context.getService( OpService.class );
 		logService = context.getService( LogService.class );
 		LogFrame logFrame = new LogFrame(opService.getContext());
 		MyLogger.SubLogger(logService);
 		logFrame.setVisible(true);
+		initialized = true;
 	}
 }
