@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>net.preibisch</groupId>
 	<artifactId>imagej-clustering</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<name>imagej clustering</name>
 	<description>Distibute processing using cluster</description>
 	<url>https://github.com/PreibischLab/image-clustering</url>
@@ -57,15 +57,21 @@
 		</developer>
 	</developers>
 	<contributors>
-
+		<contributor>
+			<name>Curtis Rueden</name>
+			<url>https://imagej.net/User:Rueden</url>
+			<properties>
+				<id>ctrueden</id>
+			</properties>
+		</contributor>
 	</contributors>
-		<mailingLists>
+	<mailingLists>
 		<mailingList>
 			<name>Image.sc Forum</name>
 			<archive>https://forum.image.sc/tags/bigstitcher</archive>
 		</mailingList>
 	</mailingLists>
-	
+
 	<scm>
 		<connection>scm:git:git://github.com/PreibischLab/image-clustering</connection>
 		<developerConnection>scm:git:git@github.com:PreibischLab/image-clustering</developerConnection>
@@ -80,8 +86,18 @@
 		<system>Travis CI</system>
 		<url>https://travis-ci.org/PreibischLab/image-clustering</url>
 	</ciManagement>
-	
-		<repositories>
+
+	<properties>
+		<package-name>main.java.net.preibisch.distribution</package-name>
+
+		<license.licenseName>gpl_v2</license.licenseName>
+		<license.copyrightOwners>Image distribution developers.</license.copyrightOwners>
+
+		<!-- NB: Deploy releases to the SciJava Maven repository. -->
+		<releaseProfiles>deploy-to-scijava</releaseProfiles>
+	</properties>
+
+	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
 			<id>imagej.public</id>
@@ -92,64 +108,22 @@
 			<url>https://saalfeldlab.github.io/maven</url>
 		</repository>
 	</repositories>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>imagej</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>imagej-legacy</artifactId>
+			<groupId>org.janelia.saalfeldlab</groupId>
+			<artifactId>n5-imglib2</artifactId>
+			<version>3.4.0</version>
 		</dependency>
+		
 		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>ij</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ij</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ui</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-realtransform</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-algorithm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>Fiji_Plugins</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.scif</groupId>
-			<artifactId>scifio</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.scif</groupId>
-			<artifactId>scifio-bf-compat</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- The formats-bsd component adds support for open formats. -->
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-bsd</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- The formats-gpl component adds support for proprietary formats. -->
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-gpl</artifactId>
-			<scope>runtime</scope>
+			<groupId>io.github.classgraph</groupId>
+			<artifactId>classgraph</artifactId>
+			<version>LATEST</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
 		<dependency>
@@ -187,24 +161,36 @@
 			<artifactId>multiview-reconstruction</artifactId>
 			<version>0.2.17</version>
 		</dependency>
-		<dependency>
-			<groupId>org.janelia.saalfeldlab</groupId>
-			<artifactId>n5-imglib2</artifactId>
-			<version>3.0.0</version>
-		</dependency>
 
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>bio-formats_plugins</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
 			<version>3.9.2</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-ui-swing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.preibisch</groupId>
+			<artifactId>multiview-simulation</artifactId>
+		</dependency>
 	</dependencies>
-
-
-
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
