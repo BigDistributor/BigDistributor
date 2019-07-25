@@ -176,10 +176,6 @@
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.preibisch</groupId>
-			<artifactId>multiview-simulation</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
