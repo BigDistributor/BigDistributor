@@ -6,9 +6,9 @@ public enum TaskType {
 	public static String file(TaskType type) {
 		switch (type) {
 		case PREPARE:
-			return "prepare.sh";
+			return "_prepare.sh";
 		case PROCESS:
-			return "task.sh";
+			return "_task.sh";
 		default:
 			System.out.println("Default name: task.sh");
 			return "task.sh";

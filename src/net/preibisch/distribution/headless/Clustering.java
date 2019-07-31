@@ -36,8 +36,8 @@ import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.interestpointregistration.pairwise.constellation.grouping.Group;
 
 public class Clustering {
-	private static final String BATCH_NAME = "submit.cmd";
-	private static final String TASK_SHELL_NAME = "task.sh";
+	private static final String BATCH_NAME = "_submit.cmd";
+	private static final String TASK_SHELL_NAME = "_task.sh";
 
 	private final static String task_path = "/Users/Marwan/Desktop/Task/Fusion.jar";
 
@@ -49,24 +49,24 @@ public class Clustering {
 		run(input_path, "output.n5");
 	}
 
-	public static void run(Interval interval, SpimData2 spimdata, double downsampling,
-			List<ViewId> viewIds, String output_name) throws IOException, JSchException, SftpException {
-		
-		System.out.println("inputPath: " + spimdata.getBasePath() + "\ninterval: " + interval.toString() + "\n spimdata: "
-				+ spimdata.getBasePath().getName() + "\n downsampling: " + downsampling + "\n viewIds: "
-				+ viewIds.toString() + "\n output_name: " + output_name);
-		
+	public static void run(Interval interval, SpimData2 spimdata, double downsampling, List<ViewId> viewIds,
+			String output_name) throws IOException, JSchException, SftpException {
+
+		System.out.println("inputPath: " + spimdata.getBasePath() + "\ninterval: " + interval.toString()
+				+ "\n spimdata: " + spimdata.getBasePath().getName() + "\n downsampling: " + downsampling
+				+ "\n viewIds: " + viewIds.toString() + "\n output_name: " + output_name);
+
 		File xml = XMLFile.fromStitchFolder(spimdata.getBasePath().getAbsolutePath());
 		String inputPath = xml.getAbsolutePath();
 
 		System.out.println("file: " + inputPath);
-		
+
 		int down;
 		if (Double.isNaN(downsampling))
 			down = 1;
 		else
 			down = (int) downsampling;
-//		new ImageJ();
+		// new ImageJ();
 
 		MyLogger.initLogger();
 		new Job();
@@ -77,15 +77,16 @@ public class Clustering {
 		Login.login();
 
 		ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
-		N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims(),BlockConfig.BLOCK_UNIT);
+		N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims(),
+				BlockConfig.BLOCK_UNIT);
 		System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
 				outputFile.getBlocksize());
 		// BlocksMetaData2 md = new BlocksMetaData2(blocksInfo,
 		// Util.int2long(outputFile.getBlocksize()), inputFile,blocksInfo.size());
-		BlocksMetaData md = new BlocksMetaData(viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),BlockConfig.BLOCK_UNIT,
-				bb.getDimensions(down), blocksInfo.size(),down);
+		BlocksMetaData md = new BlocksMetaData(viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),
+				BlockConfig.BLOCK_UNIT, bb.getDimensions(down), blocksInfo.size(), down);
 		File metadataFile = Job.file("metadata.json");
 		MyLogger.log.info(md.toString());
 		Job.setTotalbBlocks(md.getTotal());
@@ -130,29 +131,111 @@ public class Clustering {
 	}
 
 	public static void run(String input_path, String output_name)
-			throws SpimDataException, IOException, JSchException, SftpException {}
+			throws SpimDataException, IOException, JSchException, SftpException {
+	}
 
 	public static void run(FusionGUI fusion) {
-		IOFunctions.println( "CLUSTER!!!");
-		
-		fusion.getBoundingBox();
-		
+		try {
+			IOFunctions.println("CLUSTER!!!");
 
-		final List< Group< ViewDescription > > groups = fusion.getFusionGroups();
-		
-		for ( Group<ViewDescription> group : groups )
-		{
-			IOFunctions.println( "group " + group );
+			Interval interval = fusion.getBoundingBox();
+			SpimData2 spimdata = fusion.getSpimData();
+			double downsampling = fusion.getDownsampling();
+			final List<Group<ViewDescription>> groups = fusion.getFusionGroups();
+
+			File xml = XMLFile.fromStitchFolder(spimdata.getBasePath().getAbsolutePath());
+			String inputPath = xml.getAbsolutePath();
+
+			System.out.println("file: " + inputPath);
+
+			int down;
+			if (Double.isNaN(downsampling))
+				down = 1;
+			else
+				down = (int) downsampling;
+			// new ImageJ();
+
+			MyLogger.initLogger();
+			new Job();
+			List<File> relatedFiles = XMLFile.initRelatedFiles(new File(inputPath));
+			BoundingBox bb = new BoundingBox(interval);
+			List<ViewId> viewIds = new ArrayList<>(groups.get(0).getViews());
+			XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, down, viewIds, relatedFiles);
+
+			Login.login();
+
+			ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
+
+//			SCPManager.createClusterFolder(clusterFolderName);
+
+			File taskFile = new File(task_path);
+			inputFile.getRelatedFiles().add(taskFile);
+			SCPManager.sendInput(inputFile, clusterFolderName);
 			
-			List<ViewId> viewIds = new ArrayList<>(group.getViews());
-			
-			try {
-				String output_name = groups.indexOf(group)+ "_output.n5";
-				Clustering.run(fusion.getBoundingBox(), fusion.getSpimData(), fusion.getDownsampling(), viewIds, output_name);
-			} catch (IOException | JSchException | SftpException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			for (Group<ViewDescription> group : groups) {
+				IOFunctions.println("group " + group);
+				viewIds = new ArrayList<>(group.getViews());
+
+				int i = groups.indexOf(group);
+				String output_name = i + "_output.n5";
+				MyLogger.log.info("inputPath: " + spimdata.getBasePath() + "\ninterval: " + interval.toString()
+						+ "\n spimdata: " + spimdata.getBasePath().getName() + "\n downsampling: " + downsampling
+						+ "\n viewIds: " + viewIds.toString() + "\n output_name: " + output_name);
+
+				N5File outputFile = new N5File(Job.file(output_name).getAbsolutePath(), inputFile.getDims(),
+						BlockConfig.BLOCK_UNIT);
+				System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
+
+				Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
+						outputFile.getBlocksize());
+				BlocksMetaData md = new BlocksMetaData(viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),
+						BlockConfig.BLOCK_UNIT, bb.getDimensions(down), blocksInfo.size(), down);
+				String metadataFileName = i + "_metadata.json";
+				File metadataFile = Job.file(metadataFileName);
+				MyLogger.log.info(md.toString());
+				Job.setTotalbBlocks(md.getTotal());
+				// md.toJson(metadataFile);
+				GsonIO.toJson(md, metadataFile);
+
+				// Generate script
+
+				String taskScriptName = i+TASK_SHELL_NAME;
+				File scriptFile = Job.file(taskScriptName);
+				File metadataCluster = clusterFolderName.subfile(metadataFile);
+				File inputCluster = clusterFolderName.subfile(inputFile);
+				File clusterOutput = clusterFolderName.subfile(outputFile);
+
+				ClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster.getPath(),
+						inputCluster.getPath(), clusterOutput.getPath());
+
+				// Task to prepare N5
+				String prepareScriptName = i+TaskType.file(TaskType.PREPARE);
+				File prepareShell = Job.file(prepareScriptName);
+				ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(),
+						metadataCluster.getPath(), inputCluster.getPath(), clusterOutput.getPath(), "");
+
+				// Generate batch
+
+				String batchScriptName = i+BATCH_NAME;
+				File batchScriptFile = Job.file(batchScriptName);
+				BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal(),i,prepareScriptName,taskScriptName); // md.getTotal()
+
+				// send all
+				List<File> toSend = new ArrayList<>();
+				toSend.add(metadataFile);
+				toSend.add(batchScriptFile);
+				toSend.add(scriptFile);
+				toSend.add(prepareShell);
+				
+				SCPManager.send(toSend, clusterFolderName);
+
+				// Run
+				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
+
 			}
+		} catch (IOException | JSchException | SftpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

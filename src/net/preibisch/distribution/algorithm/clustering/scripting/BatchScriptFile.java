@@ -12,31 +12,32 @@ public class BatchScriptFile {
 	public static final String PREPROCESS_JOB_NAME = "preprocess_";
 	public static final String LOG_JOB_NAME = "provider_";
 	
-	public static void generate(File file,String clusterPath,  int totalInputFiles) throws FileNotFoundException {
-		generate(file, clusterPath, totalInputFiles, true);
+	public static void generate(File file,String clusterPath,  int total) throws FileNotFoundException {
+		generate(file, clusterPath, total, 0, TaskType.file(TaskType.PREPARE), TaskType.file(TaskType.PROCESS));
 	}
-	
-	public static void generate(File file,String clusterPath,  int totalInputFiles, boolean parallel) throws FileNotFoundException {
+
+	public static void generate(File file, String clusterPath, int total, int index, String prepareScriptName,
+			String taskScriptName) throws FileNotFoundException {
+
 		MyLogger.log.info("Start Generate batch file.. ");
 
-		System.out.println("Input total files:" + totalInputFiles);
+		System.out.println("Input total files:" + total);
 		try(PrintWriter out = new PrintWriter(file)){
 			out.println("#!/bin/bash");
 			out.println("cd " + clusterPath);
-			String prepName = "prep";
-			out.println("qsub -N \""+prepName+"\" -t " + 1 + " ./"+TaskType.file(TaskType.PREPARE));
-			for (int i = 1; i <= totalInputFiles; i++) {
-//				String exTaskName = taskName;
-				String taskName = "task_" + i ;
+			String prepName = "prep_"+index;
+			out.println("qsub -N \""+prepName+"\" -t " + 1 + " ./"+prepareScriptName);
+			for (int i = 1; i <= total; i++) {
+
+				String taskName = "task_"+index+"_" + i ;
 				String hold = "";
-//				if(!parallel)
-//					hold = " -hold_jid "+exTaskName;
 				hold = " -hold_jid \""+prepName+"\"";
-				out.println("qsub -N \""+taskName+"\""+hold+" -t " + i + " ./"+TaskType.file(TaskType.PROCESS));
+				out.println("qsub -N \""+taskName+"\""+hold+" -t " + i + " ./"+taskScriptName);
 			}
 			out.flush();
 			out.close();
 		}
+	
 	}
 
 //	public static void GenerateBatchForClusterFile(AbstractCallBack callback, int taskPos) {
