@@ -2,6 +2,7 @@ package net.preibisch.distribution.headless;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import mpicbg.spim.data.SpimDataException;
+import mpicbg.spim.data.sequence.ViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
+import mpicbg.spim.io.IOFunctions;
 import net.imglib2.Interval;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
@@ -27,14 +30,16 @@ import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerat
 import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.io.img.n5.N5File;
+import net.preibisch.mvrecon.fiji.plugin.fusion.FusionGUI;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
+import net.preibisch.mvrecon.process.interestpointregistration.pairwise.constellation.grouping.Group;
 
 public class Clustering {
 	private static final String BATCH_NAME = "submit.cmd";
 	private static final String TASK_SHELL_NAME = "task.sh";
 
-	private final static String task_path = "/Users/Marwan/Desktop/Fusion.jar";
+	private final static String task_path = "/Users/Marwan/Desktop/Task/Fusion.jar";
 
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 		run("/Users/Marwan/Desktop/grid-3d-stitched-h5/dataset.xml");
@@ -126,4 +131,28 @@ public class Clustering {
 
 	public static void run(String input_path, String output_name)
 			throws SpimDataException, IOException, JSchException, SftpException {}
+
+	public static void run(FusionGUI fusion) {
+		IOFunctions.println( "CLUSTER!!!");
+		
+		fusion.getBoundingBox();
+		
+
+		final List< Group< ViewDescription > > groups = fusion.getFusionGroups();
+		
+		for ( Group<ViewDescription> group : groups )
+		{
+			IOFunctions.println( "group " + group );
+			
+			List<ViewId> viewIds = new ArrayList<>(group.getViews());
+			
+			try {
+				String output_name = groups.indexOf(group)+ "_output.n5";
+				Clustering.run(fusion.getBoundingBox(), fusion.getSpimData(), fusion.getDownsampling(), viewIds, output_name);
+			} catch (IOException | JSchException | SftpException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
