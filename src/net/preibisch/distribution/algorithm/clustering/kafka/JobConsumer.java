@@ -61,27 +61,27 @@ public class JobConsumer extends ShutdownableThread {
         return false;
     }
     public static void main(String[] args) {
-        JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
-			
-			@Override
-			public void onSuccess(int pos) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onError(String error) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void log(String log) {
-				System.out.println("test log: "+log);
-				
-			}
-		});
-        consumerThread.start();
+    	  JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
+  			
+  			@Override
+  			public void onSuccess(int pos) {
+  				// TODO Auto-generated method stub
+  				
+  			}
+  			
+  			@Override
+  			public void onError(String error) {
+  				// TODO Auto-generated method stub
+  				
+  			}
+  			
+  			@Override
+  			public void log(String log) {
+  				System.out.println("test log: "+log);
+  				
+  			}
+  		});
+          consumerThread.start();
 
     }
 }
