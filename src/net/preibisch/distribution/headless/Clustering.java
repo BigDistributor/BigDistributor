@@ -19,11 +19,13 @@ import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
+import net.preibisch.distribution.algorithm.clustering.kafka.JobConsumer;
 import net.preibisch.distribution.algorithm.clustering.scripting.BatchScriptFile;
 import net.preibisch.distribution.algorithm.clustering.scripting.ClusterScript;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
+import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
@@ -231,11 +233,37 @@ public class Clustering {
 
 				// Run
 				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
+				
+				startKafka();
 
 			}
 		} catch (IOException | JSchException | SftpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static void startKafka() {
+		  JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
+				
+				@Override
+				public void onSuccess(int pos) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onError(String error) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void log(String log) {
+					System.out.println("log: "+log);
+					
+				}
+			});
+	        consumerThread.start();
 	}
 }
