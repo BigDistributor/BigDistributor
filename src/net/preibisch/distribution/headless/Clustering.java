@@ -190,7 +190,7 @@ public class Clustering {
 
 				Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
 						outputFile.getBlocksize());
-				BlocksMetaData md = new BlocksMetaData(viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),
+				BlocksMetaData md = new BlocksMetaData(Job.getId(),viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),
 						BlockConfig.BLOCK_UNIT, bb.getDimensions(down), blocksInfo.size(), down);
 				String metadataFileName = i + "_metadata.json";
 				File metadataFile = Job.file(metadataFileName);

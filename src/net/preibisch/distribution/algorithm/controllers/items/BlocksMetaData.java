@@ -26,15 +26,23 @@ public class BlocksMetaData {
 	private long[] blocksize;
 	private int blockUnit;
 	private int downsample;
+	private String jobId;
 	private Map<Integer, BasicBlockInfo> blocksInfo;
 	private List<ViewIdMD> viewIdsmd;
 
-	public BlocksMetaData(Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes,  long[] dimensions, int total) {
-		this(null,blocksInfo, bsizes, BlockConfig.BLOCK_UNIT, dimensions, total,1);
+	public BlocksMetaData(Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, long[] dimensions, int total) {
+		this(Job.getId(), null, blocksInfo, bsizes, BlockConfig.BLOCK_UNIT, dimensions, total, 1);
 	}
-	
-	public BlocksMetaData(List<ViewId> viewIds,Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, int blockUnit, long[] dimensions, int total, int down) {
+
+	public BlocksMetaData(List<ViewId> viewIds, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, int blockUnit,
+			long[] dimensions, int total, int down) {
+		this(Job.getId(), viewIds, blocksInfo, bsizes, blockUnit, dimensions, total, down);
+	}
+
+	public BlocksMetaData(String jobId, List<ViewId> viewIds, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes,
+			int blockUnit, long[] dimensions, int total, int down) {
 		super();
+		this.jobId = jobId;
 		this.downsample = down;
 		this.viewIdsmd = setViewIds(viewIds);
 		this.blockUnit = blockUnit;
@@ -46,24 +54,28 @@ public class BlocksMetaData {
 
 	private List<ViewIdMD> setViewIds(List<ViewId> viewIds) {
 		List<ViewIdMD> viewIdMD = new ArrayList<>();
-		for (ViewId viewid: viewIds) {
+		for (ViewId viewid : viewIds) {
 			viewIdMD.add(new ViewIdMD(viewid));
 		}
 		return viewIdMD;
 	}
 
+	public String getJobId() {
+		return jobId;
+	}
+
 	public Map<Integer, BasicBlockInfo> getBlocksInfo() {
 		return blocksInfo;
 	}
-	
+
 	public List<ViewId> getViewIds() {
 		List<ViewId> viewIds = new ArrayList<>();
-		for (ViewIdMD viewid: viewIdsmd) {
+		for (ViewIdMD viewid : viewIdsmd) {
 			viewIds.add(new ViewId(viewid.getTimepoint(), viewid.getSetup()));
 		}
 		return viewIds;
 	}
-	
+
 	public int getBlockUnit() {
 		return blockUnit;
 	}
@@ -91,23 +103,21 @@ public class BlocksMetaData {
 	public void setDimensions(long[] dimensions) {
 		this.dimensions = dimensions;
 	}
-	
+
 	public int getDownsample() {
 		return downsample;
 	}
 
 	@Override
 	public String toString() {
-		String str = "\nMetaData: total:" + blocksInfo.size() + " dims:" + Util.printCoordinates(dimensions) 
-		+ " blocks: " + Util.printCoordinates(blocksize) + "\n"
-		+ " downsample: " +downsample + "\n"
-		+ " viewIds: " + viewIdsmd + "\n"
-		+ " blockUnit: " + blockUnit + "\n";
+		String str = "\nMetaData: total:" + blocksInfo.size() + " dims:" + Util.printCoordinates(dimensions)
+				+ " blocks: " + Util.printCoordinates(blocksize) + "\n" + " downsample: " + downsample + "\n"
+				+ " viewIds: " + viewIdsmd + "\n" + " blockUnit: " + blockUnit + "\n";
 		String elms = "";
-		for (int i = 0; i < blocksInfo.size()%10; i++) {
+		for (int i = 0; i < blocksInfo.size() % 10; i++) {
 			elms = elms + i + "-" + blocksInfo.get(i).toString() + " \n";
 		}
-//		String elm1 = blocksInfo.get(1).toString()+" \n";
+		// String elm1 = blocksInfo.get(1).toString()+" \n";
 		return str + elms;
 	}
 
@@ -115,10 +125,11 @@ public class BlocksMetaData {
 		Writer writer = new FileWriter(file);
 		Gson gson = new GsonBuilder().create();
 		gson.toJson(this, writer);
-		System.out.println("Metadata saved: "+file.getAbsolutePath());
+		System.out.println("Metadata saved: " + file.getAbsolutePath());
 	}
-	
-	public static BlocksMetaData fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+
+	public static BlocksMetaData fromJson(String path)
+			throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		return new Gson().fromJson(new FileReader(path), BlocksMetaData.class);
 	}
 }

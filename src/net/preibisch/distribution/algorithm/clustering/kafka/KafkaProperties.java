@@ -1,5 +1,8 @@
 package net.preibisch.distribution.algorithm.clustering.kafka;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 enum KafkaMessage {
 	ERROR, DONE, LOG;
 
@@ -26,8 +29,22 @@ public class KafkaProperties {
 	public static final int KAFKA_PRODUCER_BUFFER_SIZE = 64 * 1024;
 	public static final int CONNECTION_TIMEOUT = 100000;
 	public static final String CLIENT_ID = "mzouink";
+	public static  String jobId = "0";
 
 	public static void setURL(String url) {
 		KAFKA_SERVER_URL = url;
+	}
+	
+	public static void setJobId(String jobId) {
+		KafkaProperties.jobId = jobId;
+	}
+	
+	public static String getJobId() {
+		return jobId;
+	}
+	
+	public static Collection<String> getTopics(){
+		Collection<String> list = Arrays.asList(TOPIC_DONE_TASK,TOPIC_ERROR_TASK,TOPIC_LOG_TASK);
+		return list;
 	}
 }

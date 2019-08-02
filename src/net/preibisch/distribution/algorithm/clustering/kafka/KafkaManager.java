@@ -2,8 +2,6 @@ package net.preibisch.distribution.algorithm.clustering.kafka;
 
 import java.util.Timer;
 
-import net.preibisch.distribution.algorithm.controllers.items.Job;
-
 public class KafkaManager {
 	public static void log(int block, String msg) {
 		send(KafkaMessage.LOG, block, msg);
@@ -18,7 +16,7 @@ public class KafkaManager {
 	}
 
 	private static void send(KafkaMessage type, int block, String msg) {
-		String message = Job.getId() + ";" + block + ";" + msg;
+		String message = KafkaProperties.getJobId()+ ";" + block + ";" + msg;
 		String topic = KafkaMessage.getTopic(type);
 		TaskDoneProducer producerThread = new TaskDoneProducer(topic, message);
 		new Timer().schedule(producerThread, 1000);

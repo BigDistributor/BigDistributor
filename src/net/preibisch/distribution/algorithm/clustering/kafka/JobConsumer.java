@@ -1,6 +1,5 @@
 package net.preibisch.distribution.algorithm.clustering.kafka;
 
-import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -40,11 +39,14 @@ public class JobConsumer extends ShutdownableThread {
     @Override
     public void doWork() {
     	Logger.getRootLogger().setLevel(Level.OFF);
-        consumer.subscribe(Collections.singletonList(KafkaProperties.TOPIC_DONE_TASK));
+    	
+//        consumer.subscribe(Collections.singletonList(KafkaProperties.TOPIC_DONE_TASK));
+        consumer.subscribe(KafkaProperties.getTopics());
         while(true) {
         ConsumerRecords<Integer, String> records = consumer.poll(1000);
         for (ConsumerRecord<Integer, String> record : records) {
-        	System.out.println("Received message: (" + record.key() + ", " + record.value() + ") at offset " + record.offset());
+        	
+        	System.out.println("Received message: (" + record.topic()+","+record.key() + ", " + record.value() + ") at offset " + record.offset());
 
             callback.log(record.value());
         }
