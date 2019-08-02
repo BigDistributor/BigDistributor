@@ -16,9 +16,10 @@ public class KafkaManager {
 	}
 
 	private static void send(KafkaMessage type, int block, String msg) {
-		String message = KafkaProperties.getJobId()+ ";" + block + ";" + msg;
+		String id =  KafkaProperties.getJobId();
+		String message =  block + ";" + msg;
 		String topic = KafkaMessage.getTopic(type);
-		TaskDoneProducer producerThread = new TaskDoneProducer(topic, message);
+		TaskDoneProducer producerThread = new TaskDoneProducer(topic,id, message);
 		new Timer().schedule(producerThread, 1000);
 	}
 
