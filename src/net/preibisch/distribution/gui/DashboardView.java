@@ -9,7 +9,6 @@ import java.awt.event.AdjustmentListener;
 
 import javax.swing.Timer;
 
-import net.preibisch.distribution.algorithm.controllers.items.Job;
 import net.preibisch.distribution.gui.items.ControlPanel;
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.Frame;
@@ -52,7 +51,6 @@ public class DashboardView extends Frame {
 			}
 		});
 		timer.start();
-
 	}
 
 	private void updateView() {

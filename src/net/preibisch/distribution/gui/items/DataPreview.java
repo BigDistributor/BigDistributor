@@ -3,6 +3,7 @@ package net.preibisch.distribution.gui.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.algorithm.blockmanager.GraphicBlocksManager;
 import net.preibisch.distribution.gui.GUIConfig;
@@ -47,13 +48,30 @@ public class DataPreview extends Object {
 		DataPreview.blocksPreview = GraphicBlocksManager.generateBlocks(dims, blocksSizes, overlap);
 	}
 
+	public DataPreview(long[] dims,long overlap,long[] blockSize) {
+		this(dims, overlap, blockSize, GUIConfig.PREVIEW_PREFERED_HEIGHT);
+	}
+	
+	public DataPreview(long[] dims,long overlap,long[] blockSize,int previewPreferedHeight) {
+		DataPreview.dims = dims;
+		DataPreview.overlap = overlap;
+		DataPreview.blocksSizes = blockSize;
+		DataPreview.previewPreferedHeight = previewPreferedHeight;
+		generateBlocks();
+	}
+	
 	public static void fromFile(ImgFile file) {
 		DataPreview.dims = file.getDims();
 		DataPreview.previewPreferedHeight = GUIConfig.PREVIEW_PREFERED_HEIGHT;
 		long[] blocksSizes = new long[dims.length];
 		Arrays.fill(blocksSizes, BlockConfig.BLOCK_UNIT);
 		DataPreview.blocksSizes = blocksSizes;
+		System.out.println(DataPreview.str());
 		generateBlocks();
+	}
+	
+	public static String str() {	
+		return "DataPreview: Dims = " +Util.printCoordinates(dims) + " | prefered height: "+previewPreferedHeight+ " | Block size: "+ blocksSizes ;
 	}
 
 }

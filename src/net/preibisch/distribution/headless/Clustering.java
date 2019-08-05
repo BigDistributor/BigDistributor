@@ -29,6 +29,7 @@ import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractC
 import net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
+import net.preibisch.distribution.gui.DashboardView;
 import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.io.img.n5.N5File;
@@ -235,6 +236,9 @@ public class Clustering {
 				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
 				
 				startKafka();
+				
+				DashboardView dashboardView = new DashboardView("Progress..");
+				dashboardView.setVisible(true);
 
 			}
 		} catch (IOException | JSchException | SftpException e) {
