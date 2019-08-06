@@ -19,17 +19,16 @@ import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
-import net.preibisch.distribution.algorithm.clustering.kafka.JobConsumer;
+import net.preibisch.distribution.algorithm.clustering.kafka.KafkaMessageManager;
 import net.preibisch.distribution.algorithm.clustering.scripting.BatchScriptFile;
 import net.preibisch.distribution.algorithm.clustering.scripting.ClusterScript;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
-import net.preibisch.distribution.gui.DashboardView;
+import net.preibisch.distribution.gui.PreviewUI;
 import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.io.img.n5.N5File;
@@ -76,6 +75,8 @@ public class Clustering {
 		List<File> relatedFiles = XMLFile.initRelatedFiles(new File(inputPath));
 		BoundingBox bb = new BoundingBox(interval);
 		XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, down, viewIds, relatedFiles);
+
+		PreviewUI ui = new PreviewUI(inputFile);
 
 		Login.login();
 
@@ -165,16 +166,18 @@ public class Clustering {
 			List<ViewId> viewIds = new ArrayList<>(groups.get(0).getViews());
 			XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, down, viewIds, relatedFiles);
 
+			PreviewUI ui = new PreviewUI(inputFile);
+			
 			Login.login();
 
 			ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
 
-//			SCPManager.createClusterFolder(clusterFolderName);
+			// SCPManager.createClusterFolder(clusterFolderName);
 
 			File taskFile = new File(task_path);
 			inputFile.getRelatedFiles().add(taskFile);
 			SCPManager.sendInput(inputFile, clusterFolderName);
-			
+
 			for (Group<ViewDescription> group : groups) {
 				IOFunctions.println("group " + group);
 				viewIds = new ArrayList<>(group.getViews());
@@ -191,8 +194,9 @@ public class Clustering {
 
 				Map<Integer, BasicBlockInfo> blocksInfo = MetadataGenerator.generateBlocks(inputFile.bb(),
 						outputFile.getBlocksize());
-				BlocksMetaData md = new BlocksMetaData(Job.getId(),viewIds, blocksInfo, Util.int2long(outputFile.getBlocksize()),
-						BlockConfig.BLOCK_UNIT, bb.getDimensions(down), blocksInfo.size(), down);
+				BlocksMetaData md = new BlocksMetaData(Job.getId(), viewIds, blocksInfo,
+						Util.int2long(outputFile.getBlocksize()), BlockConfig.BLOCK_UNIT, bb.getDimensions(down),
+						blocksInfo.size(), down);
 				String metadataFileName = i + "_metadata.json";
 				File metadataFile = Job.file(metadataFileName);
 				MyLogger.log.info(md.toString());
@@ -202,7 +206,7 @@ public class Clustering {
 
 				// Generate script
 
-				String taskScriptName = i+TASK_SHELL_NAME;
+				String taskScriptName = i + TASK_SHELL_NAME;
 				File scriptFile = Job.file(taskScriptName);
 				File metadataCluster = clusterFolderName.subfile(metadataFile);
 				File inputCluster = clusterFolderName.subfile(inputFile);
@@ -212,16 +216,17 @@ public class Clustering {
 						inputCluster.getPath(), clusterOutput.getPath());
 
 				// Task to prepare N5
-				String prepareScriptName = i+TaskType.file(TaskType.PREPARE);
+				String prepareScriptName = i + TaskType.file(TaskType.PREPARE);
 				File prepareShell = Job.file(prepareScriptName);
 				ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(),
 						metadataCluster.getPath(), inputCluster.getPath(), clusterOutput.getPath(), "");
 
 				// Generate batch
 
-				String batchScriptName = i+BATCH_NAME;
+				String batchScriptName = i + BATCH_NAME;
 				File batchScriptFile = Job.file(batchScriptName);
-				BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal(),i,prepareScriptName,taskScriptName); // md.getTotal()
+				BatchScriptFile.generate(batchScriptFile, clusterFolderName.getPath(), md.getTotal(), i,
+						prepareScriptName, taskScriptName); // md.getTotal()
 
 				// send all
 				List<File> toSend = new ArrayList<>();
@@ -229,45 +234,18 @@ public class Clustering {
 				toSend.add(batchScriptFile);
 				toSend.add(scriptFile);
 				toSend.add(prepareShell);
-				
+
 				SCPManager.send(toSend, clusterFolderName);
 
 				// Run
 				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
-				
-				startKafka();
-				
-				DashboardView dashboardView = new DashboardView("Progress..");
-				dashboardView.setVisible(true);
+
+				new KafkaMessageManager(Job.getId());
 
 			}
 		} catch (IOException | JSchException | SftpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private static void startKafka() {
-		  JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
-				
-				@Override
-				public void onSuccess(int pos) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onError(String error) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void log(String log) {
-					System.out.println("log: "+log);
-					
-				}
-			});
-	        consumerThread.start();
 	}
 }

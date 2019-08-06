@@ -11,15 +11,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import kafka.utils.ShutdownableThread;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 
 public class JobConsumer extends ShutdownableThread {
-    private final KafkaConsumer<Integer, String> consumer;
+    private final KafkaConsumer<String, String> consumer;
  
-    private AbstractCallBack callback;
-
-    public JobConsumer(AbstractCallBack callback) {
+    public JobConsumer() {
     	 super("KafkaJobConsumer", false);
+
 //    	 Logger logger = Logger.getLogger(this.getClass());
 //     	logger.setLevel(Level.ERROR);
     	 Logger.getRootLogger().setLevel(Level.OFF);
@@ -32,8 +30,7 @@ public class JobConsumer extends ShutdownableThread {
         props.setProperty("value.deserializer", StringDeserializer.class.getName());
 
         consumer = new KafkaConsumer<>(props);
-         this.callback = callback;
-        callback.log("Listner created");
+
     }
 
     @Override
@@ -41,17 +38,17 @@ public class JobConsumer extends ShutdownableThread {
     	Logger.getRootLogger().setLevel(Level.OFF);
     	
 //        consumer.subscribe(Collections.singletonList(KafkaProperties.TOPIC_DONE_TASK));
-        consumer.subscribe(KafkaProperties.getTopics());
+        consumer.subscribe(KafkaTopics.getTopics());
         while(true) {
-        ConsumerRecords<Integer, String> records = consumer.poll(1000);
-        for (ConsumerRecord<Integer, String> record : records) {
-        	
-        	System.out.println("Received message: (" + record.topic()+","+record.key() + ", " + record.value() + ") at offset " + record.offset());
+        ConsumerRecords<String, String> records = consumer.poll(1000);
+        for (ConsumerRecord<String, String> record : records) {
+        	KafkaMessageManager.process(record);
 
-            callback.log(record.value());
         }
         }
     }
+    
+  
 
     @Override
     public String name() {
@@ -63,26 +60,7 @@ public class JobConsumer extends ShutdownableThread {
         return false;
     }
     public static void main(String[] args) {
-    	  JobConsumer consumerThread = new JobConsumer(new AbstractCallBack() {
-  			
-  			@Override
-  			public void onSuccess(int pos) {
-  				// TODO Auto-generated method stub
-  				
-  			}
-  			
-  			@Override
-  			public void onError(String error) {
-  				// TODO Auto-generated method stub
-  				
-  			}
-  			
-  			@Override
-  			public void log(String log) {
-  				System.out.println("test log: "+log);
-  				
-  			}
-  		});
+    	  JobConsumer consumerThread = new JobConsumer();
           consumerThread.start();
 
     }

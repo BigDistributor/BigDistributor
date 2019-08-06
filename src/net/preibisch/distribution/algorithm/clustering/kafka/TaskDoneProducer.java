@@ -40,7 +40,7 @@ public class TaskDoneProducer extends TimerTask {
     
     public static void main(String[] args) {
         
-    	TaskDoneProducer producerThread = new TaskDoneProducer(KafkaProperties.TOPIC_DONE_TASK,"0",String.join(";", args));
+    	TaskDoneProducer producerThread = new TaskDoneProducer(KafkaTopics.TOPIC_DONE_TASK,"0",String.join(";", args));
         Timer timer = new Timer();
         timer.schedule(producerThread, 1000);
 

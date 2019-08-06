@@ -9,7 +9,7 @@ public class StatusListenerManager implements AbstractTask {
 	@Override
 	public void start(int pos, AbstractCallBack callback) {
 		callback.log("Get Status..");
-		JobConsumer consumerThread = new JobConsumer(callback);
+		JobConsumer consumerThread = new JobConsumer();
 		consumerThread.start();
 	}
 

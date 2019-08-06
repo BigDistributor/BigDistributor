@@ -4,21 +4,21 @@ import java.util.Timer;
 
 public class KafkaManager {
 	public static void log(int block, String msg) {
-		send(KafkaMessage.LOG, block, msg);
+		send(KafkaTopics.LOG, block, msg);
 	}
 
 	public static void error(int block, String msg) {
-		send(KafkaMessage.ERROR, block, msg);
+		send(KafkaTopics.ERROR, block, msg);
 	}
 
 	public static void done(int block, String msg) {
-		send(KafkaMessage.DONE, block, msg);
+		send(KafkaTopics.DONE, block, msg);
 	}
 
-	private static void send(KafkaMessage type, int block, String msg) {
+	private static void send(KafkaTopics type, int block, String msg) {
 		String id =  KafkaProperties.getJobId();
 		String message =  block + ";" + msg;
-		String topic = KafkaMessage.getTopic(type);
+		String topic = KafkaTopics.getTopic(type);
 		TaskDoneProducer producerThread = new TaskDoneProducer(topic,id, message);
 		new Timer().schedule(producerThread, 1000);
 	}

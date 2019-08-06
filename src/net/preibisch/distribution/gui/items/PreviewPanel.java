@@ -2,9 +2,12 @@ package net.preibisch.distribution.gui.items;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.Timer;
 
 import net.preibisch.distribution.gui.GUIConfig;
 
@@ -23,6 +26,13 @@ public class PreviewPanel extends JPanel {
 		canvas.setAutoscrolls(true);
 		scrollFrame.setPreferredSize(new Dimension(GUIConfig.PREVIEW_PANEL_WIDTH, GUIConfig.PREIVIEW_PANEL_HEIGHT));
 		add(scrollFrame);
+		Timer timer = new Timer(3000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateCanvas();
+			}
+		});
+		timer.start();
 	}
 
 	public void updateCanvas() {
