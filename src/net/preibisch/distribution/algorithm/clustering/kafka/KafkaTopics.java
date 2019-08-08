@@ -6,9 +6,9 @@ import java.util.Collection;
 enum KafkaTopics {
 	ERROR, DONE, LOG;
 
-	public static final String TOPIC_DONE_TASK = "TASK_DONE";
-	public static final String TOPIC_ERROR_TASK = "TASK_ERROR";
-	public static final String TOPIC_LOG_TASK = "TASK_LOG";
+	public static final String TOPIC_DONE_TASK = "TASKDONE";
+	public static final String TOPIC_ERROR_TASK = "TASKERROR";
+	public static final String TOPIC_LOG_TASK = "TASKLOG";
 
 	public static String getTopic(KafkaTopics msg) {
 		switch (msg) {
@@ -30,6 +30,7 @@ enum KafkaTopics {
 		case TOPIC_ERROR_TASK:
 			return ERROR;
 		case TOPIC_DONE_TASK:
+			return DONE;
 		default:
 			return LOG;
 		}

@@ -166,7 +166,7 @@ public class Clustering {
 			List<ViewId> viewIds = new ArrayList<>(groups.get(0).getViews());
 			XMLFile inputFile = new XMLFile(inputPath, bb, spimdata, down, viewIds, relatedFiles);
 
-			PreviewUI ui = new PreviewUI(inputFile);
+			PreviewUI ui = new PreviewUI(inputFile,groups.size());
 			
 			Login.login();
 
@@ -238,11 +238,11 @@ public class Clustering {
 				SCPManager.send(toSend, clusterFolderName);
 
 				// Run
-				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));
-
-				new KafkaMessageManager(Job.getId());
+				SCPManager.startBatch(clusterFolderName.subfile(batchScriptFile));		
 
 			}
+			new KafkaMessageManager(Job.getId(),groups.size());
+			
 		} catch (IOException | JSchException | SftpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -27,6 +27,7 @@ public class Job extends Object {
 	public Job(AppMode mode) {
 
 		String id = Tools.id();
+		System.out.println("Job id: "+id);
 
 		File tmpDir = createTempDir();
 		if(!Login.isConfigured()) {

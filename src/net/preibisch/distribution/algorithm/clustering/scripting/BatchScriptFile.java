@@ -27,6 +27,7 @@ public class BatchScriptFile {
 			out.println("cd " + clusterPath);
 			String prepName = "prep_"+index;
 			out.println("qsub -N \""+prepName+"\" -t " + 1 + " ./"+prepareScriptName);
+
 			for (int i = 1; i <= total; i++) {
 
 				String taskName = "task_"+index+"_" + i ;

@@ -10,6 +10,16 @@ import net.preibisch.distribution.gui.items.BlockPreview;
 import net.preibisch.distribution.tools.Helper;
 
 public class GraphicBlocksManager {
+	
+	public static ArrayList<ArrayList<BlockPreview>> generateBlocks(long[] dims, long[] blocksSizes, long overlap,
+			int n) {
+		ArrayList<ArrayList<BlockPreview>> blocks = new ArrayList<>();
+		ArrayList<BlockPreview> preview = generateBlocks(dims, blocksSizes, overlap);
+		for(int i = 0 ; i<n ;i++)
+			blocks.add(new ArrayList<>(preview));
+		return blocks;
+	}
+	
 	public static ArrayList<BlockPreview> generateBlocks(long[] dimensions, long[] blocksSize, long overlap) {
 
 		ArrayList<BlockPreview> blocksPreview = new ArrayList<>();
@@ -124,4 +134,6 @@ public class GraphicBlocksManager {
 
 		return numBlocks;
 	}
+
+
 }
