@@ -1,18 +1,18 @@
-package net.preibisch.distribution.algorithm.controllers.items;
+package net.preibisch.distribution.io.serializers.viewid;
 
 import mpicbg.spim.data.sequence.ViewId;
 
-public class ViewIdMD {
+public class ViewIdSerializable {
 
 	private int timepoint;
 	private int setup;
 
-	public ViewIdMD(int timePoint, int setup) {
+	public ViewIdSerializable(int timePoint, int setup) {
 		this.timepoint = timePoint;
 		this.setup = setup;
 	}
 
-	public ViewIdMD(ViewId viewId) {
+	public ViewIdSerializable(ViewId viewId) {
 		this(viewId.getTimePointId(), viewId.getViewSetupId());
 	}
 
