@@ -14,7 +14,7 @@ import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import net.preibisch.distribution.io.img.XMLFile;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
@@ -42,7 +42,7 @@ public class GenerateMetaBlocksFile implements Callable<Void> {
 		AbstractCallBack callback = createCallBack();
 		callback.log("Create metablocks.. ");
 		XMLFile inputData = XMLFile.XMLFile(dataPath);
-		int[] blocksizes = Tools.array(BlockConfig.BLOCK_UNIT, inputData.getDims().length);
+		int[] blocksizes = ArrayHelpers.array(BlockConfig.BLOCK_UNIT, inputData.getDims().length);
 		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputData.bb(), blocksizes);
 		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(blocksizes), inputData.getDimensions(1),blocks.size());
 		md.toJson(new File(outpath));

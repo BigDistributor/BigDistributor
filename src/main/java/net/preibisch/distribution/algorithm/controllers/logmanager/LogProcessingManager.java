@@ -5,8 +5,8 @@ import net.preibisch.distribution.algorithm.controllers.items.Job;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.controllers.tasks.DataGetter;
 import net.preibisch.distribution.algorithm.controllers.tasks.ResultManager;
-import net.preibisch.distribution.gui.items.Colors;
 import net.preibisch.distribution.gui.items.DataPreview;
+import net.preibisch.distribution.gui.items.basics.Colors;
 import net.preibisch.distribution.tools.config.DEFAULT;
 
 public class LogProcessingManager {

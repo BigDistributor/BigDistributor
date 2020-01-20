@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
-public class MyUserInfo implements UserInfo, UIKeyboardInteractive {
+public class PasswordPopup implements UserInfo, UIKeyboardInteractive {
 	@Override
 	public String getPassword() {
 		return passwd;

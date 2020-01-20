@@ -1,4 +1,4 @@
-package net.preibisch.distribution.tools.config.server;
+package net.preibisch.distribution.algorithm.controllers.server;
 
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.tools.config.DEFAULT;

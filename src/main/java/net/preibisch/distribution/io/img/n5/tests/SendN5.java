@@ -10,8 +10,8 @@ import mpicbg.spim.data.SpimDataException;
 import net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
 import net.preibisch.distribution.io.img.XMLFile;
 
 public class SendN5 {
@@ -30,10 +30,10 @@ public class SendN5 {
 
 		// Connection
 		new Job();
-		Login.login();
+		Connection.login();
 		// SessionManager.connect();
 
-		ClusterFile clusterFolderName = new ClusterFile(Login.getServer().getPath(), Job.getId());
+		ClusterFile clusterFolderName = new ClusterFile(Connection.getServer().getPath(), Job.getId());
 
 		SCPManager.sendInput(inputFile, clusterFolderName);
 	}

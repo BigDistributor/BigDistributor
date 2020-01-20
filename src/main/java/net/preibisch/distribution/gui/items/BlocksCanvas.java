@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
+import net.preibisch.distribution.gui.items.basics.Colors;
+
 
 
 public class BlocksCanvas extends JComponent {

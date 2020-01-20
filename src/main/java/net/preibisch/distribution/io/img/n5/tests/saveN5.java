@@ -15,7 +15,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.io.img.XMLFile;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
 public class saveN5 {
 
@@ -29,7 +29,7 @@ public static void main(String[] args) throws SpimDataException, IOException {
 	ImageJFunctions.show(virtual,"input");
 	String dataset = "/volumes/raw";
 	N5Writer writer = new N5FSWriter(output_path);
-	int[] blocks = Tools.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
+	int[] blocks = ArrayHelpers.array(BlockConfig.BLOCK_UNIT, virtual.numDimensions());
 	System.out.println("start saving output");
 	N5Utils.save(virtual, writer, dataset, blocks, new RawCompression());
 	System.out.println("Ouptut generated");

@@ -7,7 +7,8 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.gui.GUIConfig;
 import net.preibisch.distribution.gui.items.BlockPreview;
-import net.preibisch.distribution.tools.Helper;
+import net.preibisch.distribution.tools.helpers.ImgHelpers;
+import net.preibisch.distribution.tools.helpers.LogHelpers;
 
 public class GraphicBlocksManager {
 	
@@ -84,14 +85,14 @@ public class GraphicBlocksManager {
 	}
 
 	public static long[] get2DDimensions(Img<FloatType> file,AbstractCallBack callback) {
-		long[] dims = Helper.getDimensions(file);
-		String logString = Helper.logArray(dims);
+		long[] dims = ImgHelpers.getDimensions(file);
+		String logString = LogHelpers.logArray(dims);
 		callback.log("Dims: " + logString);
 		for (int i = 2; i < dims.length; i++) {
 			dims[i % 2] = dims[i % 2] * dims[i];
 		}
 		long[] result = new long[] { dims[0], dims[1] };
-		logString = Helper.logArray(result);
+		logString = LogHelpers.logArray(result);
 		callback.log("2D - Dims: " + logString);
 		return result;
 	}

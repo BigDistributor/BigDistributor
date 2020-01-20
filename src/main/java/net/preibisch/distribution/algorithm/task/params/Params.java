@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.task;
+package net.preibisch.distribution.algorithm.task.params;
 
 import mpicbg.spim.data.SpimDataException;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;

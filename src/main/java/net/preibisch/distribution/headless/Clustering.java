@@ -11,7 +11,7 @@ import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewDescription;
 import net.imglib2.Interval;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
-import net.preibisch.distribution.algorithm.task.FusionParams;
+import net.preibisch.distribution.algorithm.task.params.FusionParams;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.interestpointregistration.pairwise.constellation.grouping.Group;
 

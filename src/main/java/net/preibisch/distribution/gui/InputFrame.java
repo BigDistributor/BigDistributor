@@ -14,8 +14,8 @@ import javax.swing.border.EmptyBorder;
 
 import net.preibisch.distribution.algorithm.controllers.items.AppMode;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
 import net.preibisch.distribution.gui.items.FilePicker;
 import net.preibisch.distribution.gui.items.Frame;
 
@@ -35,7 +35,7 @@ public class InputFrame extends Frame implements ActionListener {
 	}
 
 	private static void initConfig() {
-		Login.login();
+		Connection.login();
 	}
 
 	private void initGui() {

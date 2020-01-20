@@ -14,10 +14,10 @@ import javax.swing.border.EmptyBorder;
 
 import net.preibisch.distribution.algorithm.clustering.jsch.TCPProperties;
 import net.preibisch.distribution.algorithm.clustering.kafka.KafkaProperties;
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
+import net.preibisch.distribution.algorithm.controllers.server.Account;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.controllers.server.ServerConfiguration;
 import net.preibisch.distribution.gui.items.Frame;
-import net.preibisch.distribution.tools.config.server.Account;
-import net.preibisch.distribution.tools.config.server.ServerConfiguration;
 
 public class ConfigFrame extends Frame {
 	private static final long serialVersionUID = -1404300721421953024L;
@@ -89,7 +89,7 @@ public class ConfigFrame extends Frame {
 
 				ServerConfiguration server = new ServerConfiguration.Builder().host(hostField.getText()).port(portValue)
 						.path(serverPathField.getText()).build();
-				Login.login(server, account);
+				Connection.login(server, account);
 
 //				System.out.println(Login.toString());
 

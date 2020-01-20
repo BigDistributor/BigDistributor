@@ -13,7 +13,7 @@ import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.tools.helpers.IOHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
@@ -176,7 +176,7 @@ public class XMLFile extends ImgFile {
 	}
 
 	public static String fromStitchFolder(String inputPath) {
-		return Tools.getXML(inputPath);
+		return IOHelpers.getXML(inputPath);
 	}
 	@Override
 	public RandomAccessibleInterval<FloatType> fuse() throws IOException {

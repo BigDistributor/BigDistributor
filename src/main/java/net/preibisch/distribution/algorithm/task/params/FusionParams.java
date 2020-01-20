@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.task;
+package net.preibisch.distribution.algorithm.task.params;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

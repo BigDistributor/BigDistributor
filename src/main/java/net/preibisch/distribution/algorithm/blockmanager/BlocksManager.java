@@ -22,8 +22,8 @@ import net.preibisch.distribution.algorithm.controllers.items.Job;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.multithreading.Threads;
 import net.preibisch.distribution.gui.items.BlockPreview;
-import net.preibisch.distribution.gui.items.Colors;
 import net.preibisch.distribution.gui.items.DataPreview;
+import net.preibisch.distribution.gui.items.basics.Colors;
 import net.preibisch.distribution.io.IOTools;
 
 public class BlocksManager {

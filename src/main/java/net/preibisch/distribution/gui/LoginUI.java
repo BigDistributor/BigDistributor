@@ -17,9 +17,9 @@ import javax.swing.SpringLayout;
 import com.jcraft.jsch.JSchException;
 
 import net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
+import net.preibisch.distribution.algorithm.controllers.server.Account;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
 import net.preibisch.distribution.tools.config.DEFAULT;
-import net.preibisch.distribution.tools.config.server.Account;
 
 public class LoginUI extends JFrame {
 	public static void main(String[] args) {
@@ -64,7 +64,7 @@ public class LoginUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Login.setAccount(new Account(tfUser.getText(), pfPassword.getPassword()));
+				Connection.setAccount(new Account(tfUser.getText(), pfPassword.getPassword()));
 				setVisible(false);
 				dispose();
 				try {

@@ -3,8 +3,8 @@ package net.preibisch.distribution.algorithm.clustering.kafka;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import mpicbg.spim.io.IOFunctions;
-import net.preibisch.distribution.gui.items.Colors;
 import net.preibisch.distribution.gui.items.DataPreview;
+import net.preibisch.distribution.gui.items.basics.Colors;
 
 public class KafkaMessageManager {
 	
@@ -26,7 +26,7 @@ public class KafkaMessageManager {
 	}
 	
 	  public static void process(ConsumerRecord<String, String> record) {
-//		  System.out.println("Received message: (" + record.topic()+","+record.key() + ", " + record.value() + ") at offset " + record.offset());
+		  System.out.println("Received message: (" + record.topic()+","+record.key() + ", " + record.value() + ") at offset " + record.offset());
 			if(jobId.equals(record.key())) {
 	        	
 				KafkaMessage msg = new KafkaMessage(record.value());

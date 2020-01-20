@@ -17,7 +17,8 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import net.preibisch.distribution.io.img.ImgFile;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
+import net.preibisch.distribution.tools.helpers.IOHelpers;
 
 public class N5File extends ImgFile {
 	private final static Compression COMPRESSION = new GzipCompression();
@@ -45,10 +46,10 @@ public class N5File extends ImgFile {
 		this.dims = dims;
 	}
 	public N5File(String path, long[] dims) throws IOException {
-		this(path, Tools.array(BlockConfig.BLOCK_UNIT, dims.length), dims);
+		this(path, ArrayHelpers.array(BlockConfig.BLOCK_UNIT, dims.length), dims);
 	}
 	public N5File(String path, long[] dims,int blockUnit) throws IOException {
-		this(path, Tools.array(blockUnit, dims.length), dims);
+		this(path, ArrayHelpers.array(blockUnit, dims.length), dims);
 	}
 
 	public static N5File fromXML(ImgFile xmlFile, String path,int blockUnit) throws IOException {
@@ -80,7 +81,7 @@ public class N5File extends ImgFile {
 
 	private void clean() throws IOException {
 		if (exists())
-			Tools.deleteRecursively(this);
+			IOHelpers.deleteRecursively(this);
 	}
 
 	public static N5File open(String path) throws IOException {

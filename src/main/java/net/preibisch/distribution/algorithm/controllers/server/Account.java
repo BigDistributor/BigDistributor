@@ -1,4 +1,4 @@
-package net.preibisch.distribution.tools.config.server;
+package net.preibisch.distribution.algorithm.controllers.server;
 
 public class Account {
 	private String pseudo;

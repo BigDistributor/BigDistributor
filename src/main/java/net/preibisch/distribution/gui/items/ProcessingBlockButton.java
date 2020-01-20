@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import net.preibisch.distribution.gui.items.basics.Colors;
+
 public class ProcessingBlockButton extends JButton {
 	private static final long serialVersionUID = -3212552029108193042L;
 	private int color;

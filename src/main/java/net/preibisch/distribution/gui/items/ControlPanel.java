@@ -5,20 +5,21 @@ import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import net.preibisch.distribution.algorithm.clustering.workflow.Flow;
 import net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
-import net.preibisch.distribution.tools.Helper;
+import net.preibisch.distribution.tools.helpers.GUIHelpers;
 
 public class ControlPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5489935889866505715L;
 
 //	public ParamsPanel paramsPanel;
-	public Button startWorkFlowButton;
-	public Button generateResultButton;
+	public JButton startWorkFlowButton;
+	public JButton generateResultButton;
 	public InputPanel inputPanel;
 	public SliderPanel sliderOverlapPanel;
 	public JLabel numberBlocksLabel;
@@ -33,8 +34,8 @@ public class ControlPanel extends JPanel implements ActionListener {
 		setLayout(new GridLayout(10, 1, 20, 20));
 		sliderOverlapPanel = new SliderPanel(-1, "Overlap:", 0, 200, 10);
 
-		startWorkFlowButton = new Button("START..");
-		generateResultButton = new Button("Get and Generate Result");
+		startWorkFlowButton = new JButton("START..");
+		generateResultButton = new JButton("Get and Generate Result");
 
 		JPanel jobsPanel = new JPanel();
 		jobsPanel.setLayout(new GridLayout(1, 2, 10, 10));
@@ -42,7 +43,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		jobLabel.setAlignment(Label.RIGHT);
 		jobsPanel.add(jobLabel);
 		this.add(Workflow.progressBarPanel);
-		this.add(Helper.createImagePanel("img/labels.png"));
+		this.add(GUIHelpers.createImagePanel("img/labels.png"));
 
 		this.add(numberBlocksLabel);
 		for (SliderPanel slider : blockSizeControlPanel.sliderPanels) {

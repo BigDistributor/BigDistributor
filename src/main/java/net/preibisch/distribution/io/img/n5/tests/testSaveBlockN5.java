@@ -24,7 +24,8 @@ import net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
 import net.preibisch.distribution.io.IOTools;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.tools.helpers.IOHelpers;
+import net.preibisch.distribution.tools.helpers.ImgHelpers;
 
 public class testSaveBlockN5 {
 	public static void main(String[] args) throws Exception {
@@ -40,7 +41,7 @@ public class testSaveBlockN5 {
 		if ( out.exists() )
 		{
 			// delete
-			Tools.deleteRecursively( out );
+			IOHelpers.deleteRecursively( out );
 	
 			if ( out.exists() )
 				throw new RuntimeException("failed to delete: " + out.getAbsolutePath() );
@@ -51,7 +52,7 @@ public class testSaveBlockN5 {
 		RandomAccessibleInterval<FloatType> source = IOTools.openAs32Bit(new File(input_path ));
 		ImageJFunctions.show(source, "Input");
 
-		long[] dims = Tools.dimensions(source);
+		long[] dims = ImgHelpers.getDimensions(source);
 		System.out.println("Dims: " + Util.printCoordinates(dims));
 		//System.exit( 0 );
 

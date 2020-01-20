@@ -1,4 +1,4 @@
-package net.preibisch.distribution.gui.items;
+package net.preibisch.distribution.gui.items.basics;
 import java.awt.Color;
 
 public class Colors {

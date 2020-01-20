@@ -215,13 +215,5 @@ public class IOTools {
 		return img;
 	}
 
-	public static void cleanFolder(String folderName) {
-		File file = new File(folderName);
-		file.mkdir();
-		try {
-			FileUtils.cleanDirectory(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	
 }

@@ -4,8 +4,8 @@ import java.io.File;
 
 import com.google.common.io.Files;
 
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
-import net.preibisch.distribution.tools.Tools;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.tools.helpers.JobHelpers;
 
 public class Job extends Object {
 
@@ -26,14 +26,14 @@ public class Job extends Object {
 
 	public Job(AppMode mode) {
 
-		String id = Tools.id();
+		String id = JobHelpers.id();
 		System.out.println("Job id: "+id);
 
 		File tmpDir = createTempDir();
-		if(!Login.isConfigured()) {
-			Login.login();
+		if(!Connection.isConfigured()) {
+			Connection.login();
 		}
-		String clusterPath = Login.getServer().getPath();
+		String clusterPath = Connection.getServer().getPath();
 		File cluster = new File(clusterPath , id);
 		new Job(id, mode, tmpDir, cluster);
 	}

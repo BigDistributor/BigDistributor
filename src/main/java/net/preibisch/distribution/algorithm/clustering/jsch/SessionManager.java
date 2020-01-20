@@ -5,7 +5,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-import net.preibisch.distribution.algorithm.controllers.items.server.Login;
+import net.preibisch.distribution.algorithm.controllers.server.Connection;
 
 public class SessionManager {
 	private static Session currentSession;
@@ -39,8 +39,8 @@ public class SessionManager {
 	public static void openSession() throws JSchException {
 		System.out.println("opening Session..");
 		JSch jsch = new JSch();
-		currentSession = jsch.getSession(Login.getAccount().getPseudo(), Login.getServer().getHost(),
-				Login.getServer().getPort());
+		currentSession = jsch.getSession(Connection.getAccount().getPseudo(), Connection.getServer().getHost(),
+				Connection.getServer().getPort());
 		System.out.println("Connection Session Opened !");
 	}
 
@@ -61,7 +61,7 @@ public class SessionManager {
 
 	private static void getPW() {
 		// username and password will be given via UserInfo interface.
-		UserInfo ui = new MyUserInfo();
+		UserInfo ui = new PasswordPopup();
 		currentSession.setUserInfo(ui);
 		iteration++;
 	}
