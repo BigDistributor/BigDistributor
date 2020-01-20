@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class GsonIO {
 
@@ -14,7 +15,10 @@ public class GsonIO {
 	
 	public static void toJson(Object obj, File file)  {
 		try (PrintWriter out = new PrintWriter(file)){
-			Gson gson = new Gson();
+//			Gson gson = new Gson();
+//			
+			Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().serializeNulls().create();
+
 			String json = gson.toJson(obj);
 			out.print(json);
 			out.flush();
