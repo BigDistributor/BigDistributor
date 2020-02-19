@@ -10,8 +10,8 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
-import net.preibisch.distribution.algorithm.blockmanager.block.BlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BlockInfo;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
@@ -33,13 +33,13 @@ public class TestFusionSpimInBlocksN5 {
 		XMLFile inputFile = XMLFile.XMLFile(input_path);
 
 		// perform the fusion virtually
-		ImageJFunctions.show(inputFile.fuse(), "Input");
+		ImageJFunctions.show(inputFile.getImg(), "Input");
 
-		MyLogger.log.info("BB: " + inputFile.bb().toString());
-		MyLogger.log.info("Dims: " + Util.printCoordinates(inputFile.getDims()));
+		MyLogger.log().info("BB: " + inputFile.bb().toString());
+		MyLogger.log().info("Dims: " + Util.printCoordinates(inputFile.getDims()));
 
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
-		MyLogger.log.info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
+		MyLogger.log().info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(),
 				outputFile.getBlocksize());
@@ -76,13 +76,13 @@ class Task implements Runnable {
 	@Override
 	public void run() {
 		try {
-			MyLogger.log.info("Started " + i);
+			MyLogger.log().info("Started " + i);
 			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
 			RandomAccessibleInterval<FloatType> block = input.fuse(bb, 0);
 			output.saveBlock(block, binfo.getGridOffset());
-			MyLogger.log.info("Block " + i + " saved !");
+			MyLogger.log().info("Block " + i + " saved !");
 		} catch (IOException e) {
-			MyLogger.log.error("ERROR: Block " + i);
+			MyLogger.log().error("ERROR: Block " + i);
 			e.printStackTrace();
 		}
 	}

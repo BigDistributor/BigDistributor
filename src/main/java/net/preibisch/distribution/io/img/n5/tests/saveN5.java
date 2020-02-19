@@ -13,7 +13,7 @@ import mpicbg.spim.data.SpimDataException;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
+import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
 import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
@@ -25,7 +25,7 @@ public class saveN5 {
 public static void main(String[] args) throws SpimDataException, IOException {
 	System.out.println("Start generating output");
 	XMLFile inputFile = XMLFile.XMLFile(input_path);
-	RandomAccessibleInterval<FloatType> virtual = inputFile.fuse();
+	RandomAccessibleInterval<FloatType> virtual = inputFile.getImg();
 	ImageJFunctions.show(virtual,"input");
 	String dataset = "/volumes/raw";
 	N5Writer writer = new N5FSWriter(output_path);

@@ -15,7 +15,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 import net.preibisch.distribution.io.img.XMLFile;
 
 public class BlocksMetaData2 {

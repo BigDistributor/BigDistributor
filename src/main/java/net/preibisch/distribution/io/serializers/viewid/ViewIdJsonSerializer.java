@@ -25,7 +25,6 @@ public class ViewIdJsonSerializer implements JsonSerializer<ViewId>, JsonDeseria
 	public JsonElement serialize(ViewId src, Type type, JsonSerializationContext context) {
 		ViewIdSerializable vs = new ViewIdSerializable(src);
 		JsonElement x = new GsonBuilder().create().toJsonTree(vs);
-		System.out.println(x.toString());
 		return x;
 	}
 

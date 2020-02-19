@@ -21,7 +21,7 @@ import net.preibisch.mvrecon.process.boundingbox.BoundingBoxEstimation;
 import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
 import net.preibisch.mvrecon.process.fusion.FusionTools;
 
-public class XMLFile extends ImgFile {
+public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctions<T> {
 	private final static String HDF5_FILE = "dataset.h5";
 
 	private List<List<ViewId>> viewIds;
@@ -29,7 +29,7 @@ public class XMLFile extends ImgFile {
 	private SpimData2 spimData;
 	private double downsampling;
 	private List<File> relatedFiles;
-	// private T dataType;
+
 
 	public List<File> getRelatedFiles() {
 		return relatedFiles;
@@ -46,7 +46,7 @@ public class XMLFile extends ImgFile {
 	public Interval bb() {
 		return bb;
 	}
-	@Override
+	
 	public long[] getDimensions(int downsampling) {
 		return new BoundingBox(bb).getDimensions(downsampling);
 	}
@@ -156,21 +156,14 @@ public class XMLFile extends ImgFile {
 	}
 
 	private static BoundingBox estimateBoundingBox(SpimData2 spimdata, List<ViewId> viewIds) {
-		BoundingBoxEstimation estimation;
-//		if (useBDV)
-//			estimation = new BoundingBoxBigDataViewer(spimdata, viewIds);
-//		else
-			estimation = new BoundingBoxMaximal(viewIds, spimdata);
-
+		BoundingBoxEstimation estimation = new BoundingBoxMaximal(viewIds, spimdata);
 		return estimation.estimate("Full Bounding Box");
 	}
 
-	@Override
 	public RandomAccessibleInterval<FloatType> fuse(int i) throws IOException {
 		return FusionTools.fuseVirtual(spimData, viewIds.get(i), bb, downsampling).getA();
 	}
 
-	@Override
 	public RandomAccessibleInterval<FloatType> fuse(Interval bb,int i) throws IOException {
 		return FusionTools.fuseVirtual(spimData, viewIds.get(i), bb, downsampling).getA();
 	}
@@ -178,8 +171,9 @@ public class XMLFile extends ImgFile {
 	public static String fromStitchFolder(String inputPath) {
 		return IOHelpers.getXML(inputPath);
 	}
+
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
+	public RandomAccessibleInterval<FloatType> getImg() throws IOException {
 		return fuse(0);
 	}
 

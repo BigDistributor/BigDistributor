@@ -1,5 +1,9 @@
 package net.preibisch.distribution.algorithm.controllers.items;
 
+import org.apache.commons.io.FilenameUtils;
+
+import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+
 public enum DataExtension {
 	N5,TIF, JAR,XML,MODEL;
 	
@@ -16,15 +20,35 @@ public enum DataExtension {
 		case "model":
 			return DataExtension.MODEL;
 		default:
-			System.out.println("Error extension: " + string);
+			MyLogger.log().error("Error extension: " + string);
 			return null;
 		}
 	}
+	 
+	  public String file(String name) {
+		  return String.format("%s.%s",name,toString());
+	  }
+	  
+	  public String toString() {
+			switch (this) {
+			case N5:
+				return "n5";
+			case TIF:
+				return "tif";
+			case XML:
+				return "xml";
+			case JAR:
+				return "jar";		
+			case MODEL:
+				return  "model";
+			default:
+				MyLogger.log().error("Error extension: " + this);
+				return null;
+			}
+		}
 	  
 	  public static DataExtension fromURI(String path) {
-		  int j = path.lastIndexOf('.');
-		  String extension = path.substring(j+1);
+		 String extension =  FilenameUtils.getExtension(path);
 		  return DataExtension.fromString(extension);
 	  }
 }
-

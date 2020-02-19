@@ -18,6 +18,8 @@ import com.jcraft.jsch.SftpException;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 
 public class SCPFunctions {
+	
+	public static int BUFFER_SIZE = 1024 * 1024;
 
 	public static void runCommand(String command) throws JSchException {
 		SessionManager.validateConnection();
@@ -57,7 +59,7 @@ public class SCPFunctions {
 
 		channel.connect();
 
-		byte[] buf = new byte[TCPProperties.BUFFER_SIZE];
+		byte[] buf = new byte[BUFFER_SIZE];
 
 		// send '\0'
 		buf[0] = 0;
@@ -182,7 +184,7 @@ public class SCPFunctions {
 
 		// send a content of lfile
 		fis = new FileInputStream(localFile);
-		byte[] buf = new byte[TCPProperties.BUFFER_SIZE];
+		byte[] buf = new byte[BUFFER_SIZE];
 		while (true) {
 			int len = fis.read(buf, 0, buf.length);
 			if (len <= 0)

@@ -18,7 +18,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
-import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.callback.Callback;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;

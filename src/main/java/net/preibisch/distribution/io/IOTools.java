@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import org.apache.commons.io.FileUtils;
-
 import ij.ImagePlus;
 import ij.VirtualStack;
 import ij.io.FileInfo;
@@ -31,7 +29,8 @@ import net.imglib2.img.imageplus.ImagePlusImg;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+
 
 public class IOTools {
 
@@ -123,7 +122,7 @@ public class IOTools {
 	 * the entire virtual stack once to collect some slice labels, which takes
 	 * forever in this case.
 	 */
-	public static boolean saveTiffStack(final ImagePlus imp, final String path, AbstractCallBack callback) {
+	public static boolean saveTiffStack(final ImagePlus imp, final File f) {
 		FileInfo fi = imp.getFileInfo();
 		boolean virtualStack = imp.getStack().isVirtual();
 		if (virtualStack)
@@ -133,18 +132,18 @@ public class IOTools {
 		DataOutputStream out = null;
 		try {
 			TiffEncoder file = new TiffEncoder(fi);
-			out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(path)));
+			out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
 			file.write(out);
 			out.close();
 		} catch (IOException e) {
-			callback.log(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + path + "':" + e);
+			MyLogger.log().error(new Date(System.currentTimeMillis()) + ": ERROR: Cannot save file '" + f.getAbsolutePath() + "':" + e);
 			return false;
 		} finally {
 			if (out != null)
 				try {
 					out.close();
 				} catch (IOException e) {
-					System.out.println(e.toString());
+					MyLogger.log().error(e.toString());
 				}
 		}
 		return true;
@@ -214,6 +213,5 @@ public class IOTools {
 
 		return img;
 	}
-
 	
 }

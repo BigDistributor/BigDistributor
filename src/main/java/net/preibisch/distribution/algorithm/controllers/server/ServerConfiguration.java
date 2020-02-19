@@ -56,12 +56,12 @@ public class ServerConfiguration {
 			this.host = DEFAULT.HOST;
 			this.path = DEFAULT.CLUSTER_PATH;
 			this.port = DEFAULT.PORT;
-			MyLogger.log.info(this.toString());
+			MyLogger.log().info(this.toString());
 			return new ServerConfiguration(this);
 		}
 		
 		public ServerConfiguration build() {
-			MyLogger.log.info(this.toString());
+			MyLogger.log().info(this.toString());
 			return new ServerConfiguration(this);
 		}
 

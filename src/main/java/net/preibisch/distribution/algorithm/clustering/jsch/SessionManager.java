@@ -6,6 +6,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
 import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.gui.PasswordPopup;
 
 public class SessionManager {
 	private static Session currentSession;

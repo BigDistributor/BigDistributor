@@ -27,13 +27,7 @@ public class SendN5 {
 		XMLFile inputFile = XMLFile.XMLFile(input_path);
 		for (String s : files)
 			inputFile.getRelatedFiles().add(new File(path, s));
-
-		// Connection
-		new Job();
-		Connection.login();
-		// SessionManager.connect();
-
-		ClusterFile clusterFolderName = new ClusterFile(Connection.getServer().getPath(), Job.getId());
+		ClusterFile clusterFolderName = new ClusterFile(Connection.getServer().getPath(), Job.get().getId());
 
 		SCPManager.sendInput(inputFile, clusterFolderName);
 	}

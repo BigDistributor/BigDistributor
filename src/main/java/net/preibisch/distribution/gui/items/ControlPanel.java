@@ -10,8 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import net.preibisch.distribution.algorithm.clustering.workflow.Flow;
-import net.preibisch.distribution.algorithm.clustering.workflow.Workflow;
+import net.preibisch.distribution.algorithm.controllers.flow.Flow;
+import net.preibisch.distribution.algorithm.controllers.flow.Workflow;
 import net.preibisch.distribution.tools.helpers.GUIHelpers;
 
 public class ControlPanel extends JPanel implements ActionListener {

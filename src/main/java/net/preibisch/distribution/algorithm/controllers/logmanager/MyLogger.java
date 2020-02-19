@@ -11,7 +11,7 @@ public class MyLogger {
 	
 	public static Boolean initialized = false;
 	
-	public static Logger log;
+	private static Logger log;
 	
 	private static OpService opService;
 	private static LogService logService;
@@ -23,6 +23,15 @@ public class MyLogger {
 //		log.info( "This is an info message" );
 //		log.error( "This is an error message" );
 //		logPanel = new LoggingPanel(Tr2dContext.ops.context());
+	}
+	
+	public static Logger log() {
+		if(initialized) return log;
+		else
+		{
+			initLogger();
+			return log();
+		}
 	}
 
 	public static void initLogger() {

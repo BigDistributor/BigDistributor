@@ -163,8 +163,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.preibisch</groupId>
-			<artifactId>mvrec_core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<artifactId>multiview-reconstruction</artifactId>
+			<version>0.8.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

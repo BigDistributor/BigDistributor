@@ -2,9 +2,9 @@ package net.preibisch.distribution.algorithm.clustering.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import mpicbg.spim.io.IOFunctions;
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.basics.Colors;
+import net.preibisch.legacy.io.IOFunctions;
 
 public class KafkaMessageManager {
 	

@@ -12,8 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
-import net.preibisch.distribution.algorithm.controllers.items.AppMode;
-import net.preibisch.distribution.algorithm.controllers.items.Job;
+import net.preibisch.distribution.algorithm.controllers.items.Job.DataAccessMode;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.server.Connection;
 import net.preibisch.distribution.gui.items.FilePicker;
@@ -24,12 +23,12 @@ public class InputFrame extends Frame implements ActionListener {
 	private FilePicker taskPicker, inputPicker, extraPicker;
 	private JButton nextButton, configButton;
 	private JRadioButton remoteInputButton, localInputButton;
-	private AppMode appMode = AppMode.LOCAL_INPUT_MODE;
+	private DataAccessMode appMode = DataAccessMode.SEND_DATA_FROM_LOCAL;
 	private boolean configurated = false;
 
 	public InputFrame(String arg0) {
 		super(arg0);
-		MyLogger.log.info("Hello");
+		MyLogger.log().info("Hello");
 		initConfig();
 		initGui();
 	}
@@ -96,7 +95,7 @@ public class InputFrame extends Frame implements ActionListener {
 
 				String inputPath = inputPicker.getFile();
 				String taskPath = taskPicker.getFile();
-				new Job();
+
 //				DataPreview.fromFile(Job.getInput());
 
 				dispose();
@@ -114,12 +113,12 @@ public class InputFrame extends Frame implements ActionListener {
 
 		if (e.getSource() == localInputButton) {
 			inputPicker.showButton();
-			appMode = AppMode.LOCAL_INPUT_MODE;
+			appMode = DataAccessMode.SEND_DATA_FROM_LOCAL;
 		}
 
 		if (e.getSource() == remoteInputButton) {
 			inputPicker.hideButton();
-			appMode = AppMode.CLUSTER_INPUT_MODE;
+			appMode = DataAccessMode.READY_IN_CLUSTER_INPUT;
 		}
 	}
 

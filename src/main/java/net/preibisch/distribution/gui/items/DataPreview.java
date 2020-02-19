@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
-import net.preibisch.distribution.algorithm.blockmanager.GraphicBlocksManager;
+import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
 import net.preibisch.distribution.gui.GUIConfig;
+import net.preibisch.distribution.gui.blocks.GraphicBlocksManager;
 import net.preibisch.distribution.io.img.ImgFile;
 
 public class DataPreview extends Object {

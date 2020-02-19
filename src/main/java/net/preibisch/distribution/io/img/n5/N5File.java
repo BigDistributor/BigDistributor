@@ -14,7 +14,7 @@ import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
+import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
 import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
@@ -73,7 +73,6 @@ public class N5File extends ImgFile {
 		N5Utils.saveBlock(block, n5, dataset, gridOffset);
 	}
 
-	@Override
 	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
 		N5Reader reader = new N5FSReader(getAbsolutePath());
 		return N5Utils.open(reader, dataset);

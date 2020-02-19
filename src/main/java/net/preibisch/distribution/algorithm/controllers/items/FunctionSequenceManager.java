@@ -3,16 +3,16 @@ package net.preibisch.distribution.algorithm.controllers.items;
 import java.util.Arrays;
 import java.util.List;
 
-import net.preibisch.distribution.algorithm.clustering.workflow.Flow;
+import net.preibisch.distribution.algorithm.controllers.flow.Flow;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.AllDataGetter;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.BlockCombinator;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.InputGenerator;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.InputSender;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.MetadataGeneratorTask;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.TaskBatchGenerator;
+import net.preibisch.distribution.algorithm.controllers.flow.tasks.TaskShellSender;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
 import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGeneratorTask;
-import net.preibisch.distribution.algorithm.controllers.tasks.AllDataGetter;
-import net.preibisch.distribution.algorithm.controllers.tasks.BlockCombinator;
-import net.preibisch.distribution.algorithm.controllers.tasks.InputGenerator;
-import net.preibisch.distribution.algorithm.controllers.tasks.InputSender;
-import net.preibisch.distribution.algorithm.controllers.tasks.TaskBatchGenerator;
-import net.preibisch.distribution.algorithm.controllers.tasks.TaskShellSender;
 
 public final class FunctionSequenceManager {
 	List<AbstractTask> functionsFlow ;

@@ -14,11 +14,10 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
-import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
-import net.preibisch.distribution.algorithm.task.SerializingFunctions;
+import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 
-public class BlocksMetaData extends SerializingFunctions {
+public class BlocksMetaData {
 	private int total;
 	private long[] blocksize;
 	private int blockUnit;

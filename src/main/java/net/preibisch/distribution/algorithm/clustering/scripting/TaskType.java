@@ -13,6 +13,6 @@ public enum TaskType {
 		default:
 			throw new RuntimeException("Invalid task");
 		}
-		
 	}
+
 }
