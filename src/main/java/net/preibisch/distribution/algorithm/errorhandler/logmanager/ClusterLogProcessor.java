@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.controllers.logmanager;
+package net.preibisch.distribution.algorithm.errorhandler.logmanager;
 
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.basics.Colors;

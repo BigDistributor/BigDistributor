@@ -2,7 +2,7 @@ package net.preibisch.distribution.io.img;
 
 import java.io.File;
 
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
+import net.preibisch.distribution.io.DataExtension;
 
 
 public class ImgFile extends File {

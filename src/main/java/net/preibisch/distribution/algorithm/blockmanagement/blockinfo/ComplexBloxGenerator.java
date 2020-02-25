@@ -6,7 +6,7 @@ import java.util.Map;
 import net.imglib2.algorithm.gauss3.Gauss3;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
 public class ComplexBloxGenerator  {

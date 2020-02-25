@@ -1,10 +1,11 @@
 package net.preibisch.distribution.gui.blocks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBack;
 import net.preibisch.distribution.gui.GUIConfig;
 import net.preibisch.distribution.gui.items.BlockPreview;
 import net.preibisch.distribution.tools.helpers.ImgHelpers;
@@ -12,18 +13,18 @@ import net.preibisch.distribution.tools.helpers.LogHelpers;
 
 public class GraphicBlocksManager {
 	
-	public static ArrayList<ArrayList<BlockPreview>> generateBlocks(long[] dims, long[] blocksSizes, long overlap,
+	public static List<List<BlockPreview>> generateBlocks(long[] dims, long[] blocksSizes, long overlap,
 			int n) {
-		ArrayList<ArrayList<BlockPreview>> blocks = new ArrayList<>();
-		ArrayList<BlockPreview> preview = generateBlocks(dims, blocksSizes, overlap);
+		List<List<BlockPreview>> blocks = new ArrayList<>();
+		List<BlockPreview> preview = generateBlocks(dims, blocksSizes, overlap);
 		for(int i = 0 ; i<n ;i++)
 			blocks.add(new ArrayList<>(preview));
 		return blocks;
 	}
 	
-	public static ArrayList<BlockPreview> generateBlocks(long[] dimensions, long[] blocksSize, long overlap) {
+	public static List<BlockPreview> generateBlocks(long[] dimensions, long[] blocksSize, long overlap) {
 
-		ArrayList<BlockPreview> blocksPreview = new ArrayList<>();
+		List<BlockPreview> blocksPreview = new ArrayList<>();
 		long[] numberBlocks = new long[2];
 		if (dimensions.length == 2) { 
 			for (int i = 0; i < 2; i++)
@@ -32,11 +33,13 @@ public class GraphicBlocksManager {
 	
 			double perspectiveRation = computeRationView(numberBlocks,blocksSize);
 			
-			blocksPreview= BlocksManager.getBlocks(dimensions, numberBlocks, blocksSize,
+			blocksPreview= BlockPreviewGenerator.getBlocksPreviewWithOverlap(dimensions, numberBlocks, blocksSize,
 			(int)overlap, perspectiveRation);
-			} else {
+			} 
+		else 
+		{
 			numberBlocks = computeGraphicBlocks(dimensions, blocksSize);
-			blocksPreview = BlocksManager.getBlocks(numberBlocks, computeSizePreviewBox(numberBlocks));
+			blocksPreview = BlockPreviewGenerator.getBlocksPreviewWithoutOverlap(numberBlocks, computeSizePreviewBox(numberBlocks));
 		}
 		return blocksPreview;
 		

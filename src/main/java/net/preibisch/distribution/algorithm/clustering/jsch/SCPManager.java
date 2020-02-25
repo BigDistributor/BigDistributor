@@ -10,9 +10,9 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.basics.Colors;
+import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.img.XMLFile;
 
 public class SCPManager {

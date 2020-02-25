@@ -15,11 +15,15 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBack;
 
 public class SCPFunctions {
 	
 	public static int BUFFER_SIZE = 1024 * 1024;
+	
+	public static void setBufferSize(int bufferSize) {
+		BUFFER_SIZE = bufferSize;
+	}
 
 	public static void runCommand(String command) throws JSchException {
 		SessionManager.validateConnection();

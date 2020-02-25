@@ -1,9 +1,8 @@
-package net.preibisch.distribution.algorithm.controllers.items;
+package net.preibisch.distribution.algorithm.controllers.flow;
 
 import java.util.Arrays;
 import java.util.List;
 
-import net.preibisch.distribution.algorithm.controllers.flow.Flow;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.AllDataGetter;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.BlockCombinator;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.InputGenerator;
@@ -11,8 +10,9 @@ import net.preibisch.distribution.algorithm.controllers.flow.tasks.InputSender;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.MetadataGeneratorTask;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.TaskBatchGenerator;
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.TaskShellSender;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.controllers.items.Job;
+import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 
 public final class FunctionSequenceManager {
 	List<AbstractTask> functionsFlow ;

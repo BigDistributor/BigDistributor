@@ -1,6 +1,6 @@
-package net.preibisch.distribution.algorithm.controllers.server;
+package net.preibisch.distribution.algorithm.clustering.server;
 
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.tools.config.DEFAULT;
 
 public class ServerConfiguration {

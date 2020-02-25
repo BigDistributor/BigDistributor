@@ -1,8 +1,6 @@
 package net.preibisch.distribution.algorithm.controllers.flow;
 
 import net.preibisch.distribution.algorithm.controllers.flow.tasks.StatusListenerManager;
-import net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
-import net.preibisch.distribution.algorithm.controllers.items.FunctionSequenceManager;
 import net.preibisch.distribution.gui.items.ProgressBarPanel;
 
 public class Workflow {

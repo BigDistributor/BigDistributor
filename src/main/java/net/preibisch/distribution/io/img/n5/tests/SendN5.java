@@ -9,9 +9,9 @@ import com.jcraft.jsch.SftpException;
 import mpicbg.spim.data.SpimDataException;
 import net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.io.img.XMLFile;
 
 public class SendN5 {

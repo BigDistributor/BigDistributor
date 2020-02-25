@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
+import net.preibisch.distribution.io.DataExtension;
 
 public class IOHelpers {
 	public static ArrayList<String> getFiles(String path, String prefix) {

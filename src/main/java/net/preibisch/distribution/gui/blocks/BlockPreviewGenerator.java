@@ -7,7 +7,7 @@ import java.util.List;
 import net.preibisch.distribution.gui.items.BlockPreview;
 import net.preibisch.distribution.gui.items.basics.Colors;
 
-public interface GenerateBlockPreview {
+public interface BlockPreviewGenerator {
 	
 	public static List<BlockPreview> getBlocksPreviewWithOverlap(long[] dimensions, long[] numberBlocks, long[] blocksDimensions,
 			int overlap, double perspectiveRation) {

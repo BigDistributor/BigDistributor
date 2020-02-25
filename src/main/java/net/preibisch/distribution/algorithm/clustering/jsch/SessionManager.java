@@ -5,7 +5,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.gui.PasswordPopup;
 
 public class SessionManager {

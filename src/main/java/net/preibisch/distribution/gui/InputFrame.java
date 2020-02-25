@@ -12,9 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.algorithm.controllers.items.Job.DataAccessMode;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.gui.items.FilePicker;
 import net.preibisch.distribution.gui.items.Frame;
 

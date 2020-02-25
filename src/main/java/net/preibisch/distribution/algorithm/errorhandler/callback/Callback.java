@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.controllers.items.callback;
+package net.preibisch.distribution.algorithm.errorhandler.callback;
 
 public class Callback implements AbstractCallBack {
 

@@ -1,8 +1,8 @@
 package net.preibisch.distribution.algorithm.controllers.flow.tasks;
 
 import net.preibisch.distribution.algorithm.clustering.kafka.JobConsumer;
-import net.preibisch.distribution.algorithm.controllers.items.AbstractTask;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.controllers.flow.AbstractTask;
+import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBack;
 
 public class StatusListenerManager implements AbstractTask {
 

@@ -43,7 +43,7 @@ import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.ComplexBlockInfo;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.multithreading.ImagePortion;
 import net.preibisch.distribution.algorithm.multithreading.Threads;
 
@@ -433,6 +433,14 @@ public class Block extends AbstractInterval
 			max[ d ] = min[ d ] + size[ d ] - 1;
 
 		return max;
+	}
+	
+	public  long[] dims() {
+		long[] dims = new long[numDimensions()];
+		for (int i = 0; i < dims.length; i++) {
+			dims[i] = dimension(i);
+		}
+		return dims;
 	}
 
 	public static void main( String[] args )

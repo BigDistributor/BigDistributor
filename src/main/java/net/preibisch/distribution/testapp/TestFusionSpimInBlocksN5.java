@@ -11,14 +11,14 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
-import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
-import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.io.img.n5.N5File;
 import net.preibisch.distribution.tools.Threads;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class TestFusionSpimInBlocksN5 {
@@ -41,10 +41,11 @@ public class TestFusionSpimInBlocksN5 {
 		N5File outputFile = new N5File(output_path, inputFile.getDims());
 		MyLogger.log().info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
-		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(),
-				outputFile.getBlocksize());
-		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()),
-				inputFile.getDimensions(1), blocks.size());
+		Map<Integer, BasicBlockInfo> blocks = BasicBlockInfoGenerator.divideIntoBlockInfo(inputFile.getDims());
+//		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()),
+//				inputFile.getDimensions(1), blocks.size());
+		long[] bsizes = ArrayHelpers.fill(BasicBlockInfoGenerator.BLOCK_SIZE, inputFile.getDimensions().length);
+		BlocksMetaData md = new BlocksMetaData(blocks, bsizes, input_path, blocks.size());
 		int total = md.getBlocksInfo().size();
 		System.out.println(md.toString());
 
@@ -66,7 +67,7 @@ class Task implements Runnable {
 	private N5File output;
 	private BasicBlockInfo binfo;
 
-	public Task(int i, ImgFile input, N5File output, BlockInfo binfo) {
+	public Task(int i, ImgFile input, N5File output, BasicBlockInfo binfo) {
 		this.i = i;
 		this.input = (XMLFile) input;
 		this.output = output;

@@ -16,7 +16,7 @@ import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.task.params.FusionClusteringParams;
 import net.preibisch.distribution.algorithm.task.params.NonRigidClasteringParams;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;

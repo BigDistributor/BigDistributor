@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutorService;
 
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 
 public class BlockGeneratorFixedSizePrecise implements BlockGenerator< Block >
 {

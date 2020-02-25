@@ -5,13 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 
 import net.preibisch.distribution.gui.items.basics.Colors;
-
-
 
 public class BlocksCanvas extends JComponent {
 	final static float dash1[] = { 10.0f };
@@ -53,7 +51,7 @@ public class BlocksCanvas extends JComponent {
 		}
 	}
 
-	public void update(ArrayList<BlockPreview> blocks) {
+	public void update(List<BlockPreview> blocks) {
 		this.repaint();
 	}
 }

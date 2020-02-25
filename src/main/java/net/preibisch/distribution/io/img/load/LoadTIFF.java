@@ -6,6 +6,9 @@ import com.google.common.io.Files;
 
 import ij.ImageJ;
 import ij.ImagePlus;
+import loci.formats.IFormatReader;
+import loci.formats.ImageReader;
+import loci.formats.Memoizer;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.img.display.imagej.ImageJFunctions;
@@ -24,13 +27,13 @@ public class LoadTIFF
 		if ( !file.exists() )
 			throw new RuntimeException( "File " + fileName + " does not exist.");
 		
-//		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
+		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
 //		IFormatReader reader = 
 
 		// loads the first timepoint, first channel, first series of the image
 		return new VirtualRAIFactoryLOCI().createVirtualCached(
-//				reader,
-				null,
+				reader,
+//				null,
 				file,
 				0,
 				0,
@@ -46,7 +49,7 @@ public class LoadTIFF
 
 		new LoadTIFF();
 		// get a virtual, cached RandomAccessible Interval
-		final RandomAccessibleInterval< FloatType > virtualCached = LoadTIFF.load( "/Users/spreibi/Documents/Microscopy/SPIM/SPIMA_gfp1.tif" );
+		final RandomAccessibleInterval< FloatType > virtualCached = LoadTIFF.load( "/Users/Marwan/Desktop/Task/example_dataset/affine.tif" );
 
 		// display
 		final ImagePlus imp = ImageJFunctions.show( virtualCached );

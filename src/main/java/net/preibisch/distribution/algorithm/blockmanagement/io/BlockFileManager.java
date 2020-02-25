@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
+import me.tongfei.progressbar.ProgressBar;
 import net.imglib2.Cursor;
+import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
@@ -14,8 +16,11 @@ import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import net.preibisch.distribution.algorithm.blockmanagement.block.Block;
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
+import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.IOTools;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
+import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BlockFileManager {
 
@@ -30,23 +35,23 @@ public class BlockFileManager {
 		}
 		return resultImage;
 	}
-	
-	public static void saveAllBlocks(RandomAccessibleInterval<FloatType> image, long[] dims, List<Block> blocks,
+
+	public static void saveAllBlocks(RandomAccessibleInterval<FloatType> image, List<Block> blocks,
 			File folder, DataExtension extension) {
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		Integer i = 0;
-		for (final Block block : blocks) {
+		for (final Block block :blocks) {
 			++i;
-			saveOneBlock(infiniteImg, dims, folder, i, block, extension);
+			File f = new File(folder, extension.file(i.toString()));
+			saveOneBlock(infiniteImg, f, block);
+//			MyLogger.log().info("Saved: " + f.getAbsolutePath());
 		}
 	}
 
-	public static void saveOneBlock(RandomAccessible<FloatType> image, long[] dims, File folder, Integer id,
-			Block block, DataExtension extension) {
-		final Img<FloatType> tmp = ArrayImgs.floats(dims);
+	public static void saveOneBlock(RandomAccessible<FloatType> image, File file, Block block) {
+		final Img<FloatType> tmp = ArrayImgs.floats(block.dims());
 		block.copyBlock(image, tmp);
-		File f = new File(folder, extension.file(id.toString()));
-		IOTools.saveTiffStack(IOTools.getImagePlusInstance(tmp), f);
+		IOTools.saveTiffStack(IOTools.getImagePlusInstance(tmp), file);
 
 	}
 

@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.controllers.logmanager;
+package net.preibisch.distribution.algorithm.errorhandler.logmanager;
 
 import org.scijava.Context;
 import org.scijava.log.LogService;

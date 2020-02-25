@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 import net.preibisch.distribution.algorithm.clustering.scripting.JobType;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
+import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBack;
 
 public class SGEClusterScript {
 	public static final String TASK_SHELL_NAME = "task.sh";

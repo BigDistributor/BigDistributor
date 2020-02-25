@@ -1,8 +1,8 @@
-package net.preibisch.distribution.algorithm.controllers.items;
+package net.preibisch.distribution.io;
 
 import org.apache.commons.io.FilenameUtils;
 
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 
 public enum DataExtension {
 	N5,TIF, JAR,XML,MODEL;

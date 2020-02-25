@@ -7,7 +7,7 @@ import org.scijava.plugin.Parameter;
 
 import ij.ImageJ;
 import net.imagej.ops.OpService;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.gui.InputFrame;
 import net.preibisch.distribution.gui.items.LogFrame;
 

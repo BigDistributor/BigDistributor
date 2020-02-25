@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
-import net.preibisch.distribution.algorithm.clustering.jsch.TCPProperties;
+import net.preibisch.distribution.algorithm.clustering.jsch.SCPFunctions;
 import net.preibisch.distribution.algorithm.clustering.kafka.KafkaProperties;
-import net.preibisch.distribution.algorithm.controllers.server.Account;
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
-import net.preibisch.distribution.algorithm.controllers.server.ServerConfiguration;
+import net.preibisch.distribution.algorithm.clustering.server.Account;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
+import net.preibisch.distribution.algorithm.clustering.server.ServerConfiguration;
 import net.preibisch.distribution.gui.items.Frame;
 
 public class ConfigFrame extends Frame {
@@ -42,7 +42,7 @@ public class ConfigFrame extends Frame {
 		pseudoField = new TextField("mzouink");
 		passwordField = new JPasswordField();
 		serverPathField = new TextField("/fast/AG_Preibisch/Marwan/clustering/");
-		bufferSizeField = new TextField(String.valueOf(TCPProperties.BUFFER_SIZE));
+		bufferSizeField = new TextField(String.valueOf(SCPFunctions.BUFFER_SIZE));
 		kafkaAddressField = new TextField(KafkaProperties.KAFKA_SERVER_URL);
 		saveButton = new JButton("Save");
 		resetButton = new JButton("Reset");
@@ -69,7 +69,7 @@ public class ConfigFrame extends Frame {
 				
 				KafkaProperties.setURL(kafkaAddressField.getText());
 				try {
-					TCPProperties.setBufferSize(Integer.parseInt(bufferSizeField.getText()));
+					SCPFunctions.setBufferSize(Integer.parseInt(bufferSizeField.getText()));
 				} catch (Exception e2) {
 					// TODO: handle exception
 					JOptionPane.showMessageDialog(null, "Invalid Buffer size", "InfoBox: " + "ERROR !", JOptionPane.ERROR_MESSAGE);

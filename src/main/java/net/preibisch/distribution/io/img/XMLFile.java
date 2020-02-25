@@ -12,7 +12,7 @@ import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
+import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;

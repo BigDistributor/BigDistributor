@@ -5,14 +5,14 @@ import java.util.Map;
 
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
 public class BasicBlockInfoGenerator  {
 	
-	final static long BLOCK_SIZE = 32;
+	public static final long BLOCK_SIZE = 128;
 	
-	public Map<Integer, BasicBlockInfo> divideIntoBlockInfo(final long[] imgSize) {
+	public static Map<Integer, BasicBlockInfo> divideIntoBlockInfo(final long[] imgSize) {
 		
 		long[] blockSize =  ArrayHelpers.fill(BLOCK_SIZE, imgSize.length);
 		

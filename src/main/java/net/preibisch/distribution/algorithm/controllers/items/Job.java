@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.google.common.io.Files;
 
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.tools.helpers.JobHelpers;
 
 public class Job extends Object {

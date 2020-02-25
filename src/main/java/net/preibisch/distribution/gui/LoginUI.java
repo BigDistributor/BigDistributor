@@ -17,8 +17,8 @@ import javax.swing.SpringLayout;
 import com.jcraft.jsch.JSchException;
 
 import net.preibisch.distribution.algorithm.clustering.jsch.SessionManager;
-import net.preibisch.distribution.algorithm.controllers.server.Account;
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.clustering.server.Account;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.tools.config.DEFAULT;
 
 public class LoginUI extends JFrame {

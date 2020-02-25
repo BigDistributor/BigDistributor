@@ -1,10 +1,10 @@
 package net.preibisch.distribution.gui.items;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.imglib2.util.Util;
-import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
 import net.preibisch.distribution.gui.GUIConfig;
 import net.preibisch.distribution.gui.blocks.GraphicBlocksManager;
 import net.preibisch.distribution.io.img.ImgFile;
@@ -13,14 +13,14 @@ public class DataPreview extends Object {
 	private static long[] dims;
 	private static long[] blocksSizes;
 	private static long overlap = 10;
-	private static ArrayList<BlockPreview> blocksPreview;
+	private static List<BlockPreview> blocksPreview;
 	private static int previewPreferedHeight ;
 
 	public static long[] getDims() {
 		return dims;
 	}
 	
-	public static ArrayList<BlockPreview> getBlocksPreview() {
+	public static List<BlockPreview> getBlocksPreview() {
 		return blocksPreview;
 	}
 
@@ -64,7 +64,7 @@ public class DataPreview extends Object {
 		DataPreview.dims = file.getDims();
 		DataPreview.previewPreferedHeight = GUIConfig.PREVIEW_PREFERED_HEIGHT;
 		long[] blocksSizes = new long[dims.length];
-		Arrays.fill(blocksSizes, BlockConfig.BLOCK_UNIT);
+		Arrays.fill(blocksSizes, BasicBlockInfoGenerator.BLOCK_SIZE);
 		DataPreview.blocksSizes = blocksSizes;
 		System.out.println(DataPreview.str());
 		generateBlocks();

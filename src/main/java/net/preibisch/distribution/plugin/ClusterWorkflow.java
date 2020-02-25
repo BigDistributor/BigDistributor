@@ -20,11 +20,11 @@ import net.preibisch.distribution.algorithm.clustering.scripting.BatchScriptFile
 import net.preibisch.distribution.algorithm.clustering.scripting.ClusterScript;
 import net.preibisch.distribution.algorithm.clustering.scripting.JobType;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
+import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
-import net.preibisch.distribution.algorithm.controllers.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
-import net.preibisch.distribution.algorithm.controllers.server.Connection;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;
 import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.distribution.io.img.XMLFile;

@@ -1,4 +1,4 @@
-package net.preibisch.distribution.algorithm.controllers.server;
+package net.preibisch.distribution.algorithm.clustering.server;
 
 import net.preibisch.distribution.tools.config.DEFAULT;
 

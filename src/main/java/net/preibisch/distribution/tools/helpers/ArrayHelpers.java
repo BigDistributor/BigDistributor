@@ -25,4 +25,12 @@ public class ArrayHelpers {
 		}
 		return result;
 	}
+
+	public static long[] dims(RandomAccessibleInterval<FloatType> image) {
+		long[] dims = new long[image.numDimensions()];
+		for (int i = 0; i < dims.length; i++) {
+			dims[i] = image.dimension(i);
+		}
+		return dims;
+	}
 }

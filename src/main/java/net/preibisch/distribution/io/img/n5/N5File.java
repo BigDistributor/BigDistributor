@@ -15,7 +15,7 @@ import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
-import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
+import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
