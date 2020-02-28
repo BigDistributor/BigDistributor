@@ -14,7 +14,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
-import net.preibisch.distribution.io.img.XMLFile;
+import net.preibisch.distribution.io.img.xml.XMLFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
 public class saveN5 {

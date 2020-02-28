@@ -6,8 +6,6 @@ import com.google.common.io.Files;
 
 import ij.ImageJ;
 import ij.ImagePlus;
-import loci.formats.IFormatReader;
-import loci.formats.ImageReader;
 import loci.formats.Memoizer;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
@@ -18,26 +16,15 @@ import net.preibisch.mvrecon.fiji.spimdata.imgloaders.filemap2.VirtualRAIFactory
 
 public class LoadTIFF
 {
-
-	public static RandomAccessibleInterval< FloatType > load( final String fileName ) throws IncompatibleTypeException
+	
+	public static RandomAccessibleInterval< FloatType > load( final File file ) throws IncompatibleTypeException
 	{
 		final File tempDir = Files.createTempDir();
-		final File file = new File( fileName );
-
 		if ( !file.exists() )
-			throw new RuntimeException( "File " + fileName + " does not exist.");
-		
-		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
-
-		// loads the first timepoint, first channel, first series of the image
-		return new VirtualRAIFactoryLOCI().createVirtualCached(
-				reader,
-				file,
-				0,
-				0,
-				0,
-				new FloatType(),
-				null );
+			throw new RuntimeException( "File " + file + " does not exist.");
+	
+		Memoizer m = new Memoizer(0L, tempDir);
+	   return  new VirtualRAIFactoryLOCI().createVirtualCached( m, file, 0, 0, 0 , new FloatType(), null);
 	}
 
 	public static void main( String[] args ) throws IncompatibleTypeException
@@ -47,7 +34,7 @@ public class LoadTIFF
 
 		new LoadTIFF();
 		// get a virtual, cached RandomAccessible Interval
-		final RandomAccessibleInterval< FloatType > virtualCached = LoadTIFF.load( "/Users/Marwan/Desktop/Task/example_dataset/affine.tif" );
+		final RandomAccessibleInterval< FloatType > virtualCached = LoadTIFF.load(new File( "/Users/Marwan/Desktop/Task/example_dataset/affine.tif") );
 
 		// display
 		final ImagePlus imp = ImageJFunctions.show( virtualCached );

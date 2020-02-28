@@ -15,61 +15,59 @@ import com.google.gson.JsonSyntaxException;
 
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 
 public class Metadata {
-	private String id;
-	private int total;
-	private String xml;
+	private String jobID;
+	private String input;
+	private String output;
 	private long[] blocksize;
 	private Map<Integer, BasicBlockInfo> blocksInfo;
 
-	public Metadata(String id, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, String xml, int total) {
-		this.id = id;
-		this.total = total;
-		this.xml = xml;
-		this.blocksize = bsizes;
+	
+	public Metadata(String jobID, String input, String output, long[] blocksize,
+			Map<Integer, BasicBlockInfo> blocksInfo) {
+		super();
+		this.jobID = jobID;
+		this.input = input;
+		this.output = output;
+		this.blocksize = blocksize;
 		this.blocksInfo = blocksInfo;
 	}
 
-	public Map<Integer, BasicBlockInfo> getBlocksInfo() {
-		return blocksInfo;
+	public String getJobID() {
+		return jobID;
 	}
 
-	public String getId() {
-		return id;
+	public String getInput() {
+		return input;
 	}
-	public void setBlocksInfo(Map<Integer, BasicBlockInfo> blocksInfo) {
-		this.blocksInfo = blocksInfo;
+
+	public String getOutput() {
+		return output;
 	}
 
 	public long[] getBlocksize() {
 		return blocksize;
 	}
 
-	public int getTotal() {
-		return total;
+	public Map<Integer, BasicBlockInfo> getBlocksInfo() {
+		return blocksInfo;
 	}
 
-	public void setBlocksize(long[] blocksize) {
-		this.blocksize = blocksize;
-	}
-
-	public String getXML() {
-		return xml;
-	}
-
-	public void setDimensions(String xml) {
-		this.xml = xml;
+	public int size() {
+		return blocksInfo.size();
 	}
 
 	@Override
 	public String toString() {
-		String str = "\nMetaData: total:" + blocksInfo.size() + " blocks"+ Util.printCoordinates(blocksize) + "\n"+ " XMLFile: " + xml.toString()+"\n" ;
+		String str = "\nMetaData: total:" + blocksInfo.size() + " blocks"+ Util.printCoordinates(blocksize) + "\n" ;
+//		+ " XMLFile: " + xml.toString()+"\n"
 		String elms = "";
 		for (int i = 0; i < blocksInfo.size(); i++) {
 			elms = elms + i + "-" + blocksInfo.get(i).toString() + " \n";
 		}
-//		String elm1 = blocksInfo.get(1).toString()+" \n";
 		return str + elms;
 	}
 
@@ -84,4 +82,3 @@ public class Metadata {
 		return new Gson().fromJson(new FileReader(path), Metadata.class);
 	}
 }
-

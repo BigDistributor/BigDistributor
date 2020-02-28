@@ -13,7 +13,7 @@ import com.jcraft.jsch.SftpException;
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.basics.Colors;
 import net.preibisch.distribution.io.DataExtension;
-import net.preibisch.distribution.io.img.XMLFile;
+import net.preibisch.distribution.io.img.xml.XMLFile;
 
 public class SCPManager {
 

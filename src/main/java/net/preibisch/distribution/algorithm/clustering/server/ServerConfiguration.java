@@ -1,5 +1,7 @@
 package net.preibisch.distribution.algorithm.clustering.server;
 
+import java.io.File;
+
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.tools.config.DEFAULT;
 

@@ -31,6 +31,10 @@ public class LoadXML
 	final File file;
 	final SpimData2 spimData;
 
+	public SpimData2 getSpimData() {
+		return spimData;
+	}
+	
 	public LoadXML( final String xml )
 	{
 		this.file = new File( xml );

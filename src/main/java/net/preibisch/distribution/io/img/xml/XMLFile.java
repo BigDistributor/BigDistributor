@@ -1,4 +1,4 @@
-package net.preibisch.distribution.io.img;
+package net.preibisch.distribution.io.img.xml;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,8 @@ import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.io.DataExtension;
+import net.preibisch.distribution.io.img.ImgFile;
+import net.preibisch.distribution.io.img.ImgFunctions;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
@@ -121,7 +123,6 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 			List<File> relatedFiles) throws SpimDataException {
 		super(path);
 
-		
 		this.viewIds = viewIds;
 		this.bb = bb;
 		this.downsampling = downsampling;
@@ -134,8 +135,6 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 		// dataType = Util.getTypeFromInterval(fuse());
 		System.out.println(toString());
 	}
-
-
 
 	public static List<File> initRelatedFiles(File f) throws IOException {
 		List<File> files = new ArrayList<File>();

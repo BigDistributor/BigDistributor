@@ -7,7 +7,7 @@ import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.Frame;
 import net.preibisch.distribution.gui.items.PreviewPanel;
 import net.preibisch.distribution.io.img.ImgFile;
-import net.preibisch.distribution.io.img.XMLFile;
+import net.preibisch.distribution.io.img.xml.XMLFile;
 
 public class PreviewUI extends Frame {
 	private static final long serialVersionUID = 1L;

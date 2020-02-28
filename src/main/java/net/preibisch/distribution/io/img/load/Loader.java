@@ -10,8 +10,8 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.exception.IncompatibleTypeException;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.io.img.ImgFile;
-import net.preibisch.distribution.io.img.XMLFile;
 import net.preibisch.distribution.io.img.n5.N5File;
+import net.preibisch.distribution.io.img.xml.XMLFile;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.boundingbox.BoundingBoxMaximal;
@@ -46,7 +46,7 @@ public class Loader {
 		switch (file.getExtension()) {
 		case TIF:
 
-			return LoadTIFF.load(file.getAbsolutePath());
+			return LoadTIFF.load(file);
 		case XML:
 			XMLFile xmlfile = (XMLFile) file;
 			final List<ViewId> viewIds = new ArrayList<>(

@@ -16,14 +16,16 @@ import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.realtransform.AffineTransform3D;
+import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.legacy.io.IOFunctions;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
+import net.preibisch.mvrecon.process.fusion.FusionTools;
 
 public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJsonSerialzer<FusionClusteringParams> {
-	private String xml;
 	private double downsampling;
 	private Map<ViewId, AffineTransform3D> registrations;
 	private Set<ViewDescription> views;
@@ -35,11 +37,10 @@ public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJs
 
 	public FusionClusteringParams() {}
 	
-	public FusionClusteringParams(String xml, Interval boundingBox, double downsampling,
+	public FusionClusteringParams( Interval boundingBox, double downsampling,
 			Map<ViewId, AffineTransform3D> registrations, Set<ViewDescription> views, boolean useBlending,
 			boolean useContentBased, int interpolation, Map<ViewId, AffineModel1D> intensityAdjustment) {
 		super();
-		this.xml = xml;
 		this.downsampling = downsampling;
 		this.registrations = registrations;
 		this.views = views;
@@ -48,10 +49,6 @@ public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJs
 		this.interpolation = interpolation;
 		this.boundingBox = new BoundingBox(boundingBox);
 		this.intensityAdjustment = intensityAdjustment;
-	}
-
-	public String getXml() {
-		return xml;
 	}
 
 	public Map<ViewId, AffineTransform3D> getRegistrations() {
@@ -82,10 +79,6 @@ public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJs
 		return interpolation;
 	}
 
-	public void setXml(String xml) {
-		this.xml = xml;
-	}
-
 	public double getDownsampling() {
 		return downsampling;
 	}
@@ -94,9 +87,6 @@ public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJs
 		return FusionClusteringParams.getGson().fromJson(new FileReader(file), FusionClusteringParams.class);
 	}
 
-	public SpimData2 getSpimData() throws SpimDataException {
-		return getSpimData(xml);
-	}
 
 	@Override
 	public void toJson(File file) {
@@ -110,5 +100,20 @@ public class FusionClusteringParams extends ParamJsonHelpers implements ParamsJs
 			MyLogger.log().error(e);
 		}
 	}
+
+	public RandomAccessibleInterval<FloatType> fuse(String input,BoundingBox bb) throws SpimDataException {	
+		SpimData2 spimdata = getSpimData(input);
+		return FusionTools.fuseVirtual(
+			spimdata.getSequenceDescription().getImgLoader(),
+			getRegistrations(),
+			spimdata.getSequenceDescription().getViewDescriptions(),
+			getViews(),
+			useBlending(),
+			useContentBased(),
+			getInterpolation(),
+//			getBoundingBox(),
+			bb,
+			getDownsampling(),
+			getIntensityAdjustment() ).getA();}
 
 }

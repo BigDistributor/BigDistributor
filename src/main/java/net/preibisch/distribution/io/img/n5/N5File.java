@@ -34,28 +34,30 @@ public class N5File extends ImgFile {
 		return blocksize;
 	}
 
-	N5File(String path, int[] blocksize, long[] dims) throws IOException {
-		this(path, DEFAULT_DATASET, blocksize, dims);
+	N5File(String path, long[] dims, int[] blocksize) throws IOException {
+		this(path, DEFAULT_DATASET, dims, blocksize);
 	}
 
-	public N5File(String path, String dataset, int[] blocksize, long[] dims) throws IOException {
+	public N5File(String path, String dataset, long[] dims, int[] blocksize) throws IOException {
 		super(path);
-//		clean();
+		// clean();
 		this.dataset = dataset;
 		this.blocksize = blocksize;
 		this.dims = dims;
 	}
+
 	public N5File(String path, long[] dims) throws IOException {
-		this(path, ArrayHelpers.array((int) BasicBlockInfoGenerator.BLOCK_SIZE, dims.length), dims);
-	}
-	public N5File(String path, long[] dims,int blockUnit) throws IOException {
-		this(path, ArrayHelpers.array(blockUnit, dims.length), dims);
+		this(path, dims, ArrayHelpers.array((int) BasicBlockInfoGenerator.BLOCK_SIZE, dims.length));
 	}
 
-	public static N5File fromXML(ImgFile xmlFile, String path,int blockUnit) throws IOException {
+	public N5File(String path, long[] dims, int blockUnit) throws IOException {
+		this(path, dims, ArrayHelpers.array(blockUnit, dims.length));
+	}
+
+	public static N5File fromXML(ImgFile xmlFile, String path, int blockUnit) throws IOException {
 		if (DataExtension.XML.equals(xmlFile.getExtension())) {
 			long[] dims = xmlFile.getDims();
-			return new N5File(path, dims,blockUnit);
+			return new N5File(path, dims, blockUnit);
 		} else {
 			throw new IOException("Input not XML File");
 		}
@@ -84,7 +86,7 @@ public class N5File extends ImgFile {
 	}
 
 	public static N5File open(String path) throws IOException {
-		return new N5File(path, new long[] {0,0,0},32);
+		return new N5File(path, new long[] { 0, 0, 0 }, 32);
 	}
 
 }

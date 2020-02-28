@@ -103,6 +103,10 @@ public class Job extends Object {
 		return cluster;
 	}
 	
+	public String subfile(String file) {
+		return new File(cluster.getAbsolutePath(),file).getAbsolutePath();
+	}
+	
 	public ProcessMode getProcessMode() {
 		return processMode;
 	}

@@ -24,12 +24,8 @@ public class LoadN5 {
 			n5Reader = new N5FSReader(n5path);
 			System.out.println(Arrays.toString(n5Reader.list("/")));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
 			throw new RuntimeException("Could not load n5: " + e);
 		}
-
 	}
 
 	public RandomAccessibleInterval<FloatType> fuse() {
@@ -44,8 +40,8 @@ public class LoadN5 {
 		return virtual;
 
 	}
-	
-	public static RandomAccessibleInterval<FloatType> fuse(String uri){
+
+	public static RandomAccessibleInterval<FloatType> fuse(String uri) {
 		return new LoadN5(uri).fuse();
 	}
 

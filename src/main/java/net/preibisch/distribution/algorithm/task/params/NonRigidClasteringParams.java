@@ -12,16 +12,12 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import mpicbg.models.AffineModel1D;
-import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
-import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.process.fusion.transformed.nonrigid.NonRigidParameters;
 
 public class NonRigidClasteringParams extends ParamJsonHelpers implements ParamsJsonSerialzer<NonRigidClasteringParams> {
-	private String xml;
 	private Map<ViewId, AffineTransform3D> viewRegistrations;
 	private Collection<? extends ViewId> viewsToFuse;
 	private Collection<? extends ViewId> viewsToUse;
@@ -34,17 +30,13 @@ public class NonRigidClasteringParams extends ParamJsonHelpers implements Params
 	private double downsampling;
 	private Map<? extends ViewId, AffineModel1D> intensityAdjustments;
 
-	public SpimData2 getSpimData() throws SpimDataException {
-		return getSpimData(xml);
-	}
 	
 	public NonRigidClasteringParams() {}
-	public NonRigidClasteringParams(String xml, Map<ViewId, AffineTransform3D> viewRegistrations,
+	public NonRigidClasteringParams(Map<ViewId, AffineTransform3D> viewRegistrations,
 			Collection<? extends ViewId> viewsToFuse, Collection<? extends ViewId> viewsToUse, boolean useBlending,
 			boolean useContentBased, NonRigidParameters nonRigidParameters, boolean virtualGrid, int interpolation,
 			Interval boundingBox, double downsampling, Map<? extends ViewId, AffineModel1D> intensityAdjustments) {
 		super();
-		this.xml = xml;
 		this.viewRegistrations = viewRegistrations;
 		this.viewsToFuse = viewsToFuse;
 		this.viewsToUse = viewsToUse;

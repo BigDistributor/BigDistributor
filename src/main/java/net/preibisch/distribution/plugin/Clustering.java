@@ -38,7 +38,7 @@ public class Clustering {
 			Set<ViewDescription> views, boolean useBlending, boolean useContentBased, int interpolation, Interval bb,
 			double downsampling, Map<ViewId, AffineModel1D> intensityAdjustment) {
 		xml = IOHelpers.getXML(spimData.getBasePath().getAbsolutePath());
-		FusionClusteringParams param = new FusionClusteringParams(xml, bb, downsampling, registrations, views,
+		FusionClusteringParams param = new FusionClusteringParams( bb, downsampling, registrations, views,
 				useBlending, useContentBased, interpolation, intensityAdjustment);
 		paramsForClusterTasks.add(param);
 	}
@@ -48,7 +48,7 @@ public class Clustering {
 			boolean useBlending, boolean useContentBased, boolean virtualGrid, int interpolation, Interval boundingBox,
 			double downsampling, Map<ViewId, AffineModel1D> intensityAdjustment) {
 		xml = IOHelpers.getXML(spimData.getBasePath().getAbsolutePath());
-		NonRigidClasteringParams param = new NonRigidClasteringParams(xml, registrations, views, viewsToUse,
+		NonRigidClasteringParams param = new NonRigidClasteringParams( registrations, views, viewsToUse,
 				useBlending, useContentBased, nonRigidParameters, virtualGrid, interpolation, boundingBox, downsampling,
 				intensityAdjustment);
 		paramsForClusterTasks.add(param);

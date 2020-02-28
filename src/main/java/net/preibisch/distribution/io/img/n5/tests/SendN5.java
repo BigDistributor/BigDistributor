@@ -11,24 +11,18 @@ import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
-import net.preibisch.distribution.io.img.XMLFile;
+import net.preibisch.distribution.io.img.xml.XMLFile;
 
 public class SendN5 {
 
-	private final static String input_path = "/home/mzouink/Desktop/testn5/dataset.xml";
-
-	private static String path = "/home/mzouink/Desktop/testn5/";
-	private static String[] files = new String[] { "back_output45.n5"};
+	private final static String path = "/home/mzouink/Desktop/testn5/back_output45.n5";
 
 	public static void main(String[] args) throws SpimDataException, IOException, JSchException, SftpException {
 
-		MyLogger.initLogger();
-		XMLFile inputFile = XMLFile.XMLFile(input_path);
-		for (String s : files)
-			inputFile.getRelatedFiles().add(new File(path, s));
+
 		File clusterFolderName = new File(Connection.getServer().getPath(), Job.get().getId());
 
-		SCPManager.sendInput(inputFile, clusterFolderName);
+		SCPManager.sendFolder(path, clusterFolderName.getAbsolutePath());
 	}
 
 }
