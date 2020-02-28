@@ -10,8 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import net.preibisch.distribution.algorithm.controllers.flow.Flow;
-import net.preibisch.distribution.algorithm.controllers.flow.Workflow;
 import net.preibisch.distribution.tools.helpers.GUIHelpers;
 
 public class ControlPanel extends JPanel implements ActionListener {
@@ -26,7 +24,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public BlockSizeControlPanel blockSizeControlPanel;
 
 	public ControlPanel(int dimensions) {
-		new Workflow();
+//		new Workflow();
 		blockSizeControlPanel = new BlockSizeControlPanel(DataPreview.getDims().length);
 
 		numberBlocksLabel = new JLabel("Total Blocks: 0", SwingConstants.CENTER);
@@ -42,7 +40,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		Label jobLabel = new Label("Block per job:");
 		jobLabel.setAlignment(Label.RIGHT);
 		jobsPanel.add(jobLabel);
-		this.add(Workflow.progressBarPanel);
+//		this.add(Workflow.progressBarPanel);
 		this.add(GUIHelpers.createImagePanel("img/labels.png"));
 
 		this.add(numberBlocksLabel);
@@ -63,7 +61,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == startWorkFlowButton) {
 			try {
-				Workflow.run(Flow.START_FLOW);
+//				Workflow.run(Flow.START_FLOW);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -71,7 +69,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 		}
 		if (e.getSource() == generateResultButton) {
 			try {
-				Workflow.run(Flow.RESULT_FLOW);
+//				Workflow.run(Flow.RESULT_FLOW);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

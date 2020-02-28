@@ -3,17 +3,21 @@ package net.preibisch.distribution.algorithm.blockmanagement.blockinfo;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.imglib2.Interval;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
+import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BasicBlockInfoGenerator  {
 	
 	public static final long BLOCK_SIZE = 128;
 	
-	public static Map<Integer, BasicBlockInfo> divideIntoBlockInfo(final long[] imgSize) {
-		
+	public static Map<Integer, BasicBlockInfo> divideIntoBlockInfo(Interval interval ) {
+	
+		BoundingBox bb = new BoundingBox(interval);
+		long[] imgSize = bb.getDimensions(1);
 		long[] blockSize =  ArrayHelpers.fill(BLOCK_SIZE, imgSize.length);
 		
 		final int numDimensions = imgSize.length;

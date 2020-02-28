@@ -14,7 +14,7 @@ import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.blockmanagement.BlockConfig;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
 import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
@@ -46,7 +46,7 @@ public class N5File extends ImgFile {
 		this.dims = dims;
 	}
 	public N5File(String path, long[] dims) throws IOException {
-		this(path, ArrayHelpers.array(BlockConfig.BLOCK_UNIT, dims.length), dims);
+		this(path, ArrayHelpers.array((int) BasicBlockInfoGenerator.BLOCK_SIZE, dims.length), dims);
 	}
 	public N5File(String path, long[] dims,int blockUnit) throws IOException {
 		this(path, ArrayHelpers.array(blockUnit, dims.length), dims);
@@ -78,7 +78,7 @@ public class N5File extends ImgFile {
 		return N5Utils.open(reader, dataset);
 	}
 
-	private void clean() throws IOException {
+	public void clean() throws IOException {
 		if (exists())
 			IOHelpers.deleteRecursively(this);
 	}

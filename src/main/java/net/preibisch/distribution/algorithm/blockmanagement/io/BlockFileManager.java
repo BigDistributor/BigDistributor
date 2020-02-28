@@ -1,12 +1,10 @@
 package net.preibisch.distribution.algorithm.blockmanagement.io;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import me.tongfei.progressbar.ProgressBar;
 import net.imglib2.Cursor;
-import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
@@ -16,15 +14,12 @@ import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import net.preibisch.distribution.algorithm.blockmanagement.block.Block;
-import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.IOTools;
-import net.preibisch.distribution.tools.helpers.ArrayHelpers;
-import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BlockFileManager {
 
-	public static RandomAccessibleInterval<FloatType> MergeBlocksFiles(HashMap<Integer, Block> blockMap,
+	public static RandomAccessibleInterval<FloatType> mergeBlocksFiles(Map<Integer, Block> blockMap,
 			File blocksFolder, DataExtension extension) {
 		final Img<FloatType> resultImage = new CellImgFactory<FloatType>(64).create(new long[] { 0, 0, 0 },
 				new FloatType());
@@ -44,7 +39,6 @@ public class BlockFileManager {
 			++i;
 			File f = new File(folder, extension.file(i.toString()));
 			saveOneBlock(infiniteImg, f, block);
-//			MyLogger.log().info("Saved: " + f.getAbsolutePath());
 		}
 	}
 
@@ -52,7 +46,6 @@ public class BlockFileManager {
 		final Img<FloatType> tmp = ArrayImgs.floats(block.dims());
 		block.copyBlock(image, tmp);
 		IOTools.saveTiffStack(IOTools.getImagePlusInstance(tmp), file);
-
 	}
 
 	public static RandomAccessibleInterval<FloatType> getBlock(RandomAccessibleInterval<FloatType> image, Block block) {
@@ -60,7 +53,6 @@ public class BlockFileManager {
 		final RandomAccessible<FloatType> infiniteImg = Views.extendMirrorSingle(image);
 		block.copyBlock(infiniteImg, tmp);
 		return tmp;
-
 	}
 
 	public static double imageDifference(final RandomAccessibleInterval<FloatType> img1,

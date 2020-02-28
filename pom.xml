@@ -9,7 +9,7 @@
 		<relativePath />
 	</parent>
 	<groupId>net.preibisch</groupId>
-	<artifactId>distribution</artifactId>
+	<artifactId>bdio</artifactId>
 	<version>0.2.2-SNAPSHOT</version>
 	<name>imagej distribuion</name>
 	<description>Distibute processing using cluster</description>

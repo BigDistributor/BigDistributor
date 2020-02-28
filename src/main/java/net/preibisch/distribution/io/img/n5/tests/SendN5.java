@@ -7,7 +7,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import mpicbg.spim.data.SpimDataException;
-import net.preibisch.distribution.algorithm.clustering.ClusterFile;
 import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.algorithm.controllers.items.Job;
@@ -27,7 +26,7 @@ public class SendN5 {
 		XMLFile inputFile = XMLFile.XMLFile(input_path);
 		for (String s : files)
 			inputFile.getRelatedFiles().add(new File(path, s));
-		ClusterFile clusterFolderName = new ClusterFile(Connection.getServer().getPath(), Job.get().getId());
+		File clusterFolderName = new File(Connection.getServer().getPath(), Job.get().getId());
 
 		SCPManager.sendInput(inputFile, clusterFolderName);
 	}

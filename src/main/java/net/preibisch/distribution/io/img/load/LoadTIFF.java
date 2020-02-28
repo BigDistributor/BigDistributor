@@ -28,12 +28,10 @@ public class LoadTIFF
 			throw new RuntimeException( "File " + fileName + " does not exist.");
 		
 		IFormatReader reader = new Memoizer(new ImageReader(),Memoizer.DEFAULT_MINIMUM_ELAPSED,tempDir);
-//		IFormatReader reader = 
 
 		// loads the first timepoint, first channel, first series of the image
 		return new VirtualRAIFactoryLOCI().createVirtualCached(
 				reader,
-//				null,
 				file,
 				0,
 				0,

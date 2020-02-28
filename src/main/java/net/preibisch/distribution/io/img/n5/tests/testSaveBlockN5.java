@@ -3,6 +3,7 @@ package net.preibisch.distribution.io.img.n5.tests;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.janelia.saalfeldlab.n5.DatasetAttributes;
 import org.janelia.saalfeldlab.n5.N5FSReader;
@@ -19,13 +20,15 @@ import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
-import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
-import net.preibisch.distribution.algorithm.controllers.metadata.MetadataGenerator;
-import net.preibisch.distribution.algorithm.errorhandler.callback.Callback;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
+import net.preibisch.distribution.algorithm.controllers.items.Job;
+import net.preibisch.distribution.algorithm.controllers.items.Metadata;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.io.IOTools;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
 import net.preibisch.distribution.tools.helpers.ImgHelpers;
+import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class testSaveBlockN5 {
 	public static void main(String[] args) throws Exception {
@@ -52,7 +55,9 @@ public class testSaveBlockN5 {
 		RandomAccessibleInterval<FloatType> source = IOTools.openAs32Bit(new File(input_path ));
 		ImageJFunctions.show(source, "Input");
 
+
 		long[] dims = ImgHelpers.getDimensions(source);
+		BoundingBox bb = new BoundingBox(ArrayHelpers.array(0, dims.length), Util.long2int(dims));
 		System.out.println("Dims: " + Util.printCoordinates(dims));
 		//System.exit( 0 );
 
@@ -89,7 +94,8 @@ public class testSaveBlockN5 {
 //		RandomAccessibleInterval<FloatType> virtual2 = N5Utils.open(new N5FSReader(output_path), dataset);
 //		
 //		ImageJFunctions.show(virtual2,"After block0 output");
-		BlocksMetaData md = MetadataGenerator.genarateMetaData(dims, Util.int2long(blockSize), 0, new Callback());
+		Map<Integer, BasicBlockInfo> blocksInfo = BasicBlockInfoGenerator.divideIntoBlockInfo(bb);
+		Metadata md = new Metadata(Job.get().getId(),blocksInfo, Util.int2long(blockSize), input_path, blocksInfo.size());
 		
 		int total = md.getBlocksInfo().size();
 		

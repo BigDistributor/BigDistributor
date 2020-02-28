@@ -16,14 +16,15 @@ import com.google.gson.JsonSyntaxException;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 
-public class BlocksMetaData {
+public class Metadata {
+	private String id;
 	private int total;
 	private String xml;
 	private long[] blocksize;
 	private Map<Integer, BasicBlockInfo> blocksInfo;
 
-	public BlocksMetaData(Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, String xml, int total) {
-		super();
+	public Metadata(String id, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, String xml, int total) {
+		this.id = id;
 		this.total = total;
 		this.xml = xml;
 		this.blocksize = bsizes;
@@ -34,6 +35,9 @@ public class BlocksMetaData {
 		return blocksInfo;
 	}
 
+	public String getId() {
+		return id;
+	}
 	public void setBlocksInfo(Map<Integer, BasicBlockInfo> blocksInfo) {
 		this.blocksInfo = blocksInfo;
 	}
@@ -76,8 +80,8 @@ public class BlocksMetaData {
 		System.out.println("Metadata saved: "+file.getAbsolutePath());
 	}
 	
-	public static BlocksMetaData fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
-		return new Gson().fromJson(new FileReader(path), BlocksMetaData.class);
+	public static Metadata fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+		return new Gson().fromJson(new FileReader(path), Metadata.class);
 	}
 }
 
