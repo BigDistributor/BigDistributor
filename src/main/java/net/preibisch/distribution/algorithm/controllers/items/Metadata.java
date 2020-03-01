@@ -15,20 +15,21 @@ import com.google.gson.JsonSyntaxException;
 
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
-import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
-import net.preibisch.distribution.tools.helpers.ArrayHelpers;
+import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class Metadata {
 	private String jobID;
 	private String input;
 	private String output;
+	private BoundingBox bb;
 	private long[] blocksize;
 	private Map<Integer, BasicBlockInfo> blocksInfo;
 
 	
-	public Metadata(String jobID, String input, String output, long[] blocksize,
+	public Metadata(String jobID, String input, String output,BoundingBox bb, long[] blocksize,
 			Map<Integer, BasicBlockInfo> blocksInfo) {
 		super();
+		this.bb = bb;
 		this.jobID = jobID;
 		this.input = input;
 		this.output = output;
@@ -36,6 +37,10 @@ public class Metadata {
 		this.blocksInfo = blocksInfo;
 	}
 
+	public BoundingBox getBb() {
+		return bb;
+	}
+	
 	public String getJobID() {
 		return jobID;
 	}

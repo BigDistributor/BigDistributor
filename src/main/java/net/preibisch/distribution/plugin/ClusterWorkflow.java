@@ -10,6 +10,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
 import mpicbg.spim.data.SpimDataException;
+import net.imglib2.Interval;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
@@ -28,13 +29,14 @@ import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.distribution.io.img.n5.N5File;
 import net.preibisch.distribution.io.img.xml.XMLFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
+import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class ClusterWorkflow {
 
 	private static final String BATCH_NAME = "_submit.cmd";
 	private static final String TASK_SHELL_NAME = "_task.sh";
 
-	public static void run(List<ParamsJsonSerialzer<?>> params, String input, TaskType type) throws IOException, JSchException, SftpException, SpimDataException {
+	public static void run(List<ParamsJsonSerialzer<?>> params, String input, TaskType type, Interval interval) throws IOException, JSchException, SftpException, SpimDataException {
 		Job.create();
 //		List<File> relatedFiles = XMLFile.initRelatedFiles(new File(xml));
 		XMLFile inputFile = XMLFile.XMLFile(input);
@@ -58,7 +60,7 @@ public class ClusterWorkflow {
 //			System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 			String outptutCluster = Job.get().subfile(output_name);
 			Map<Integer, BasicBlockInfo> blocksInfo = BasicBlockInfoGenerator.divideIntoBlockInfo(inputFile.bb());
-			Metadata md = new Metadata(Job.get().getId(),inputCluster,outptutCluster, bsizes,blocksInfo);
+			Metadata md = new Metadata(Job.get().getId(),inputCluster,outptutCluster,new BoundingBox(interval), bsizes,blocksInfo);
 
 			File metadataFile = Job.get().file(i + "_metadata.json");
 			MyLogger.log().info(md.toString());

@@ -3,7 +3,8 @@ package net.preibisch.distribution.algorithm.clustering.kafka;
 import java.util.Timer;
 
 public class KafkaManager {
-	public static void log(int block, String msg) {
+	public static String jobID;
+	public static void log( int block, String msg) {
 		send(KafkaTopics.LOG, block, msg);
 	}
 

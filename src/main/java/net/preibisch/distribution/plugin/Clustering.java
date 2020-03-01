@@ -17,9 +17,9 @@ import net.imglib2.Interval;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
-import net.preibisch.distribution.algorithm.task.params.FusionClusteringParams;
-import net.preibisch.distribution.algorithm.task.params.NonRigidClasteringParams;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;
+import net.preibisch.distribution.tasksparam.FusionClusteringParams;
+import net.preibisch.distribution.tasksparam.NonRigidClusteringParams;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.process.fusion.transformed.nonrigid.NonRigidParameters;
@@ -48,15 +48,15 @@ public class Clustering {
 			boolean useBlending, boolean useContentBased, boolean virtualGrid, int interpolation, Interval boundingBox,
 			double downsampling, Map<ViewId, AffineModel1D> intensityAdjustment) {
 		xml = IOHelpers.getXML(spimData.getBasePath().getAbsolutePath());
-		NonRigidClasteringParams param = new NonRigidClasteringParams( registrations, views, viewsToUse,
+		NonRigidClusteringParams param = new NonRigidClusteringParams( registrations, views, viewsToUse,
 				useBlending, useContentBased, nonRigidParameters, virtualGrid, interpolation, boundingBox, downsampling,
 				intensityAdjustment);
 		paramsForClusterTasks.add(param);
 	}
 
-	public static void run() {
+	public static void run(Interval interval) {
 		try {
-			ClusterWorkflow.run(paramsForClusterTasks, xml, type);
+			ClusterWorkflow.run(paramsForClusterTasks, xml, type, interval);
 		} catch (IOException | JSchException | SftpException | SpimDataException e) {
 			MyLogger.log().error(e);
 		}
