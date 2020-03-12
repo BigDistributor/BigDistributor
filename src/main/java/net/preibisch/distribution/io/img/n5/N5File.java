@@ -12,13 +12,19 @@ import org.janelia.saalfeldlab.n5.N5Reader;
 import org.janelia.saalfeldlab.n5.N5Writer;
 import org.janelia.saalfeldlab.n5.imglib2.N5Utils;
 
+import bdv.util.BdvFunctions;
+import bdv.util.BdvStackSource;
+import ij.ImagePlus;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfoGenerator;
 import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
+import net.preibisch.helpers.fromstitchergui.BDVPopup;
+import net.preibisch.mvrecon.process.export.DisplayImage;
 
 public class N5File extends ImgFile {
 	private final static Compression COMPRESSION = new GzipCompression();
@@ -83,6 +89,23 @@ public class N5File extends ImgFile {
 	public void clean() throws IOException {
 		if (exists())
 			IOHelpers.deleteRecursively(this);
+	}
+	
+	public RandomAccessibleInterval<FloatType> getImg() throws IOException {
+		return N5IO.read(getAbsolutePath());
+	}
+	public BdvStackSource<FloatType> show(String title) throws IOException {
+		RandomAccessibleInterval<FloatType> img = N5IO.read(getAbsolutePath());
+		DisplayImage.getImagePlusInstance( img, false, "Fused", 0, 255 ).show();
+//		ImageJFunctions.show(img,title);
+//		BdvStackSource<FloatType> bdv = BdvFunctions.show(img, title);
+//		bdv.setCurrent();
+		return null;
+//
+//		bdv.getBdvHandle().get
+//		BDVPopup.initTransform( bdv.getViewer() );	
+//		BDVPopup.initBrightness( 0.001, 0.999, bdv.getViewer().getState(), bdv.getSetupAssignments() );
+
 	}
 
 	public static N5File open(String path) throws IOException {

@@ -3,6 +3,8 @@ package net.preibisch.distribution.algorithm.blockmanagement.io;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
 
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
@@ -14,6 +16,9 @@ import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
 import net.preibisch.distribution.algorithm.blockmanagement.block.Block;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
+import net.preibisch.distribution.algorithm.multithreading.Threads;
 import net.preibisch.distribution.io.DataExtension;
 import net.preibisch.distribution.io.IOTools;
 
@@ -66,5 +71,19 @@ public class BlockFileManager {
 			sumChange += Math.abs(c1.get().get() - r2.get().get());
 		}
 		return sumChange;
+	}
+
+	public static void saveAllBlocks(ExecutorService service,RandomAccessibleInterval<FloatType> img, Map<Integer, BasicBlockInfo> blocksInfo,
+			String folder, DataExtension extension) {
+//		Views.extendMirrorSingle(img);
+		final RandomAccessible<FloatType> infiniteImg = Views.extendZero(img);
+		int i = 0;
+		for (final Entry<Integer, BasicBlockInfo> set :blocksInfo.entrySet()) {
+			i++;
+			Block b = new Block(service, set.getValue());
+			File f = new File(folder, extension.file(set.getKey().toString()));
+			saveOneBlock(infiniteImg, f, b);
+			MyLogger.log().info(i+"/"+blocksInfo.size()+"-"+f.getAbsolutePath());
+		}
 	}
 }

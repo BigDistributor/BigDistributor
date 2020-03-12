@@ -20,8 +20,8 @@ import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.real.FloatType;
-import net.preibisch.distribution.algorithm.task.params.ParamJsonHelpers;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;
+import net.preibisch.distribution.algorithm.task.params.SerializableParams;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.mvrecon.Threads;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
@@ -29,7 +29,7 @@ import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 import net.preibisch.mvrecon.process.fusion.transformed.nonrigid.NonRigidParameters;
 import net.preibisch.mvrecon.process.fusion.transformed.nonrigid.NonRigidTools;
 
-public class NonRigidClusteringParams extends ParamJsonHelpers implements ParamsJsonSerialzer<NonRigidClusteringParams> {
+public class NonRigidClusteringParams extends SerializableParams {
 	private Map<ViewId, AffineTransform3D> viewRegistrations;
 	private Collection<? extends ViewId> viewsToFuse;
 	private Collection<? extends ViewId> viewsToUse;
@@ -38,7 +38,6 @@ public class NonRigidClusteringParams extends ParamJsonHelpers implements Params
 	private NonRigidParameters nonRigidParameters;
 	private boolean virtualGrid;
 	private int interpolation;
-	private Interval boundingBox;
 	private double downsampling;
 	private Map<? extends ViewId, AffineModel1D> intensityAdjustments;
 
@@ -57,7 +56,7 @@ public class NonRigidClusteringParams extends ParamJsonHelpers implements Params
 		this.nonRigidParameters = nonRigidParameters;
 		this.virtualGrid = virtualGrid;
 		this.interpolation = interpolation;
-		this.boundingBox = boundingBox;
+		this.boundingBox = new BoundingBox(boundingBox);
 		this.downsampling = downsampling;
 		this.intensityAdjustments = intensityAdjustments;
 	}
@@ -90,7 +89,7 @@ public class NonRigidClusteringParams extends ParamJsonHelpers implements Params
 		return interpolation;
 	}
 
-	public Interval getBoundingBox() {
+	public BoundingBox getBoundingBox() {
 		return boundingBox;
 	}
 
@@ -130,7 +129,7 @@ public class NonRigidClusteringParams extends ParamJsonHelpers implements Params
 				getIntensityAdjustments(),
 				taskExecutor ).getA();
 	}
-	@Override
+	
 	public NonRigidClusteringParams fromJson(File file) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		return NonRigidClusteringParams.getGson().fromJson(new FileReader(file), NonRigidClusteringParams.class);
 	}

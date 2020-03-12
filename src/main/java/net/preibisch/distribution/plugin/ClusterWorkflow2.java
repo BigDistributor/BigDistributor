@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarFile;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
@@ -26,50 +25,47 @@ import net.preibisch.distribution.algorithm.controllers.items.Job;
 import net.preibisch.distribution.algorithm.controllers.items.Metadata;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;
-import net.preibisch.distribution.algorithm.task.params.SerializableParams;
-import net.preibisch.distribution.io.DistributedFile;
-import net.preibisch.distribution.io.FileStatus;
 import net.preibisch.distribution.io.GsonIO;
-import net.preibisch.distribution.io.TaskFile;
 import net.preibisch.distribution.io.img.n5.N5File;
 import net.preibisch.distribution.io.img.xml.XMLFile;
 import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
-public class ClusterWorkflow {
+public class ClusterWorkflow2 {
 
 	private static final String BATCH_NAME = "_submit.cmd";
 	private static final String TASK_SHELL_NAME = "_task.sh";
 
-	private static final String TASK_PATH = "/fast/AG_Preibisch/Marwan/clustering/jars/FusionV2.jar";
-	private static final String INPUT_PATH = "/fast/AG_Preibisch/Marwan/clustering/20200312153816/dataset.xml";
-
-	public static void run(List<SerializableParams> params, String input, TaskType type, Interval interval) throws SpimDataException, IOException, JSchException, SftpException {
+	public static void run(List<ParamsJsonSerialzer<?>> params, String input, TaskType type, Interval interval) throws SpimDataException, IOException, JSchException, SftpException {
 		Job.create();
-//		XMLFile inputFile = XMLFile.create(INPUT_PATH, 0, FileStatus.IN_CLUSTER);
-		DistributedFile inputFile = new DistributedFile(INPUT_PATH, FileStatus.IN_CLUSTER);
-		BoundingBox bb = params.get(0).getBoundingBox();
-		long[] dims = bb.getDimensions(1);
-		long[] bsizes = ArrayHelpers.fill(BasicBlockInfoGenerator.BLOCK_SIZE, dims.length);
-//		File taskFile = new File(TaskType.getTaskFile(type));
-		TaskFile task = new TaskFile(TASK_PATH,type,FileStatus.IN_CLUSTER); 
-		task.prepare();
-//		inputFile.getRelatedFiles().add(taskFile);
-//		String inputCluster = Job.get().subfile(inputFile.getName());
-//		SCPManager.sendInput(inputFile, Job.get().getCluster());
+//		List<File> relatedFiles = XMLFile.initRelatedFiles(new File(xml));
+		XMLFile inputFile = XMLFile.XMLFile(input);
+		long[] bsizes = ArrayHelpers.fill(BasicBlockInfoGenerator.BLOCK_SIZE, inputFile.getDimensions().length);
+//		PreviewUI ui = new PreviewUI(inputFile, params.getViewIds().size());
+//		Connection.login();
+		// SCPManager.createClusterFolder(clusterFolderName);
+		
+		File taskFile = new File(TaskType.getTaskFile(type));
+		inputFile.getRelatedFiles().add(taskFile);
+		String inputCluster = Job.get().subfile(inputFile.getName());
+		SCPManager.sendInput(inputFile, Job.get().getCluster());
 
 		for (int i = 0; i < params.size(); i++) {
 
 			String output_name = i + "_output.n5";
 			MyLogger.log().info(params.toString());
 
+//			N5File outputFile = new N5File(Job.get().file(output_name).getAbsolutePath(), inputFile.getDims(),
+//					(int)BasicBlockInfoGenerator.BLOCK_SIZE);
+//			System.out.println("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 			String outptutCluster = Job.get().subfile(output_name);
-			Map<Integer, BasicBlockInfo> blocksInfo = BasicBlockInfoGenerator.divideIntoBlockInfo(bb);
-			Metadata md = new Metadata(Job.get().getId(),inputFile.getClusterPath(),outptutCluster,new BoundingBox(interval), bsizes,blocksInfo);
+			Map<Integer, BasicBlockInfo> blocksInfo = BasicBlockInfoGenerator.divideIntoBlockInfo(inputFile.bb());
+			Metadata md = new Metadata(Job.get().getId(),inputCluster,outptutCluster,new BoundingBox(interval), bsizes,blocksInfo);
 
 			File metadataFile = Job.get().file(i + "_metadata.json");
 			MyLogger.log().info(md.toString());
 			Job.get().setTotalbBlocks(md.size());
+			// md.toJson(metadataFile);
 			GsonIO.toJson(md, metadataFile);
 			File paramFile = Job.get().file(i + "_param.json");
 			params.get(i).toJson(paramFile);
@@ -85,14 +81,14 @@ public class ClusterWorkflow {
 			System.out.println("Param cluster: "+paramCluster);
 			
 
-			SGEClusterScript.generateTaskScript(JobType.PROCESS,scriptFile, task.getPath(), metadataCluster,
-					inputFile.getClusterPath(), outptutCluster,paramCluster);
+			SGEClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster,
+					inputCluster, outptutCluster,paramCluster,i);
 
 			// Task to prepare N5
 			String prepareScriptName = i + JobType.file(JobType.PREPARE);
 			File prepareShell = Job.get().file(prepareScriptName);
-			SGEClusterScript.generateTaskScript(JobType.PREPARE, prepareShell, task.getPath(),
-					metadataCluster, inputFile.getClusterPath(), outptutCluster, paramCluster);
+			SGEClusterScript.generateTaskScript(JobType.PREPARE, prepareShell, taskFile.getName(),
+					metadataCluster, inputCluster, outptutCluster, paramCluster,i);
 	
 			// Generate batch
 

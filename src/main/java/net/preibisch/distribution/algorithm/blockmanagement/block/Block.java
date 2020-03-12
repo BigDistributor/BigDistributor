@@ -42,6 +42,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.view.Views;
+import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.blockmanagement.blockinfo.ComplexBlockInfo;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.multithreading.ImagePortion;
@@ -112,6 +113,11 @@ public class Block extends AbstractInterval
 
 	public Block(ExecutorService service,ComplexBlockInfo infos) {
 		this(service,infos.getBlockSize(),infos.getOffset(),infos.getEffectiveSize(),infos.getEffectiveOffset(),infos.getEffectiveLocalOffset(),infos.isPrecise());
+	}
+	
+	public Block(ExecutorService service,BasicBlockInfo infos) {
+
+		this(service,infos.getBlockSize(),infos.getMin(),infos.getEffectiveSize(),infos.getMin(),infos.getEffectiveSize(),true);
 	}
 	
 	public Block(

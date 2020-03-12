@@ -15,23 +15,23 @@ public class SGEClusterScript {
 	public static final String PREPROCESS_SHELL_NAME = "preprocess.sh";
 	public static final String LOG_PROVIDER_SHELL_NAME = "logProvider.sh";
 
-	public static void generateTaskScript(File file, String metadata, String input, String output) throws IOException {
-		generateTaskScript(file, TASK_SHELL_NAME, metadata, input, output);
-	}
+//	public static void generateTaskScript(File file, String metadata, String input, String output) throws IOException {
+//		generateTaskScript(file, TASK_SHELL_NAME, metadata, input, output);
+//	}
+//
+//	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output)
+//			throws IOException {
+//		generateTaskScript(JobType.PROCESS, file, taskName, metadata, input, output, "");
+//	}
+//
+//	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output,String extraParams)
+//			throws IOException {
+//		System.out.println(extraParams);
+//		generateTaskScript(JobType.PROCESS, file, taskName, metadata, input, output, extraParams);
+//	}
 
-	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output)
-			throws IOException {
-		generateTaskScript(JobType.PROCESS, file, taskName, metadata, input, output, "",0);
-	}
-
-	public static void generateTaskScript(File file, String taskName, String metadata, String input, String output,String extraParams,int view)
-			throws IOException {
-		System.out.println(extraParams);
-		generateTaskScript(JobType.PROCESS, file, taskName, metadata, input, output, extraParams,view);
-	}
-
-	public static void generateTaskScript(JobType type, File file, String taskName, String metadata, String input,
-			String output, String extraParams,int view) throws IOException {
+	public static void generateTaskScript(JobType type, File file, String taskPath, String metadata, String input,
+			String output, String extraParams) throws IOException {
 		System.out.println("Create Script file: " + file.getAbsolutePath());
 		try (PrintWriter out = new PrintWriter(file)) {
 			out.println("#!/bin/sh");
@@ -46,7 +46,7 @@ public class SGEClusterScript {
 			out.println("#export OPENBLAS_NUM_THREADS=4");
 			out.println("# export NUM_THREADS=8");
 			System.out.println(extraParams);
-			out.println(taskLine(type, taskName, metadata, input, output, extraParams,view));
+			out.println(taskLine(type, taskPath, metadata, input, output, extraParams));
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -57,13 +57,13 @@ public class SGEClusterScript {
 	}
 
 	private static String taskLine(JobType type, String taskName, String metadata, String input, String output,
-			String extraParams, int view) {
+			String extraParams) {
 		System.out.println(extraParams);
 		String extra = "";
 		if (!extraParams.equals("")) {
-			extra =" -p "+ extraParams + " -v "+view;
+			extra =" -p "+ extraParams ;
 			}
-		System.out.println("EXTRA: "+extra+ " | extraParams: "+extraParams+" | view: "+view);
+		System.out.println("EXTRA: "+extra+ " | extraParams: "+extraParams);
 		return "java -jar " + taskName + " -t " +JobType.str(type)+ " -i " + input + " -o " + output + " -m " + metadata
 				+ extra
 				+ " -id $SGE_TASK_ID";

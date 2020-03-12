@@ -18,6 +18,7 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.preibisch.distribution.algorithm.clustering.scripting.TaskType;
 import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.algorithm.task.params.ParamsJsonSerialzer;
+import net.preibisch.distribution.algorithm.task.params.SerializableParams;
 import net.preibisch.distribution.tasksparam.FusionClusteringParams;
 import net.preibisch.distribution.tasksparam.NonRigidClusteringParams;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
@@ -25,7 +26,7 @@ import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.process.fusion.transformed.nonrigid.NonRigidParameters;
 
 public class Clustering {
-	private static List<ParamsJsonSerialzer<?>> paramsForClusterTasks;
+	private static List<SerializableParams> paramsForClusterTasks;
 	private static String xml;
 	private static TaskType type;
 

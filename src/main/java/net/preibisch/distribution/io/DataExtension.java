@@ -51,4 +51,8 @@ public enum DataExtension {
 		 String extension =  FilenameUtils.getExtension(path);
 		  return DataExtension.fromString(extension);
 	  }
+	  
+	  public static String removeExtension(String path) {
+		  return FilenameUtils.removeExtension(path);
+		  }
 }

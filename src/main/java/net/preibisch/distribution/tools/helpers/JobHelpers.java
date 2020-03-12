@@ -12,8 +12,9 @@ import net.preibisch.distribution.algorithm.errorhandler.callback.AbstractCallBa
 public class JobHelpers {
 	public static String id() {
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		String id = UUID.randomUUID().toString().replace("-", "");
-		return timeStamp+"_"+id;
+//		String id = UUID.randomUUID().toString().replace("-", "");
+//		return timeStamp+"_"+id;
+		return timeStamp;
 	}
 	
 	public static List<String[]> generateBlocksPerJob(String[] localBlocksfiles, int jobs, AbstractCallBack callBack) {

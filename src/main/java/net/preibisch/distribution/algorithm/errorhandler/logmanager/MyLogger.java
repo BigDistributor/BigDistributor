@@ -9,6 +9,8 @@ import net.preibisch.distribution.gui.items.LogFrame;
 
 public class MyLogger {
 	
+	private static Boolean sendLog = false;
+	
 	public static Boolean initialized = false;
 	
 	private static Logger log;
@@ -19,9 +21,6 @@ public class MyLogger {
 	public static void SubLogger(LogService logService) {
 		log = logService.subLogger("Distribution");
 		log.addLogListener(LogFrame.getLogPanel());
-
-//		log.info( "This is an info message" );
-//		log.error( "This is an error message" );
 //		logPanel = new LoggingPanel(Tr2dContext.ops.context());
 	}
 	
@@ -36,6 +35,7 @@ public class MyLogger {
 
 	public static void initLogger() {
 		if(initialized) return ;
+//		org.apache.log4j.BasicConfigurator.configure();
 		final Context context = new Context( OpService.class, LogService.class );
 		opService = context.getService( OpService.class );
 		logService = context.getService( LogService.class );

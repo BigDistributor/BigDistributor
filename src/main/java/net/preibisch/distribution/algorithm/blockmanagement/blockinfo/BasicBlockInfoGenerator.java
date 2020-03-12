@@ -12,7 +12,7 @@ import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BasicBlockInfoGenerator  {
 	
-	public static final long BLOCK_SIZE = 128;
+	public static final long BLOCK_SIZE = 256;
 	
 	public static Map<Integer, BasicBlockInfo> divideIntoBlockInfo(Interval interval ) {
 	

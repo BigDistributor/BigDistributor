@@ -22,20 +22,20 @@ public class SCPManager {
 		SCPFunctions.runCommand(command);
 	}
 
-	public static void sendInput(XMLFile inputFile, File cluster) throws JSchException, IOException, SftpException {
-		createClusterFolder(cluster);
-		String serverPath = cluster.getPath();
-
-		sendFile(inputFile, serverPath);
-		System.out.println("Related files: " + inputFile.getRelatedFiles().size());
-		send(inputFile.getRelatedFiles(), cluster);
-	}
+//	public static void sendInput(XMLFile inputFile, File cluster) throws JSchException, IOException, SftpException {
+//		createClusterFolder(cluster);
+//		String serverPath = cluster.getPath();
+//
+//		sendFile(inputFile, serverPath);
+//		System.out.println("Related files: " + inputFile.getRelatedFiles().size());
+//		send(inputFile.getRelatedFiles(), cluster);
+//	}
 	
 	public static void send(List<File> files, File cluster) throws JSchException, IOException, SftpException {
 
 		String serverPath = cluster.getPath();
 		for (File f : files) {
-			System.out.println(" file: " + f.getAbsolutePath());
+			System.out.println(" file: to send:" + f.getAbsolutePath());
 			if (f.isDirectory()||(DataExtension.fromURI(f.getName())==DataExtension.N5)) {
 				sendFolder(f.getAbsolutePath(), serverPath);
 			} else {

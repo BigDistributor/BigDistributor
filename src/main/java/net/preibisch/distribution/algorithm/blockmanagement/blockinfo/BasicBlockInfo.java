@@ -3,6 +3,7 @@ package net.preibisch.distribution.algorithm.blockmanagement.blockinfo;
 import java.util.Arrays;
 
 import net.imglib2.util.Util;
+import net.preibisch.distribution.tools.helpers.ArrayHelpers;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class BasicBlockInfo {
@@ -43,9 +44,9 @@ public class BasicBlockInfo {
 	}
 	
 	public BoundingBox bb() {
-		int[] minArray = Arrays.stream(min).mapToInt(i -> (int) i).toArray();
-		int[] maxArray = Arrays.stream(min).mapToInt(i -> (int) i).toArray();
-		return new BoundingBox(minArray, maxArray);
+//		int[] minArray = Arrays.stream(min).mapToInt(i -> (int) i).toArray();
+//		int[] maxArray = Arrays.stream(min).mapToInt(i -> (int) i).toArray();
+		return new BoundingBox(Util.long2int(getMin()), Util.long2int(getMax()));
 	}
 
 	@Override

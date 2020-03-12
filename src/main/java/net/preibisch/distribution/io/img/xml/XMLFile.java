@@ -3,19 +3,29 @@ package net.preibisch.distribution.io.img.xml;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.IIOException;
 
+import bdv.BigDataViewer;
+import bdv.util.BehaviourTransformEventHandlerPlanar.BehaviourTransformEventHandlerPlanarFactory;
+import bdv.viewer.ViewerOptions;
 import mpicbg.spim.data.SpimDataException;
+import mpicbg.spim.data.generic.sequence.BasicViewDescription;
+import mpicbg.spim.data.sequence.ViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 import net.preibisch.distribution.io.DataExtension;
+import net.preibisch.distribution.io.FileStatus;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.io.img.ImgFunctions;
 import net.preibisch.distribution.tools.helpers.IOHelpers;
+import net.preibisch.helpers.fromstitchergui.BDVPopup;
+import net.preibisch.helpers.fromstitchergui.MaximumProjectorARGB;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
@@ -30,46 +40,17 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 	private Interval bb;
 	private SpimData2 spimData;
 	private double downsampling;
-	private List<File> relatedFiles;
 
 
-	public List<File> getRelatedFiles() {
-		return relatedFiles;
-	}
-
-	public SpimData2 spimData() {
-		return spimData;
-	}
-
-	public List<List<ViewId>> viewIds() {
-		return viewIds;
-	}
-
-	public Interval bb() {
-		return bb;
-	}
-	
-	public long[] getDimensions(int downsampling) {
-		return new BoundingBox(bb).getDimensions(downsampling);
-	}
-
-	public static XMLFile XMLFile(String path) throws SpimDataException, IOException {
-		return XMLFile(path, Double.NaN);
-	}
-
-	public static XMLFile XMLFile(String path, double downsampling)
+	public static XMLFile create(String path, double downsampling,FileStatus mode)
 			throws SpimDataException, IOException {
-		File f = new File(path);
-		if (!f.exists())
-			throw new IOException("File not found! " + path);
-
 		if (!DataExtension.XML.equals(DataExtension.fromURI(path)))
 			throw new IIOException("Invalide input! " + path);
-		System.out.println("File found! ");
+		
+		MyLogger.log().info("File found :"+path);
 
 		SpimData2 spimdata = new XmlIoSpimData2("").load(path);
 
-		List<File> relatedFiles = initRelatedFiles(f);
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
 		viewIds.addAll(spimdata.getSequenceDescription().getViewDescriptions().values());
 		BoundingBox bbx = estimateBoundingBox(spimdata, viewIds);
@@ -78,80 +59,26 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 			down = 1;
 		else
 			down = (int) downsampling;
-		return new XMLFile(path, bbx, down, list(viewIds), relatedFiles);
-
+		return new XMLFile(path, bbx, down, list(viewIds));
 	}
 
-	public static XMLFile XMLFile(String path, Interval bb, double downsampling) throws IOException, SpimDataException {
-		final List<ViewId> viewIds = new ArrayList<ViewId>();
-		SpimData2 spimdata = new XmlIoSpimData2("").load(path);
-		viewIds.addAll(spimdata.getSequenceDescription().getViewDescriptions().values());
-		return XMLFile(path, bb,  downsampling, viewIds);
-	}
-	
-	public static XMLFile XMLFile(String path, Interval bb, double downsampling, List<ViewId> viewIds) throws IOException, SpimDataException {
-
-		System.out.println("XML specific info loader ");
-		File f = new File(path);
-		if (!f.exists())
-			throw new IOException("File not found! " + path);
-
-		if (!DataExtension.XML.equals(DataExtension.fromURI(path)))
-			throw new IIOException("Invalide input! " + path);
-		System.out.println("File found! ");
-
-		SpimData2 spimdata = new XmlIoSpimData2("").load(path);
-
-		List<File> relatedFiles = initRelatedFiles(f);
-
-		return new XMLFile(path, bb, downsampling,  list(viewIds), relatedFiles);
-	}
-
-
-//	public XMLFile(String path, BoundingBox bb, SpimData2 spimdata, int downsampling, List<ViewId> viewIds,
-//			List<File> relatedFiles) {
-//		this(path,bb,spimdata,downsampling,list(viewIds),relatedFiles);
-//	}
-	
 	private static List<List<ViewId>> list(List<ViewId> viewIds) {
 		List<List<ViewId>> l = new ArrayList<>();
 		l.add(viewIds);
 		return l;
 	}
 
-	public XMLFile(String path, Interval bb, double downsampling, List<List<ViewId>> viewIds,
-			List<File> relatedFiles) throws SpimDataException {
+	public XMLFile(String path, Interval bb, double downsampling, List<List<ViewId>> viewIds) throws SpimDataException, IOException {
 		super(path);
-
 		this.viewIds = viewIds;
 		this.bb = bb;
 		this.downsampling = downsampling;
 		this.spimData =  new XmlIoSpimData2( "" ).load(path);
-		this.relatedFiles = relatedFiles;
+		this.relatedFiles.add(new File(getParent(), HDF5_FILE));
 		int down = ( Double.isNaN(downsampling))?1:(int)downsampling;
 		System.out.println("Down "+downsampling+"->"+down);
 		this.dims = new BoundingBox(bb).getDimensions(down);
-
-		// dataType = Util.getTypeFromInterval(fuse());
 		System.out.println(toString());
-	}
-
-	public static List<File> initRelatedFiles(File f) throws IOException {
-		List<File> files = new ArrayList<File>();
-		File hdfFile = new File(f.getParent(), HDF5_FILE);
-		if (!hdfFile.exists())
-			throw new IOException("HDF5 file not exist: " + hdfFile.getAbsolutePath());
-		files.add(hdfFile);
-		return files;
-	}
-
-	@Override
-	public String toString() {
-		String related = "\n Related files: \n";
-		for (File f : relatedFiles)
-			related += f.getAbsolutePath() + "\n";
-
-		return super.toString() + related;
 	}
 
 	private static BoundingBox estimateBoundingBox(SpimData2 spimdata, List<ViewId> viewIds) {
@@ -176,4 +103,45 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 		return fuse(0);
 	}
 
+	public BigDataViewer show(String title) throws IOException {
+		boolean allViews2D = true;
+		 Collection<ViewDescription> viewDescriptions = spimData.getSequenceDescription().getViewDescriptions().values();
+		for (final BasicViewDescription< ? > vd : viewDescriptions)
+			if (vd.isPresent() && vd.getViewSetup().hasSize() && vd.getViewSetup().getSize().dimension( 2 ) != 1)
+			{
+				allViews2D = false;
+				break;
+			}
+		final ViewerOptions options = ViewerOptions.options().accumulateProjectorFactory( MaximumProjectorARGB.factory );
+		if (allViews2D)
+		{
+			options.transformEventHandlerFactory(new BehaviourTransformEventHandlerPlanarFactory() );
+		}
+		BigDataViewer bdv = BigDataViewer.open( spimData,"BigDataViewer", null, options );
+		BDVPopup.initTransform( bdv.getViewer() );	
+		BDVPopup.initBrightness( 0.001, 0.999, bdv.getViewer().getState(), bdv.getSetupAssignments() );
+		return bdv;
+	}
+	
+	public SpimData2 spimData() {
+		return spimData;
+	}
+
+	public List<List<ViewId>> viewIds() {
+		return viewIds;
+	}
+
+	public Interval bb() {
+		return bb;
+	}
+	
+	public long[] getDimensions(int downsampling) {
+		return new BoundingBox(bb).getDimensions(downsampling);
+	}
+	
+	protected SpimData2 getSpimData(String input) throws SpimDataException {
+		if (DataExtension.fromURI(input) != DataExtension.XML)
+			throw new SpimDataException("input " + input + " is not XML");
+		return new XmlIoSpimData2("").load(input);
+	}
 }

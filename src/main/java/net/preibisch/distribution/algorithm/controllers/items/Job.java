@@ -3,7 +3,10 @@ package net.preibisch.distribution.algorithm.controllers.items;
 import java.io.File;
 
 import com.google.common.io.Files;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 
+import net.preibisch.distribution.algorithm.clustering.jsch.SCPManager;
 import net.preibisch.distribution.algorithm.clustering.server.Connection;
 import net.preibisch.distribution.tools.helpers.JobHelpers;
 
@@ -30,7 +33,7 @@ public class Job extends Object {
 	
 	private static Job instance;
 	
-	public static Job get() {
+	public static Job get() throws JSchException, SftpException {
 		if (instance==null) {
 			instance = job();
 			return get();
@@ -39,7 +42,46 @@ public class Job extends Object {
 		}
 	}
 	
-	public static Job create() {
+	public static Job create(ProcessMode processMode) throws JSchException, SftpException  {
+		instance = job(processMode);
+		return get();
+	}
+	
+	private static Job job(ProcessMode processMode) throws JSchException, SftpException  {
+		String id = JobHelpers.id();
+		System.out.println("Job id: "+id);
+
+		File tmpDir = createTempDir();
+		
+		if(processMode == ProcessMode.CLUSTER_PROCESSING)
+			return clusterJob(id, tmpDir);
+		else if(processMode == ProcessMode.LOCAL_PROCESSING)
+			return localJob(id,tmpDir);
+		else
+			return clusterJob(id, tmpDir);
+		
+		}
+	
+	private static Job localJob(String id, File tmpDir) {
+		
+	return new Job(id,DataAccessMode.READY_IN_CLUSTER_INPUT,ProcessMode.LOCAL_PROCESSING,tmpDir,null,0);
+	
+	}
+
+	private static Job clusterJob(String id, File tmpDir) throws JSchException, SftpException {
+		if(!Connection.isConfigured()) {
+			Connection.login();
+		}
+		String clusterPath = Connection.getServer().getPath();
+		File cluster = new File(clusterPath , id);
+
+		SCPManager.createClusterFolder(cluster);
+		
+	return new Job(id,DataAccessMode.SEND_DATA_FROM_LOCAL,ProcessMode.CLUSTER_PROCESSING,tmpDir,cluster,0);
+	
+	}
+
+	public static Job create() throws JSchException, SftpException{
 		instance = job();
 		return get();
 	}
@@ -57,19 +99,8 @@ public class Job extends Object {
 	}
 
 
-	private static Job job() {
-
-		String id = JobHelpers.id();
-		System.out.println("Job id: "+id);
-
-		File tmpDir = createTempDir();
-		if(!Connection.isConfigured()) {
-			Connection.login();
-		}
-		String clusterPath = Connection.getServer().getPath();
-		File cluster = new File(clusterPath , id);
-		
-	return new Job(id,DataAccessMode.SEND_DATA_FROM_LOCAL,ProcessMode.CLUSTER_PROCESSING,tmpDir,cluster,0);
+	private static Job job() throws JSchException, SftpException {
+		return job(ProcessMode.CLUSTER_PROCESSING);
 	}
 
 	private static File createTempDir() {
