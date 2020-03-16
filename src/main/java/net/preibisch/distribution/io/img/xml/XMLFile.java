@@ -40,7 +40,10 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 	private Interval bb;
 	private SpimData2 spimData;
 	private double downsampling;
-
+	public static XMLFile create(String path, double downsampling)
+			throws SpimDataException, IOException {
+		return create(path, downsampling, FileStatus.IN_LOCAL_COMPUTER);
+	}
 
 	public static XMLFile create(String path, double downsampling,FileStatus mode)
 			throws SpimDataException, IOException {
@@ -143,5 +146,10 @@ public class XMLFile<T extends FloatType> extends ImgFile  implements ImgFunctio
 		if (DataExtension.fromURI(input) != DataExtension.XML)
 			throw new SpimDataException("input " + input + " is not XML");
 		return new XmlIoSpimData2("").load(input);
+	}
+	
+	@Deprecated
+	public static XMLFile XMLFile(String path) throws SpimDataException, IOException {
+		return  create(path, Double.NaN);
 	}
 }

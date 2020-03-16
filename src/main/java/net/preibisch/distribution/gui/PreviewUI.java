@@ -6,6 +6,7 @@ import mpicbg.spim.data.SpimDataException;
 import net.preibisch.distribution.gui.items.DataPreview;
 import net.preibisch.distribution.gui.items.Frame;
 import net.preibisch.distribution.gui.items.PreviewPanel;
+import net.preibisch.distribution.io.FileStatus;
 import net.preibisch.distribution.io.img.ImgFile;
 import net.preibisch.distribution.io.img.xml.XMLFile;
 
@@ -16,24 +17,21 @@ public class PreviewUI extends Frame {
 	private PreviewPanel panel;
 	private int size;
 
-	public PreviewUI(ImgFile file, int size) {
+	public PreviewUI(long[] dims, int size) {
 		super(TITLE);
 		this.size = size;
-		DataPreview.fromFile(file);
+		DataPreview.fromFile(dims);
 		setSize(GUIConfig.PREVIEW_PANEL_WIDTH, GUIConfig.PREIVIEW_PANEL_HEIGHT);
 		panel = new PreviewPanel();
 		add(panel);
 		setVisible(true);
 	}
-	
-	public PreviewUI(ImgFile file) {
-		this(file, 1);
-	}
+
 
 	public static void main(String[] args) throws SpimDataException, IOException {
 		String input_path = "/Users/Marwan/Desktop/grid-3d-stitched-h5/dataset.xml";
-		XMLFile file = XMLFile.XMLFile(input_path);
-		PreviewUI ui = new PreviewUI(file);
+		XMLFile file = XMLFile.create(input_path, Double.NaN,FileStatus.IN_LOCAL_COMPUTER);
+		PreviewUI ui = new PreviewUI(file.getDimensions(),1);
 
 	}
 }

@@ -60,8 +60,8 @@ public class DataPreview extends Object {
 		generateBlocks();
 	}
 	
-	public static void fromFile(ImgFile file) {
-		DataPreview.dims = file.getDims();
+	public static void fromFile(long[] dims) {
+		DataPreview.dims = dims;
 		DataPreview.previewPreferedHeight = GUIConfig.PREVIEW_PREFERED_HEIGHT;
 		long[] blocksSizes = new long[dims.length];
 		Arrays.fill(blocksSizes, BasicBlockInfoGenerator.BLOCK_SIZE);
