@@ -1,6 +1,5 @@
 package net.preibisch.distribution.algorithm.clustering.kafka;
 
-import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.kafka.clients.consumer.Consumer;
@@ -13,6 +12,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import kafka.utils.ShutdownableThread;
+import net.preibisch.distribution.algorithm.errorhandler.logmanager.MyLogger;
 
 public class JobConsumer extends ShutdownableThread {
 	private final KafkaConsumer<String, String> consumer;
@@ -23,47 +23,16 @@ public class JobConsumer extends ShutdownableThread {
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "KafkaExampleConsumer");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		// Create the consumer using props.
+
 		final Consumer<String, String> consumer = new KafkaConsumer<>(props);
 
-		// Subscribe to the topic.
-		consumer.subscribe(Collections.singletonList(KafkaTopics.TOPIC_DONE_TASK));
+		consumer.subscribe(KafkaTopics.getTopics());
+		// consumer.subscribe(Collections.singletonList(KafkaTopics.TOPIC_DONE_TASK));
 		return consumer;
 	}
 
-	public static void runConsumer() throws InterruptedException {
-		final Consumer<String, String> consumer = createConsumer();
-
-		final int giveUp = 100;
-		int noRecordsCount = 0;
-
-		while (true) {
-			final ConsumerRecords<String, String> consumerRecords = consumer.poll(1000);
-
-			if (consumerRecords.count() == 0) {
-				noRecordsCount++;
-				if (noRecordsCount > giveUp)
-					break;
-				else
-					continue;
-			}
-
-			consumerRecords.forEach(record -> {
-				System.out.printf("Consumer Record:(%s, %s, %d, %d)\n", record.key(), record.value(),
-						record.partition(), record.offset());
-				KafkaMessageManager.process(record);
-			});
-
-			consumer.commitAsync();
-		}
-		consumer.close();
-		System.out.println("DONE");
-	}
-
 	public JobConsumer() {
-
 		super("KafkaJobConsumer", false);
-
 		// Logger logger = Logger.getLogger(this.getClass());
 		// logger.setLevel(Level.ERROR);
 		Logger.getRootLogger().setLevel(Level.OFF);
@@ -76,22 +45,18 @@ public class JobConsumer extends ShutdownableThread {
 		props.setProperty("auto.offset.reset", "latest");
 		props.setProperty("key.deserializer", StringDeserializer.class.getName());
 		props.setProperty("value.deserializer", StringDeserializer.class.getName());
-
 		consumer = new KafkaConsumer<>(props);
-
 	}
 
 	@Override
 	public void doWork() {
 		Logger.getRootLogger().setLevel(Level.OFF);
 
-		// consumer.subscribe(Collections.singletonList(KafkaTopics.TOPIC_LOG_TASK));
 		consumer.subscribe(KafkaTopics.getTopics());
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(10000);
 			for (ConsumerRecord<String, String> record : records) {
-				KafkaMessageManager.process(record);
-
+				KafkaLogManager.process(record);
 			}
 		}
 	}
@@ -107,8 +72,8 @@ public class JobConsumer extends ShutdownableThread {
 	}
 
 	public static void main(String[] args) {
+		MyLogger.log().info("Start collect log");
 		JobConsumer consumerThread = new JobConsumer();
 		consumerThread.start();
-
 	}
 }

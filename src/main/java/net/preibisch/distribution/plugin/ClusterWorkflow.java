@@ -116,7 +116,7 @@ public class ClusterWorkflow {
 			SCPManager.startBatch(new File(Job.get().getCluster().getPath(),batchScriptFile.getName()));
 
 		}
-		new KafkaMessageManager(Job.get().getId(), params.size());
+//		new KafkaMessageManager(Job.get().getId(), params.size());
 
 	}
 }

@@ -2,34 +2,17 @@ package net.preibisch.distribution.algorithm.clustering.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import net.preibisch.distribution.gui.items.DataPreview;
-import net.preibisch.distribution.gui.items.basics.Colors;
-import net.preibisch.legacy.io.IOFunctions;
-
 public class KafkaMessageManager {
+	//TO be adapted to communicate with GUI
 	
-
 	private static String jobId;
 	private static int size;
-
-	public KafkaMessageManager(String id, int size) {
-		KafkaMessageManager.jobId = id;
-		KafkaMessageManager.size = size;
-//			JobConsumer consumerThread = new JobConsumer();
-//			consumerThread.start();
-		try {
-			JobConsumer.runConsumer();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	  public static void process(ConsumerRecord<String, String> record) {
 		  System.out.println("Received message: (" + record.topic()+","+record.key() + ", " + record.value() + ") at offset " + record.offset());
 			if(jobId.equals(record.key())) {
 	        	
-				KafkaMessage msg = new KafkaMessage(record.value());
+				KafkaMessage msg = new KafkaMessage(record.topic(),record.key(),record.value());
 				switch(KafkaTopics.of(record.topic())) {
 				case DONE:
 					done(msg);
@@ -61,13 +44,12 @@ public class KafkaMessageManager {
 	
 	public static void error(KafkaMessage msg) {
 		System.out.println("ERROR ! "+msg);
-		DataPreview.getBlocksPreview().get(msg.getBlock()).setStatus(Colors.ERROR);
+//		DataPreview.getBlocksPreview().get(msg.getBlock()).setStatus(Colors.ERROR);
 	}
-
+	
 	public static void done(KafkaMessage msg) {
 		System.out.println("DONE ! "+msg);
-		DataPreview.getBlocksPreview().get(msg.getBlock()).setStatus(Colors.PROCESSED);
-		IOFunctions.println("Block: "+msg.getBlock()+" finished!");
-
+//		DataPreview.getBlocksPreview().get(msg.getBlock()).setStatus(Colors.PROCESSED);
+//		IOFunctions.println("Block: "+msg.getBlock()+" finished!");
 	}
 }

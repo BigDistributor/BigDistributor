@@ -15,7 +15,13 @@ public class KafkaCallBack implements Callback {
         this.message = message;
     }
 
-    /**
+    public KafkaCallBack(KafkaMessage message) {
+    	this.startTime = message.getTimestamp();
+        this.key = message.getJobid();
+        this.message = message.toString();
+	}
+
+	/**
      * A callback method the user can implement to provide asynchronous handling of request completion. This method will
      * be called when the record sent to the server has been acknowledged. Exactly one of the arguments will be
      * non-null.

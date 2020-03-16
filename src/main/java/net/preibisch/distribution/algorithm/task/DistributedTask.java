@@ -32,22 +32,27 @@ public class DistributedTask implements Callable<Void> {
 	private Integer id;
 
 	private BlockTask mainTask;
+	
+	private Metadata md;
+	private KafkaManager manager;
 
 	public DistributedTask(BlockTask task) {
 		this.mainTask = task;
 	}
 	@Override
 	public Void call() throws Exception {
+		md = Metadata.fromJson(metadataPath);
+		String jobId = md.getJobID();
+		manager = new KafkaManager(jobId);
 		
 		try {
 			System.out.println("id: "+id);
 			id = id - 1;
 		} catch (Exception e) {
-			KafkaManager.error(-1, e.toString());
+			manager.error(-1, e.toString());
 			System.out.println("Error id");
 			throw new Exception("Specify id!");
 		}
-//		try {
 			System.out.println("task: "+task);
 			JobType type = JobType.of(task);
 			
@@ -69,16 +74,14 @@ public class DistributedTask implements Callable<Void> {
 			
 			Metadata md = Metadata.fromJson(metadataPath);
 			String jobId = md.getJobID();
-			KafkaManager.jobID = jobId;
-			KafkaManager.log(-1, "Start generate n5");
+			manager.log(-1, "Start generate n5");
 			long[] dims = md.getBb().getDimensions(1);
 			N5File outputFile = new N5File(outputPath, dims);
 			outputFile.create();
-			KafkaManager.log(-1, "N5 Generated");
-			KafkaManager.done(-1, "N5 Generated");
+			manager.log(-1, "N5 Generated");
+			manager.done(-1, "N5 Generated");
 		} catch (JsonSyntaxException | JsonIOException | IOException e) {
-
-			KafkaManager.error(-1, e.toString());
+			manager.error(-1, e.toString());
 			e.printStackTrace();
 		}
 	}
