@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>28.0.0</version>
+		<version>29.2.0</version>
 		<relativePath />
 	</parent>
 	<groupId>net.preibisch</groupId>
 	<artifactId>dbio</artifactId>
-	<version>0.2.2-SNAPSHOT</version>
-	<name>imagej distribuion</name>
-	<description>Distibute processing using cluster</description>
+	<version>0.4-SNAPSHOT</version>
+	<name>imagej distribution</name>
+	<description>Distribute processing using cluster</description>
 	<url>https://github.com/PreibischLab/image-clustering</url>
 	<inceptionYear>2019</inceptionYear>
 	<organization>
@@ -88,7 +88,7 @@
 	</ciManagement>
 
 	<properties>
-		<package-name>net.preibisch.distribution</package-name>
+		<package-name>net.preibisch.bigdistributor</package-name>
 
 		<license.licenseName>gpl_v2</license.licenseName>
 		<license.copyrightOwners>Image distribution developers.</license.copyrightOwners>
@@ -111,8 +111,16 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>imagej</artifactId>
+			<groupId>sc.fiji</groupId>
+			<artifactId>spim_data</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-ij</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.janelia.saalfeldlab</groupId>
@@ -144,10 +152,12 @@
 			<artifactId>gson</artifactId>
 			<version>2.8.5</version>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>spim_data</artifactId>
-		</dependency> -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>sc.fiji</groupId> <artifactId>spim_data</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
@@ -161,11 +171,12 @@
 			<groupId>org.scijava</groupId>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.preibisch</groupId>
-			<artifactId>multiview-reconstruction</artifactId>
-			<version>0.8.0-SNAPSHOT</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>net.preibisch</groupId>-->
+<!--			<artifactId>multiview-reconstruction</artifactId>-->
+<!--			<version>0.8.0-SNAPSHOT</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -176,13 +187,14 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.5</version>
 		</dependency>
+
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+<!--	<build>-->
+<!--		<plugins>-->
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-assembly-plugin</artifactId>-->
+<!--			</plugin>-->
+<!--		</plugins>-->
+<!--	</build>-->
 </project>
