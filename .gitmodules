@@ -4,3 +4,6 @@
 [submodule "BigDistributor-GUI"]
 	path = BigDistributor-GUI
 	url = https://github.com/BigDistributor/BigDistributor-GUI.git
+[submodule "BigDistributor-core"]
+	path = BigDistributor-core
+	url = https://github.com/BigDistributor/BigDistributor-core.git
