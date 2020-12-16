@@ -1,0 +1,6 @@
+[submodule "BigLogger"]
+	path = BigLogger
+	url = https://github.com/BigDistributor/BigLogger.git
+[submodule "BigDistributor-GUI"]
+	path = BigDistributor-GUI
+	url = https://github.com/BigDistributor/BigDistributor-GUI.git
